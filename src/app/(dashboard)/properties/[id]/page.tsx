@@ -39,7 +39,6 @@ export default async function PropertyOverview({
   const customRows = customSections.map((c) => ({
     id: c.id,
     title: c.title,
-    subtitle: c.subtitle ?? "",
     enabled: c.enabled,
   }));
 

@@ -70,7 +70,7 @@ export async function getHostProperty(id: string): Promise<HostProperty | null> 
       .maybeSingle<MagicLinkRow>(),
     supabase
       .from("custom_sections")
-      .select("id, property_id, title, subtitle, body, position, enabled")
+      .select("id, property_id, title, subtitle, body, blocks, position, enabled")
       .eq("property_id", id)
       .order("position", { ascending: true })
       .returns<CustomSectionRow[]>(),

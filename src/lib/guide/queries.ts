@@ -64,7 +64,7 @@ export async function getGuestGuide(token: string): Promise<GuideResult> {
         .returns<MediaItemRow[]>(),
       supabase
         .from("custom_sections")
-        .select("id, property_id, title, subtitle, body, position, enabled")
+        .select("id, property_id, title, subtitle, body, blocks, position, enabled")
         .eq("property_id", property.id)
         .order("position", { ascending: true })
         .returns<CustomSectionRow[]>(),

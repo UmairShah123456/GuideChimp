@@ -157,15 +157,54 @@ export interface PropertyRow {
   section_titles?: SectionTitles;
 }
 
-/** A free-form, host-authored section shown only on the guest home screen. */
+/**
+ * One content block inside a custom section. Blocks are stored as an ordered
+ * array and rendered to the guest in that order. Each carries a stable `id` so
+ * the editor can reorder/remove without React key churn.
+ */
+export type CustomBlock =
+  | { id: string; type: "text"; body: string }
+  | { id: string; type: "video"; url: string }
+  | { id: string; type: "photo"; url: string; caption?: string }
+  | { id: string; type: "map"; address: string }
+  | { id: string; type: "steps"; steps: CustomStep[] };
+
+export interface CustomStep {
+  title: string;
+  body?: string;
+  photoUrl?: string;
+  photoCaption?: string;
+}
+
+export type CustomBlockType = CustomBlock["type"];
+
+/**
+ * A free-form, host-authored section shown only on the guest home screen. The
+ * `title` is the section name (tile + page heading); `blocks` is the ordered
+ * content. `subtitle`/`body` are legacy columns kept for backwards compat —
+ * `body` is surfaced as an implicit text block when `blocks` is empty.
+ */
 export interface CustomSectionRow {
   id: string;
   property_id: string;
   title: string;
   subtitle: string | null;
   body: string | null;
+  blocks: CustomBlock[];
   position: number;
   enabled: boolean;
+}
+
+/**
+ * Normalise a row's blocks for rendering: prefer the block array, falling back
+ * to a single text block built from the legacy `body` for pre-migration rows.
+ */
+export function customBlocks(
+  section: Pick<CustomSectionRow, "blocks" | "body">,
+): CustomBlock[] {
+  if (section.blocks && section.blocks.length > 0) return section.blocks;
+  const body = section.body?.trim();
+  return body ? [{ id: "legacy-body", type: "text", body }] : [];
 }
 
 export interface GuideSectionRow {

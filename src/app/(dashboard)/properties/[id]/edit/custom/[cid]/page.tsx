@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { requireAccount } from "@/lib/auth/session";
 import { getHostProperty } from "@/lib/dashboard/queries";
 import { CustomSectionEditor } from "@/components/dashboard/editors/CustomSectionEditor";
+import { customBlocks } from "@/lib/guide/types";
 
 export default async function EditCustomSectionPage({
   params,
@@ -21,12 +22,9 @@ export default async function EditCustomSectionPage({
     <CustomSectionEditor
       propertyId={id}
       sectionId={cid}
+      name={section.title}
       hue={account.accent_hue}
-      initial={{
-        title: section.title,
-        subtitle: section.subtitle ?? "",
-        body: section.body ?? "",
-      }}
+      initial={customBlocks(section)}
     />
   );
 }

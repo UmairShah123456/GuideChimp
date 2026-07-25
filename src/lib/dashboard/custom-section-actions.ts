@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { revalidateGuide } from "./revalidate";
 import type { FormState } from "@/lib/forms";
-import type { GuideSectionType, SectionTitles } from "@/lib/guide/types";
+import type { CustomBlock, GuideSectionType, SectionTitles } from "@/lib/guide/types";
 
 /**
  * Rename a built-in section. The override is stored on the property and drives
@@ -78,10 +78,17 @@ export async function setSectionEnabled(
   return { ok: true };
 }
 
-/** Create a blank custom section and return its id so the caller can open it. */
+/**
+ * Create a custom section with the given name and return its id so the caller
+ * can open it. The name is what guests see on the home tile and page heading.
+ */
 export async function createCustomSection(
   propertyId: string,
+  name: string,
 ): Promise<{ id?: string; error?: string }> {
+  const title = name.trim();
+  if (!title) return { error: "Please name the section." };
+
   const supabase = await createClient();
 
   const { data: last } = await supabase
@@ -94,7 +101,7 @@ export async function createCustomSection(
 
   const { data, error } = await supabase
     .from("custom_sections")
-    .insert({ property_id: propertyId, title: "", position: (last?.position ?? -1) + 1 })
+    .insert({ property_id: propertyId, title, position: (last?.position ?? -1) + 1 })
     .select("id")
     .single<{ id: string }>();
   if (error || !data) return { error: error?.message ?? "Could not create section." };
@@ -102,6 +109,28 @@ export async function createCustomSection(
   await revalidateGuide(propertyId);
   revalidatePath(`/properties/${propertyId}`);
   return { id: data.id };
+}
+
+/** Rename a custom section. The name drives the dashboard, tile, and heading. */
+export async function renameCustomSection(
+  propertyId: string,
+  id: string,
+  name: string,
+): Promise<FormState> {
+  const title = name.trim();
+  if (!title) return { error: "Please name the section." };
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("custom_sections")
+    .update({ title })
+    .eq("id", id)
+    .eq("property_id", propertyId);
+  if (error) return { error: error.message };
+
+  await revalidateGuide(propertyId);
+  revalidatePath(`/properties/${propertyId}`);
+  return { ok: true };
 }
 
 /** Turn a custom section's home tile on or off. */
@@ -123,19 +152,19 @@ export async function setCustomSectionEnabled(
   return { ok: true };
 }
 
-/** Update a custom section's title / subtitle / body. */
+/** Save a custom section's ordered content blocks. */
 export async function saveCustomSection(
   propertyId: string,
   id: string,
-  content: { title: string; subtitle: string; body: string },
+  blocks: CustomBlock[],
 ): Promise<FormState> {
   const supabase = await createClient();
   const { error } = await supabase
     .from("custom_sections")
     .update({
-      title: content.title.trim(),
-      subtitle: content.subtitle.trim() || null,
-      body: content.body.trim() || null,
+      blocks,
+      // Retire the legacy free-text body now that content lives in blocks.
+      body: null,
     })
     .eq("id", id)
     .eq("property_id", propertyId);

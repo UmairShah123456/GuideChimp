@@ -1,13 +1,12 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { ChevronRight } from "@/components/guest/icons";
 import {
   createCustomSection,
-  deleteCustomSection,
   renameSection,
+  renameCustomSection,
   setSectionEnabled,
   setCustomSectionEnabled,
 } from "@/lib/dashboard/custom-section-actions";
@@ -28,7 +27,6 @@ export interface SectionRow {
 export interface CustomRow {
   id: string;
   title: string;
-  subtitle: string;
   enabled: boolean;
 }
 
@@ -43,6 +41,8 @@ export function SectionList({
 }) {
   const router = useRouter();
   const [editing, setEditing] = useState<GuideSectionType | null>(null);
+  const [adding, setAdding] = useState(false);
+  const [renamingCustom, setRenamingCustom] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
   return (
@@ -110,13 +110,8 @@ export function SectionList({
         </h2>
         <button
           type="button"
-          disabled={pending}
-          onClick={() =>
-            startTransition(async () => {
-              const res = await createCustomSection(propertyId);
-              if (res.id) router.push(`/properties/${propertyId}/edit/custom/${res.id}`);
-            })
-          }
+          disabled={pending || adding}
+          onClick={() => setAdding(true)}
           className="rounded-[var(--radius-pill)] bg-accent px-3.5 py-1.5 text-[12.5px] font-bold text-white disabled:opacity-60"
         >
           + Add section
@@ -126,53 +121,144 @@ export function SectionList({
         Your own sections. Each shows as a tile on the guest home screen.
       </p>
 
+      {adding && (
+        <div className="mt-3 overflow-hidden rounded-[var(--radius-lg)] border-[1.5px] border-border bg-surface">
+          <NamePanel
+            heading="Name your section"
+            placeholder="e.g. Pool access"
+            confirmLabel="Create"
+            pending={pending}
+            onCancel={() => setAdding(false)}
+            onSave={(name) =>
+              startTransition(async () => {
+                const res = await createCustomSection(propertyId, name);
+                if (res.id) router.push(`/properties/${propertyId}/edit/custom/${res.id}`);
+                else setAdding(false);
+              })
+            }
+          />
+        </div>
+      )}
+
       {custom.length > 0 && (
         <div className="mt-3 divide-y divide-border overflow-hidden rounded-[var(--radius-lg)] border-[1.5px] border-border bg-surface">
-          {custom.map((c) => (
-            <div key={c.id} className="flex items-center gap-3 px-4 py-3.5">
-              <Toggle
-                on={c.enabled}
-                disabled={pending}
-                label={`Show ${c.title || "this section"} to guests`}
-                onToggle={() =>
+          {custom.map((c) =>
+            renamingCustom === c.id ? (
+              <NamePanel
+                key={c.id}
+                heading="Rename section"
+                placeholder="Section name"
+                confirmLabel="Save"
+                initial={c.title}
+                pending={pending}
+                onCancel={() => setRenamingCustom(null)}
+                onSave={(name) =>
                   startTransition(async () => {
-                    await setCustomSectionEnabled(propertyId, c.id, !c.enabled);
+                    await renameCustomSection(propertyId, c.id, name);
+                    setRenamingCustom(null);
                     router.refresh();
                   })
                 }
               />
-              <div className={`min-w-0 flex-1 ${c.enabled ? "" : "opacity-45"}`}>
-                <div className="text-[15px] font-bold text-ink">
-                  {c.title || "Untitled section"}
+            ) : (
+              <div
+                key={c.id}
+                onClick={() => router.push(`/properties/${propertyId}/edit/custom/${c.id}`)}
+                className="flex cursor-pointer items-center gap-3 px-4 py-3.5 hover:bg-page"
+              >
+                <Toggle
+                  on={c.enabled}
+                  disabled={pending}
+                  label={`Show ${c.title || "this section"} to guests`}
+                  onToggle={() =>
+                    startTransition(async () => {
+                      await setCustomSectionEnabled(propertyId, c.id, !c.enabled);
+                      router.refresh();
+                    })
+                  }
+                />
+                <div className={`min-w-0 flex-1 ${c.enabled ? "" : "opacity-45"}`}>
+                  <div className="text-[15px] font-bold text-ink">
+                    {c.title || "Untitled section"}
+                  </div>
                 </div>
-                {c.subtitle && <div className="text-[12.5px] text-muted">{c.subtitle}</div>}
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setRenamingCustom(c.id);
+                  }}
+                  className="text-[12px] font-semibold text-muted hover:text-ink"
+                >
+                  Rename
+                </button>
+                <ChevronRight className="h-4 w-4 flex-none text-muted" />
               </div>
-              <button
-                type="button"
-                disabled={pending}
-                onClick={() => {
-                  if (!confirm("Delete this section? This can't be undone.")) return;
-                  startTransition(async () => {
-                    await deleteCustomSection(propertyId, c.id);
-                    router.refresh();
-                  });
-                }}
-                className="text-[12px] font-semibold text-muted hover:text-danger"
-              >
-                Delete
-              </button>
-              <Link
-                href={`/properties/${propertyId}/edit/custom/${c.id}`}
-                className="flex items-center gap-1 text-[12px] font-semibold text-muted hover:text-ink"
-              >
-                Edit
-                <ChevronRight className="h-4 w-4" />
-              </Link>
-            </div>
-          ))}
+            ),
+          )}
         </div>
       )}
     </section>
+  );
+}
+
+/** Inline single-field panel for naming or renaming a custom section. */
+function NamePanel({
+  heading,
+  placeholder,
+  confirmLabel,
+  initial = "",
+  pending,
+  onSave,
+  onCancel,
+}: {
+  heading: string;
+  placeholder: string;
+  confirmLabel: string;
+  initial?: string;
+  pending: boolean;
+  onSave: (name: string) => void;
+  onCancel: () => void;
+}) {
+  const [name, setName] = useState(initial);
+  const trimmed = name.trim();
+  const submit = () => {
+    if (trimmed) onSave(trimmed);
+  };
+
+  return (
+    <div className="flex flex-col gap-2.5 bg-page px-4 py-3.5">
+      <div className="text-[11px] font-bold uppercase tracking-[0.08em] text-muted">{heading}</div>
+      <input
+        autoFocus
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") submit();
+          if (e.key === "Escape") onCancel();
+        }}
+        placeholder={placeholder}
+        className="w-full rounded-[var(--radius-sm)] border-[1.5px] border-border bg-surface px-3 py-2 text-sm text-ink outline-none focus:border-accent placeholder:text-muted"
+      />
+      <div className="flex items-center gap-2">
+        <button
+          type="button"
+          disabled={pending || !trimmed}
+          onClick={submit}
+          className="rounded-[var(--radius-pill)] bg-accent px-4 py-1.5 text-[12.5px] font-bold text-white disabled:opacity-60"
+        >
+          {confirmLabel}
+        </button>
+        <button
+          type="button"
+          onClick={onCancel}
+          className="text-[12.5px] font-semibold text-muted hover:text-ink"
+        >
+          Cancel
+        </button>
+        <span className="ml-auto text-[11.5px] text-muted">Guests see this name.</span>
+      </div>
+    </div>
   );
 }
 

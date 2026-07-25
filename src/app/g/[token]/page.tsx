@@ -31,7 +31,7 @@ function NavRow({
     >
       <div>
         <div className="text-base font-bold text-ink">{title}</div>
-        <div className="mt-0.5 text-[12.5px] text-muted">{subtitle}</div>
+        {subtitle && <div className="mt-0.5 text-[12.5px] text-muted">{subtitle}</div>}
       </div>
       <PlusIcon className="h-5 w-5 flex-none text-accent" />
     </Link>
