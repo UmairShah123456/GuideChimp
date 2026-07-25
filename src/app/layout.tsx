@@ -10,11 +10,14 @@ const outfit = Outfit({
 });
 
 const description =
-  "Beautiful branded digital guidebooks for your short-let guests.";
+  "GuideChimp turns check-in steps, Wi-Fi, parking, appliance how-tos and your local picks into one branded guide. Share a single link — no app for guests.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"),
-  title: { default: "GuideChimp", template: "%s · GuideChimp" },
+  title: {
+    default: "GuideChimp — digital guidebooks that answer guests' questions",
+    template: "%s · GuideChimp",
+  },
   description,
   applicationName: "GuideChimp",
   manifest: "/site.webmanifest",
@@ -46,6 +49,18 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={outfit.variable}>
+      <head>
+        {/*
+          Marks JS as available before first paint. The scroll-reveal styles are
+          scoped to `.js`, so without this the page still renders fully visible
+          rather than waiting on hydration to un-hide itself.
+        */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `document.documentElement.classList.add('js')`,
+          }}
+        />
+      </head>
       <body>{children}</body>
     </html>
   );
