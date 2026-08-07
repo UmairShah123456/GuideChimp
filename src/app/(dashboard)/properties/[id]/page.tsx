@@ -1,46 +1,27 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireAccount } from "@/lib/auth/session";
-import { getHostProperty } from "@/lib/dashboard/queries";
-import { SECTION_META, sectionEnabled } from "@/lib/guide/defaults";
-import { env } from "@/lib/env";
+import { getProperty, listGuides } from "@/lib/dashboard/queries";
+import { guidePreset } from "@/lib/guide/presets";
 import { PageHeader } from "@/components/dashboard/PageHeader";
-import { MagicLinkCard } from "@/components/dashboard/MagicLinkCard";
-import { PropertyDetailsForm } from "@/components/dashboard/PropertyDetailsForm";
-import { DeletePropertyButton } from "@/components/dashboard/DeletePropertyButton";
-import { SectionList, type SectionRow } from "@/components/dashboard/SectionList";
+import { NewGuideButton } from "@/components/dashboard/NewGuideButton";
+import { ChevronRight } from "@/components/guest/icons";
 
-export default async function PropertyOverview({
+/**
+ * A property's guides. This is the first screen after opening a property: one
+ * row per audience (guests, cleaners, staff), each its own guide with its own
+ * sections and link.
+ */
+export default async function PropertyGuides({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
   await requireAccount();
   const { id } = await params;
-  const data = await getHostProperty(id);
-  if (!data) notFound();
 
-  const { property, customSections, link } = data;
-  const overrides = property.section_titles ?? {};
-
-  const sectionRows: SectionRow[] = SECTION_META.map((s) => {
-    const ov = overrides[s.type] ?? {};
-    return {
-      type: s.type,
-      slug: s.type.replace("_", "-"),
-      title: ov.title?.trim() || s.label,
-      blurb: ov.subtitle?.trim() || s.blurb,
-      defaultTitle: s.label,
-      defaultBlurb: s.blurb,
-      overrideTitle: ov.title ?? "",
-      overrideSubtitle: ov.subtitle ?? "",
-      enabled: sectionEnabled(s.type, overrides),
-    };
-  });
-  const customRows = customSections.map((c) => ({
-    id: c.id,
-    title: c.title,
-    enabled: c.enabled,
-  }));
+  const [property, guides] = await Promise.all([getProperty(id), listGuides(id)]);
+  if (!property) notFound();
 
   return (
     <>
@@ -49,29 +30,74 @@ export default async function PropertyOverview({
         description={property.address ?? undefined}
         backHref="/dashboard"
         backLabel="All properties"
-        actions={<DeletePropertyButton propertyId={property.id} propertyName={property.name} />}
+        actions={
+          <div className="flex items-center gap-2">
+            <Link
+              href={`/properties/${id}/settings`}
+              className="rounded-[var(--radius-pill)] border-[1.5px] border-border px-4 py-2 text-[13px] font-bold text-body hover:text-ink"
+            >
+              Property settings
+            </Link>
+            {guides.length > 0 && <NewGuideButton propertyId={id} />}
+          </div>
+        }
       />
 
-      <div className="mx-auto grid max-w-5xl gap-6 px-8 py-8 lg:grid-cols-[1fr_360px]">
-        <SectionList propertyId={property.id} rows={sectionRows} custom={customRows} />
+      <div className="mx-auto max-w-3xl px-8 py-8">
+        <h2 className="text-sm font-extrabold uppercase tracking-[0.08em] text-muted">
+          Guides
+        </h2>
+        <p className="mt-1.5 text-[12.5px] text-muted">
+          One guide per audience. Each has its own sections and its own link, so a
+          cleaner never sees the guest guide and vice versa.
+        </p>
 
-        {/* Right rail: link + details */}
-        <aside className="flex flex-col gap-6">
-          <MagicLinkCard
-            propertyId={property.id}
-            token={link?.token ?? null}
-            appUrl={env.appUrl}
-            viewCount={link?.view_count ?? 0}
-            expiresAt={link?.expires_at ?? null}
-            hasPin={Boolean(link?.pin)}
-          />
-          <div className="rounded-[var(--radius-lg)] border-[1.5px] border-border bg-surface p-5">
-            <h2 className="mb-4 text-sm font-extrabold uppercase tracking-[0.08em] text-muted">
-              Property details
-            </h2>
-            <PropertyDetailsForm property={property} />
+        {guides.length === 0 ? (
+          <div className="mt-4 flex flex-col items-center justify-center rounded-[var(--radius-lg)] border-[1.5px] border-dashed border-border bg-surface px-8 py-14 text-center">
+            <div className="flex h-14 w-14 items-center justify-center rounded-[var(--radius-lg)] bg-accent-subtle text-2xl">
+              📘
+            </div>
+            <h3 className="mt-4 text-lg font-extrabold text-ink">No guides yet</h3>
+            <p className="mt-1 max-w-xs text-sm text-body">
+              Create a guest guide, or one for your cleaners or team.
+            </p>
+            <div className="mt-5">
+              <NewGuideButton propertyId={id} />
+            </div>
           </div>
-        </aside>
+        ) : (
+          <div className="mt-4 divide-y divide-border overflow-hidden rounded-[var(--radius-lg)] border-[1.5px] border-border bg-surface">
+            {guides.map((g) => {
+              const preset = guidePreset(g.kind);
+              const link = g.magic_links[0];
+              const sectionCount = g.guide_sections.length + g.custom_sections.length;
+              const meta = [
+                `${sectionCount} ${sectionCount === 1 ? "section" : "sections"}`,
+                link ? `${link.view_count} views` : "No link",
+              ].join(" · ");
+
+              return (
+                <Link
+                  key={g.id}
+                  href={`/properties/${id}/guides/${g.id}`}
+                  className="flex items-center gap-3.5 px-4 py-4 hover:bg-page"
+                >
+                  <span
+                    aria-hidden
+                    className="flex h-10 w-10 flex-none items-center justify-center rounded-[var(--radius-sm)] bg-accent-subtle text-lg"
+                  >
+                    {preset.emoji}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <div className="text-[15px] font-bold text-ink">{g.name}</div>
+                    <div className="text-[12.5px] text-muted">{meta}</div>
+                  </div>
+                  <ChevronRight className="h-4 w-4 flex-none text-muted" />
+                </Link>
+              );
+            })}
+          </div>
+        )}
       </div>
     </>
   );

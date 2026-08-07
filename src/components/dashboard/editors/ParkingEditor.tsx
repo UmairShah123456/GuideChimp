@@ -42,11 +42,13 @@ function Segmented<T extends string>({
 
 export function ParkingEditor({
   propertyId,
+  guideId,
   hue,
   heading,
   initial,
 }: {
   propertyId: string;
+  guideId: string;
   hue: number;
   heading: string;
   initial: ParkingContent;
@@ -61,9 +63,10 @@ export function ParkingEditor({
   return (
     <EditorShell
       propertyId={propertyId}
+      guideId={guideId}
       title={heading}
       hue={hue}
-      onSave={() => saveSectionContent(propertyId, "parking", c)}
+      onSave={() => saveSectionContent(propertyId, guideId, "parking", c)}
       preview={<ParkingSection heading={heading} parking={c} />}
       form={
         <>

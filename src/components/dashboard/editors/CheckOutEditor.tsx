@@ -10,11 +10,13 @@ import type { CheckOutContent } from "@/lib/guide/types";
 
 export function CheckOutEditor({
   propertyId,
+  guideId,
   hue,
   heading,
   initial,
 }: {
   propertyId: string;
+  guideId: string;
   hue: number;
   heading: string;
   initial: CheckOutContent;
@@ -28,9 +30,10 @@ export function CheckOutEditor({
   return (
     <EditorShell
       propertyId={propertyId}
+      guideId={guideId}
       title={heading}
       hue={hue}
-      onSave={() => saveSectionContent(propertyId, "check_out", c)}
+      onSave={() => saveSectionContent(propertyId, guideId, "check_out", c)}
       preview={<CheckOutSection heading={heading} checkout={c} />}
       form={
         <>

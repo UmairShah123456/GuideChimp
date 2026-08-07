@@ -9,11 +9,13 @@ import type { WifiContent } from "@/lib/guide/types";
 
 export function WifiEditor({
   propertyId,
+  guideId,
   hue,
   heading,
   initial,
 }: {
   propertyId: string;
+  guideId: string;
   hue: number;
   heading: string;
   initial: WifiContent;
@@ -24,9 +26,10 @@ export function WifiEditor({
   return (
     <EditorShell
       propertyId={propertyId}
+      guideId={guideId}
       title={heading}
       hue={hue}
-      onSave={() => saveSectionContent(propertyId, "wifi", c)}
+      onSave={() => saveSectionContent(propertyId, guideId, "wifi", c)}
       preview={
         <>
           <div className="placeholder-tile h-[180px] rounded-b-[var(--radius-header)]" />

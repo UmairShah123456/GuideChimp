@@ -6,11 +6,14 @@ import QRCode from "qrcode";
 import { CopyButton } from "@/components/guest/CopyButton";
 
 /**
- * Shows a property's guest magic link with a copyable URL, a client-generated
- * QR code (downloadable), and its view count.
+ * Shows a guide's magic link with a copyable URL, a client-generated QR code
+ * (downloadable), and its view count. Each guide on a property has its own
+ * link, so the label names the audience rather than always saying "guest".
  */
 export function MagicLinkCard({
   propertyId,
+  guideId,
+  guideName,
   token,
   appUrl,
   viewCount,
@@ -18,6 +21,8 @@ export function MagicLinkCard({
   hasPin,
 }: {
   propertyId: string;
+  guideId: string;
+  guideName: string;
   token: string | null;
   appUrl: string;
   viewCount: number;
@@ -40,7 +45,7 @@ export function MagicLinkCard({
     return (
       <div className="rounded-[var(--radius-lg)] border-[1.5px] border-border bg-surface p-5 text-sm text-body">
         No magic link yet.{" "}
-        <Link href={`/properties/${propertyId}/link-settings`} className="font-semibold text-accent">
+        <Link href={`/properties/${propertyId}/guides/${guideId}/link-settings`} className="font-semibold text-accent">
           Create one
         </Link>
         .
@@ -53,7 +58,7 @@ export function MagicLinkCard({
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0 flex-1">
           <div className="text-[11px] font-bold uppercase tracking-[0.1em] text-muted">
-            Guest magic link
+            {guideName} link
           </div>
           <div className="mt-2 flex items-center gap-2 rounded-[var(--radius-sm)] border-[1.5px] border-border bg-page px-3 py-2">
             <span className="min-w-0 flex-1 truncate font-mono text-[13px] text-ink">{url}</span>
@@ -93,7 +98,7 @@ export function MagicLinkCard({
               Preview guide
             </Link>
             <Link
-              href={`/properties/${propertyId}/link-settings`}
+              href={`/properties/${propertyId}/guides/${guideId}/link-settings`}
               className="rounded-[var(--radius-pill)] border-[1.5px] border-border px-4 py-2 text-[13px] font-bold text-ink"
             >
               Link settings

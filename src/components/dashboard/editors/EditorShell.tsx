@@ -12,6 +12,7 @@ import { PhonePreview } from "@/components/dashboard/PhonePreview";
  */
 export function EditorShell({
   propertyId,
+  guideId,
   title,
   hue,
   onSave,
@@ -19,6 +20,7 @@ export function EditorShell({
   preview,
 }: {
   propertyId: string;
+  guideId: string;
   title: string;
   hue: number;
   onSave: () => Promise<FormState>;
@@ -38,11 +40,11 @@ export function EditorShell({
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-8 py-4">
           <div className="min-w-0">
             <Link
-              href={`/properties/${propertyId}`}
+              href={`/properties/${propertyId}/guides/${guideId}`}
               className="inline-flex items-center gap-1 text-[13px] font-semibold text-muted hover:text-ink"
             >
               <ChevronLeft className="h-4 w-4" />
-              Back to property
+              Back to guide
             </Link>
             <h1 className="mt-0.5 text-lg font-extrabold text-ink">{title}</h1>
           </div>

@@ -20,7 +20,7 @@ export default async function CustomSectionScreen({
   if (!section) notFound();
 
   return (
-    <GuestScreen token={token} hue={guide.account.accent_hue} active="home" sectionTitles={guide.property.section_titles}>
+    <GuestScreen token={token} guide={guide} active="home">
       <CustomSection token={token} section={section} />
     </GuestScreen>
   );

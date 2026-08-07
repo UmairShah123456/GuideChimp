@@ -44,7 +44,7 @@ export interface SectionTitleOverride {
   enabled?: boolean;
 }
 
-/** Per-property overrides for built-in section names, keyed by section type. */
+/** Per-guide overrides for built-in section names, keyed by section type. */
 export type SectionTitles = Partial<Record<GuideSectionType, SectionTitleOverride>>;
 
 export interface CheckInContent extends HomeTileFields {
@@ -154,7 +154,29 @@ export interface PropertyRow {
   name: string;
   address: string | null;
   hero_image_url: string | null;
+  /**
+   * Legacy per-property overrides. Superseded by `GuideRow.section_titles` in
+   * migration 0011 and left in place so the pre-guides data is never lost;
+   * nothing reads it any more.
+   */
   section_titles?: SectionTitles;
+}
+
+/**
+ * One audience's guide for a property — guests, cleaners, a VA, anything the
+ * host names. Owns its own sections, custom sections and magic link, so two
+ * guides on the same property are fully independent.
+ *
+ * `kind` is a free-form preset slug rather than an enum: see
+ * `src/lib/guide/presets.ts`. Unknown values fall back to the blank preset.
+ */
+export interface GuideRow {
+  id: string;
+  property_id: string;
+  name: string;
+  kind: string;
+  section_titles: SectionTitles;
+  position: number;
 }
 
 /**
@@ -187,6 +209,7 @@ export type CustomBlockType = CustomBlock["type"];
 export interface CustomSectionRow {
   id: string;
   property_id: string;
+  guide_id: string;
   title: string;
   subtitle: string | null;
   body: string | null;
@@ -210,6 +233,7 @@ export function customBlocks(
 export interface GuideSectionRow {
   id: string;
   property_id: string;
+  guide_id: string;
   type: GuideSectionType;
   content: Record<string, unknown>;
   position: number;
@@ -218,6 +242,7 @@ export interface GuideSectionRow {
 export interface MediaItemRow {
   id: string;
   property_id: string;
+  guide_id: string;
   guide_section_id: string | null;
   type: "image" | "video";
   url: string;
@@ -244,6 +269,7 @@ export interface LocalGuideEntryRow {
 export interface MagicLinkRow {
   id: string;
   property_id: string;
+  guide_id: string;
   token: string;
   pin: string | null;
   expires_at: string | null;
@@ -254,6 +280,7 @@ export interface MagicLinkRow {
 export interface GuestGuide {
   account: AccountRow;
   property: PropertyRow;
+  guide: GuideRow;
   link: MagicLinkRow;
   sections: GuideSectionRow[];
   media: MediaItemRow[];

@@ -9,11 +9,13 @@ import type { HouseRule, HouseRulesContent } from "@/lib/guide/types";
 
 export function HouseRulesEditor({
   propertyId,
+  guideId,
   hue,
   heading,
   initial,
 }: {
   propertyId: string;
+  guideId: string;
   hue: number;
   heading: string;
   initial: HouseRulesContent;
@@ -28,9 +30,10 @@ export function HouseRulesEditor({
   return (
     <EditorShell
       propertyId={propertyId}
+      guideId={guideId}
       title={heading}
       hue={hue}
-      onSave={() => saveSectionContent(propertyId, "house_rules", c)}
+      onSave={() => saveSectionContent(propertyId, guideId, "house_rules", c)}
       preview={<HouseRulesSection heading={heading} rules={c} />}
       form={
         <>

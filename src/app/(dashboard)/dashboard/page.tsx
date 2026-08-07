@@ -13,7 +13,7 @@ export default async function DashboardPage() {
     <>
       <PageHeader
         title="Properties"
-        description="Each property has its own guide and magic link."
+        description="Each property can have guides for guests, cleaners and staff."
         actions={properties.length > 0 ? <NewPropertyButton /> : undefined}
       />
 
@@ -34,7 +34,9 @@ export default async function DashboardPage() {
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {properties.map((p) => {
-              const link = p.magic_links[0];
+              // A property has many guides now, so the card counts guides
+              // rather than showing one link's views.
+              const count = p.guides.length;
               return (
                 <Link
                   key={p.id}
@@ -54,8 +56,12 @@ export default async function DashboardPage() {
                       <div className="mt-0.5 line-clamp-1 text-[13px] text-muted">{p.address}</div>
                     )}
                     <div className="mt-3 flex items-center justify-between text-xs text-muted">
-                      <span>{link ? `${link.view_count} views` : "No link"}</span>
-                      <span className="font-semibold text-accent">Open guide →</span>
+                      <span>
+                        {count === 0
+                          ? "No guides"
+                          : `${count} ${count === 1 ? "guide" : "guides"}`}
+                      </span>
+                      <span className="font-semibold text-accent">Open →</span>
                     </div>
                   </div>
                 </Link>

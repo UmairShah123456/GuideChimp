@@ -5,8 +5,10 @@ import { registerGuestView } from "@/lib/guide/queries";
 import { sectionContent } from "@/lib/guide/types";
 import { HOME_TILES, sectionVisible } from "@/lib/guide/defaults";
 import { timeChip } from "@/lib/time";
+import { isGuestFlavour } from "@/lib/guide/presets";
 import { GuestScreen } from "@/components/guest/GuestScreen";
 import { GuestFallback } from "@/components/guest/GuestFallback";
+import { StaffHome } from "@/components/guest/StaffHome";
 import { HeaderChip } from "@/components/guest/GuestHeader";
 import { SectionLabel } from "@/components/guest/primitives";
 import { WifiCard } from "@/components/guest/WifiCard";
@@ -50,6 +52,11 @@ export default async function GuestHome({
   const { guide } = res;
   await registerGuestView(token);
 
+  // Cleaner/staff guides get a plain index instead of the welcome experience.
+  if (!isGuestFlavour(guide.guide.kind)) {
+    return <StaffHome token={token} guide={guide} />;
+  }
+
   const checkIn = sectionContent(guide, "check_in");
   const wifi = sectionContent(guide, "wifi");
   const subtitle = [guide.property.name, guide.property.address]
@@ -58,7 +65,7 @@ export default async function GuestHome({
   const checkInChip = timeChip(checkIn?.checkInTime, "Check-in from");
   const checkoutChip = timeChip(checkIn?.checkoutTime, "Checkout");
 
-  const overrides = guide.property.section_titles ?? {};
+  const overrides = guide.guide.section_titles ?? {};
   const tile = (t: (typeof HOME_TILES)[number]) => {
     const ov = overrides[t.type] ?? {};
     return {
@@ -94,7 +101,7 @@ export default async function GuestHome({
   ].map((t) => t.href);
 
   return (
-    <GuestScreen token={token} hue={guide.account.accent_hue} active="home" sectionTitles={guide.property.section_titles}>
+    <GuestScreen token={token} guide={guide} active="home">
       <WelcomeGate
         token={token}
         propertyName={guide.property.name}

@@ -50,12 +50,14 @@ function emptyBlock(type: CustomBlockType): CustomBlock {
 
 export function CustomSectionEditor({
   propertyId,
+  guideId,
   sectionId,
   name,
   hue,
   initial,
 }: {
   propertyId: string;
+  guideId: string;
   sectionId: string;
   name: string;
   hue: number;
@@ -82,17 +84,18 @@ export function CustomSectionEditor({
   return (
     <EditorShell
       propertyId={propertyId}
+      guideId={guideId}
       title={name || "Custom section"}
       hue={hue}
-      onSave={() => saveCustomSection(propertyId, sectionId, blocks)}
+      onSave={() => saveCustomSection(propertyId, guideId, sectionId, blocks)}
       preview={<CustomSection section={{ title: name, blocks, body: null }} />}
       form={
         <>
           <EditorGroup title={name || "Custom section"}>
             <p className="text-[13px] text-body">
               Build this section from blocks — add text, steps, photos, videos or a map
-              in any order. Guests see them exactly as you arrange them here. Rename the
-              section from the property page.
+              in any order. Whoever opens this guide sees them exactly as you arrange
+              them here. Rename the section from the guide page.
             </p>
           </EditorGroup>
 
@@ -158,12 +161,12 @@ export function CustomSectionEditor({
                 )
                   return;
                 startDelete(async () => {
-                  const res = await deleteCustomSection(propertyId, sectionId);
+                  const res = await deleteCustomSection(propertyId, guideId, sectionId);
                   if (res.error) {
                     alert(res.error);
                     return;
                   }
-                  router.push(`/properties/${propertyId}`);
+                  router.push(`/properties/${propertyId}/guides/${guideId}`);
                 });
               }}
               className="rounded-[var(--radius-pill)] bg-danger px-4 py-2.5 text-[13px] font-bold text-white disabled:opacity-60"

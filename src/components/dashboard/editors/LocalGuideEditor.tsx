@@ -11,12 +11,14 @@ const CATEGORY_OPTIONS = ["Food and drink", "Attraction", "Point of interest", "
 
 export function LocalGuideEditor({
   propertyId,
+  guideId,
   hue,
   heading,
   initial,
   initialEntries,
 }: {
   propertyId: string;
+  guideId: string;
   hue: number;
   heading: string;
   initial: LocalGuideContent;
@@ -45,9 +47,10 @@ export function LocalGuideEditor({
   return (
     <EditorShell
       propertyId={propertyId}
+      guideId={guideId}
       title={heading}
       hue={hue}
-      onSave={() => saveLocalGuide(propertyId, initial, entries)}
+      onSave={() => saveLocalGuide(propertyId, guideId, initial, entries)}
       preview={<LocalGuideSection heading={heading} entries={previewEntries} />}
       form={
         <>

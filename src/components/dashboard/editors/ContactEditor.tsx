@@ -80,11 +80,13 @@ function HostFields({
 
 export function ContactEditor({
   propertyId,
+  guideId,
   hue,
   heading,
   initial,
 }: {
   propertyId: string;
+  guideId: string;
   hue: number;
   heading: string;
   initial: EmergencyContent;
@@ -112,9 +114,10 @@ export function ContactEditor({
   return (
     <EditorShell
       propertyId={propertyId}
+      guideId={guideId}
       title={heading}
       hue={hue}
-      onSave={() => saveSectionContent(propertyId, "emergency_contacts", c)}
+      onSave={() => saveSectionContent(propertyId, guideId, "emergency_contacts", c)}
       preview={<ContactSection heading={heading} contact={c} />}
       form={
         <>

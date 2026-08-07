@@ -12,11 +12,13 @@ import type { CheckInContent, CheckInStep } from "@/lib/guide/types";
 
 export function CheckInEditor({
   propertyId,
+  guideId,
   hue,
   heading,
   initial,
 }: {
   propertyId: string;
+  guideId: string;
   hue: number;
   heading: string;
   initial: CheckInContent;
@@ -33,9 +35,10 @@ export function CheckInEditor({
   return (
     <EditorShell
       propertyId={propertyId}
+      guideId={guideId}
       title={heading}
       hue={hue}
-      onSave={() => saveSectionContent(propertyId, "check_in", c)}
+      onSave={() => saveSectionContent(propertyId, guideId, "check_in", c)}
       preview={<CheckInSection heading={heading} checkIn={c} />}
       form={
         <>

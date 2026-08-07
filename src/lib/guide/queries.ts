@@ -4,6 +4,7 @@ import type {
   AccountRow,
   CustomSectionRow,
   GuestGuide,
+  GuideRow,
   GuideSectionRow,
   LocalGuideEntryRow,
   MagicLinkRow,
@@ -26,7 +27,7 @@ export async function getGuestGuide(token: string): Promise<GuideResult> {
 
   const { data: link } = await supabase
     .from("magic_links")
-    .select("id, property_id, token, pin, expires_at, view_count")
+    .select("id, property_id, guide_id, token, pin, expires_at, view_count")
     .eq("token", token)
     .maybeSingle<MagicLinkRow>();
 
@@ -35,14 +36,26 @@ export async function getGuestGuide(token: string): Promise<GuideResult> {
     return { status: "expired" };
   }
 
+  // The token identifies a guide, not a property — one property can serve
+  // several audiences, each behind its own link.
+  const { data: guide } = await supabase
+    .from("guides")
+    .select("id, property_id, name, kind, section_titles, position")
+    .eq("id", link.guide_id)
+    .maybeSingle<GuideRow>();
+
+  if (!guide) return { status: "not_found" };
+
   const { data: property } = await supabase
     .from("properties")
     .select("id, account_id, name, address, hero_image_url, section_titles")
-    .eq("id", link.property_id)
+    .eq("id", guide.property_id)
     .maybeSingle<PropertyRow>();
 
   if (!property) return { status: "not_found" };
 
+  // Every child read is scoped to the guide, which is what keeps a cleaner
+  // guide from showing the guest guide's sections and vice versa.
   const [{ data: account }, { data: sections }, { data: media }, { data: customSections }] =
     await Promise.all([
       supabase
@@ -52,20 +65,20 @@ export async function getGuestGuide(token: string): Promise<GuideResult> {
         .maybeSingle<AccountRow>(),
       supabase
         .from("guide_sections")
-        .select("id, property_id, type, content, position")
-        .eq("property_id", property.id)
+        .select("id, property_id, guide_id, type, content, position")
+        .eq("guide_id", guide.id)
         .order("position", { ascending: true })
         .returns<GuideSectionRow[]>(),
       supabase
         .from("media_items")
-        .select("id, property_id, guide_section_id, type, url, poster_url, caption, position, metadata")
-        .eq("property_id", property.id)
+        .select("id, property_id, guide_id, guide_section_id, type, url, poster_url, caption, position, metadata")
+        .eq("guide_id", guide.id)
         .order("position", { ascending: true })
         .returns<MediaItemRow[]>(),
       supabase
         .from("custom_sections")
-        .select("id, property_id, title, subtitle, body, blocks, position, enabled")
-        .eq("property_id", property.id)
+        .select("id, property_id, guide_id, title, subtitle, body, blocks, position, enabled")
+        .eq("guide_id", guide.id)
         .order("position", { ascending: true })
         .returns<CustomSectionRow[]>(),
     ]);
@@ -91,6 +104,7 @@ export async function getGuestGuide(token: string): Promise<GuideResult> {
     guide: {
       account,
       property,
+      guide,
       link,
       sections: sectionList,
       media: media ?? [],

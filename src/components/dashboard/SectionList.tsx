@@ -12,6 +12,11 @@ import {
 } from "@/lib/dashboard/custom-section-actions";
 import type { GuideSectionType } from "@/lib/guide/types";
 
+/** "guests" -> "Guests", for sentence-leading use. */
+function cap(s: string): string {
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
 export interface SectionRow {
   type: GuideSectionType;
   slug: string;
@@ -32,12 +37,18 @@ export interface CustomRow {
 
 export function SectionList({
   propertyId,
+  guideId,
   rows,
   custom,
+  audience,
 }: {
   propertyId: string;
+  guideId: string;
   rows: SectionRow[];
   custom: CustomRow[];
+  /** Who opens this guide — "guests", "cleaners", "your team". Used in copy so
+   *  a cleaner guide never tells the host that "guests see this name". */
+  audience: string;
 }) {
   const router = useRouter();
   const [editing, setEditing] = useState<GuideSectionType | null>(null);
@@ -47,6 +58,9 @@ export function SectionList({
 
   return (
     <section>
+      {/* Built-ins only exist on guest guides; staff guides are custom-only. */}
+      {rows.length > 0 && (
+        <>
       <h2 className="text-sm font-extrabold uppercase tracking-[0.08em] text-muted">
         Guide sections
       </h2>
@@ -57,10 +71,11 @@ export function SectionList({
               key={s.type}
               row={s}
               pending={pending}
+              audience={audience}
               onCancel={() => setEditing(null)}
               onSave={(title, subtitle) =>
                 startTransition(async () => {
-                  await renameSection(propertyId, s.type, title, subtitle);
+                  await renameSection(propertyId, guideId, s.type, title, subtitle);
                   setEditing(null);
                   router.refresh();
                 })
@@ -69,16 +84,16 @@ export function SectionList({
           ) : (
             <div
               key={s.type}
-              onClick={() => router.push(`/properties/${propertyId}/edit/${s.slug}`)}
+              onClick={() => router.push(`/properties/${propertyId}/guides/${guideId}/edit/${s.slug}`)}
               className="flex cursor-pointer items-center gap-3 px-4 py-3.5 hover:bg-page"
             >
               <Toggle
                 on={s.enabled}
                 disabled={pending}
-                label={`Show ${s.title} to guests`}
+                label={`Show ${s.title} to ${audience}`}
                 onToggle={() =>
                   startTransition(async () => {
-                    await setSectionEnabled(propertyId, s.type, !s.enabled);
+                    await setSectionEnabled(propertyId, guideId, s.type, !s.enabled);
                     router.refresh();
                   })
                 }
@@ -102,9 +117,11 @@ export function SectionList({
           ),
         )}
       </div>
+        </>
+      )}
 
       {/* Custom sections */}
-      <div className="mt-6 flex items-center justify-between">
+      <div className={`${rows.length > 0 ? "mt-6" : ""} flex items-center justify-between`}>
         <h2 className="text-sm font-extrabold uppercase tracking-[0.08em] text-muted">
           Custom sections
         </h2>
@@ -118,7 +135,8 @@ export function SectionList({
         </button>
       </div>
       <p className="mt-1.5 text-[12.5px] text-muted">
-        Your own sections. Each shows as a tile on the guest home screen.
+        {"Your own sections. Each shows as a tile on the "}
+        {audience === "guests" ? "guest" : "guide"} home screen.
       </p>
 
       {adding && (
@@ -128,11 +146,12 @@ export function SectionList({
             placeholder="e.g. Pool access"
             confirmLabel="Create"
             pending={pending}
+            audience={audience}
             onCancel={() => setAdding(false)}
             onSave={(name) =>
               startTransition(async () => {
-                const res = await createCustomSection(propertyId, name);
-                if (res.id) router.push(`/properties/${propertyId}/edit/custom/${res.id}`);
+                const res = await createCustomSection(propertyId, guideId, name);
+                if (res.id) router.push(`/properties/${propertyId}/guides/${guideId}/edit/custom/${res.id}`);
                 else setAdding(false);
               })
             }
@@ -151,10 +170,11 @@ export function SectionList({
                 confirmLabel="Save"
                 initial={c.title}
                 pending={pending}
+                audience={audience}
                 onCancel={() => setRenamingCustom(null)}
                 onSave={(name) =>
                   startTransition(async () => {
-                    await renameCustomSection(propertyId, c.id, name);
+                    await renameCustomSection(propertyId, guideId, c.id, name);
                     setRenamingCustom(null);
                     router.refresh();
                   })
@@ -163,16 +183,16 @@ export function SectionList({
             ) : (
               <div
                 key={c.id}
-                onClick={() => router.push(`/properties/${propertyId}/edit/custom/${c.id}`)}
+                onClick={() => router.push(`/properties/${propertyId}/guides/${guideId}/edit/custom/${c.id}`)}
                 className="flex cursor-pointer items-center gap-3 px-4 py-3.5 hover:bg-page"
               >
                 <Toggle
                   on={c.enabled}
                   disabled={pending}
-                  label={`Show ${c.title || "this section"} to guests`}
+                  label={`Show ${c.title || "this section"} to ${audience}`}
                   onToggle={() =>
                     startTransition(async () => {
-                      await setCustomSectionEnabled(propertyId, c.id, !c.enabled);
+                      await setCustomSectionEnabled(propertyId, guideId, c.id, !c.enabled);
                       router.refresh();
                     })
                   }
@@ -209,6 +229,7 @@ function NamePanel({
   confirmLabel,
   initial = "",
   pending,
+  audience,
   onSave,
   onCancel,
 }: {
@@ -217,6 +238,7 @@ function NamePanel({
   confirmLabel: string;
   initial?: string;
   pending: boolean;
+  audience: string;
   onSave: (name: string) => void;
   onCancel: () => void;
 }) {
@@ -256,7 +278,7 @@ function NamePanel({
         >
           Cancel
         </button>
-        <span className="ml-auto text-[11.5px] text-muted">Guests see this name.</span>
+        <span className="ml-auto text-[11.5px] text-muted">{`${cap(audience)} see this name.`}</span>
       </div>
     </div>
   );
@@ -301,11 +323,13 @@ function Toggle({
 function RenamePanel({
   row,
   pending,
+  audience,
   onSave,
   onCancel,
 }: {
   row: SectionRow;
   pending: boolean;
+  audience: string;
   onSave: (title: string, subtitle: string) => void;
   onCancel: () => void;
 }) {
@@ -348,7 +372,7 @@ function RenamePanel({
           Cancel
         </button>
         <span className="ml-auto text-[11.5px] text-muted">
-          Guests see this name too. Leave blank for the default.
+          {`${cap(audience)} see this name too. Leave blank for the default.`}
         </span>
       </div>
     </div>

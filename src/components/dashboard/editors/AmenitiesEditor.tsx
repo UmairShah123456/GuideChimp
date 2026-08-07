@@ -20,12 +20,14 @@ interface VideoRow {
 
 export function AmenitiesEditor({
   propertyId,
+  guideId,
   hue,
   heading,
   initial,
   initialVideos,
 }: {
   propertyId: string;
+  guideId: string;
   hue: number;
   heading: string;
   initial: AmenitiesContent;
@@ -53,9 +55,10 @@ export function AmenitiesEditor({
   return (
     <EditorShell
       propertyId={propertyId}
+      guideId={guideId}
       title={heading}
       hue={hue}
-      onSave={() => saveAmenities(propertyId, c, payload)}
+      onSave={() => saveAmenities(propertyId, guideId, c, payload)}
       preview={<WifiAmenitiesSection heading={heading} amenities={c} videos={previewVideos} />}
       form={
         <>

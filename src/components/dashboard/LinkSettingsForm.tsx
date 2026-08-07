@@ -7,10 +7,14 @@ import { Field } from "@/components/ui/Field";
 
 export function LinkSettingsForm({
   propertyId,
+  guideId,
+  audience,
   expiresAt,
   pin,
 }: {
   propertyId: string;
+  guideId: string;
+  audience: string;
   expiresAt: string | null;
   pin: string | null;
 }) {
@@ -29,12 +33,13 @@ export function LinkSettingsForm({
           Set when the link stops working, and optionally require a PIN.
         </p>
         <input type="hidden" name="propertyId" value={propertyId} />
+        <input type="hidden" name="guideId" value={guideId} />
         <Field
           label="Expiry date"
           name="expires_at"
           type="date"
           defaultValue={dateValue}
-          hint="Leave blank for no expiry. Guests see a friendly expired screen after this date."
+          hint={`Leave blank for no expiry. ${audience.charAt(0).toUpperCase() + audience.slice(1)} see a friendly expired screen after this date.`}
         />
         <Field
           label="Access PIN"
@@ -60,6 +65,7 @@ export function LinkSettingsForm({
           immediately — use this if a link was shared by mistake.
         </p>
         <input type="hidden" name="propertyId" value={propertyId} />
+        <input type="hidden" name="guideId" value={guideId} />
         <div className="mt-4 flex items-center gap-3">
           <button
             type="submit"
