@@ -11,6 +11,7 @@ import {
   setCustomSectionEnabled,
 } from "@/lib/dashboard/custom-section-actions";
 import type { GuideSectionType } from "@/lib/guide/types";
+import { guideBasePath } from "@/lib/dashboard/paths";
 
 /** "guests" -> "Guests", for sentence-leading use. */
 function cap(s: string): string {
@@ -42,7 +43,7 @@ export function SectionList({
   custom,
   audience,
 }: {
-  propertyId: string;
+  propertyId: string | null;
   guideId: string;
   rows: SectionRow[];
   custom: CustomRow[];
@@ -84,7 +85,7 @@ export function SectionList({
           ) : (
             <div
               key={s.type}
-              onClick={() => router.push(`/properties/${propertyId}/guides/${guideId}/edit/${s.slug}`)}
+              onClick={() => router.push(`${guideBasePath(propertyId, guideId)}/edit/${s.slug}`)}
               className="flex cursor-pointer items-center gap-3 px-4 py-3.5 hover:bg-page"
             >
               <Toggle
@@ -151,7 +152,7 @@ export function SectionList({
             onSave={(name) =>
               startTransition(async () => {
                 const res = await createCustomSection(propertyId, guideId, name);
-                if (res.id) router.push(`/properties/${propertyId}/guides/${guideId}/edit/custom/${res.id}`);
+                if (res.id) router.push(`${guideBasePath(propertyId, guideId)}/edit/custom/${res.id}`);
                 else setAdding(false);
               })
             }
@@ -183,7 +184,7 @@ export function SectionList({
             ) : (
               <div
                 key={c.id}
-                onClick={() => router.push(`/properties/${propertyId}/guides/${guideId}/edit/custom/${c.id}`)}
+                onClick={() => router.push(`${guideBasePath(propertyId, guideId)}/edit/custom/${c.id}`)}
                 className="flex cursor-pointer items-center gap-3 px-4 py-3.5 hover:bg-page"
               >
                 <Toggle

@@ -7,6 +7,8 @@ import { Logo } from "@/components/Logo";
 
 const NAV = [
   { label: "Properties", href: "/dashboard", match: ["/dashboard", "/properties"] },
+  // Guides that belong to the business rather than any one property.
+  { label: "Company guides", href: "/guides", match: ["/guides"] },
   { label: "Account", href: "/account", match: ["/account"], exact: true },
   { label: "Team", href: "/account/team", match: ["/account/team"] },
   { label: "Billing", href: "/account/billing", match: ["/account/billing"] },

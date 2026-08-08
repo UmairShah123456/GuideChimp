@@ -7,6 +7,7 @@ import { generateToken } from "./token";
 import { guidePreset } from "@/lib/guide/presets";
 import { DEFAULT_CONTENT } from "@/lib/guide/defaults";
 import type { FormState } from "@/lib/forms";
+import { guideBasePath, guideListPath } from "./paths";
 import type { GuideRow } from "@/lib/guide/types";
 
 /**
@@ -18,7 +19,8 @@ import type { GuideRow } from "@/lib/guide/types";
  * guide (no link, or sections without a link) can never be left behind.
  */
 export async function createGuide(
-  propertyId: string,
+  accountId: string,
+  propertyId: string | null,
   name: string,
   kind: string,
 ): Promise<{ id?: string; error?: string }> {
@@ -28,6 +30,7 @@ export async function createGuide(
   const supabase = await createClient();
   const { data, error } = await supabase
     .rpc("create_guide", {
+      p_account_id: accountId,
       p_property_id: propertyId,
       p_name: title,
       p_kind: preset.kind,
@@ -40,14 +43,14 @@ export async function createGuide(
     .single<GuideRow>();
   if (error || !data) return { error: error?.message ?? "Could not create the guide." };
 
-  revalidatePath(`/properties/${propertyId}`);
+  revalidatePath(guideListPath(propertyId));
   return { id: data.id };
 }
 
 /** Rename a guide. This is the name hosts see in the list and staff see on the
  *  guide's home screen, so it is the one label that matters. */
 export async function renameGuide(
-  propertyId: string,
+  propertyId: string | null,
   guideId: string,
   name: string,
 ): Promise<FormState> {
@@ -58,13 +61,12 @@ export async function renameGuide(
   const { error } = await supabase
     .from("guides")
     .update({ name: title })
-    .eq("id", guideId)
-    .eq("property_id", propertyId);
+    .eq("id", guideId);
   if (error) return { error: error.message };
 
   await revalidateGuideById(guideId);
-  revalidatePath(`/properties/${propertyId}`);
-  revalidatePath(`/properties/${propertyId}/guides/${guideId}`);
+  revalidatePath(guideListPath(propertyId));
+  revalidatePath(guideBasePath(propertyId, guideId));
   return { ok: true };
 }
 
@@ -74,7 +76,7 @@ export async function renameGuide(
  * untouched.
  */
 export async function deleteGuide(
-  propertyId: string,
+  propertyId: string | null,
   guideId: string,
 ): Promise<FormState> {
   const supabase = await createClient();
@@ -82,31 +84,23 @@ export async function deleteGuide(
   // Bust the cached guest guide before the tokens disappear with the row.
   await revalidateGuideById(guideId);
 
-  const { error } = await supabase
-    .from("guides")
-    .delete()
-    .eq("id", guideId)
-    .eq("property_id", propertyId);
+  const { error } = await supabase.from("guides").delete().eq("id", guideId);
   if (error) return { error: error.message };
 
-  revalidatePath(`/properties/${propertyId}`);
+  revalidatePath(guideListPath(propertyId));
   return { ok: true };
 }
 
 /** Persist a new guide ordering for the property's list. */
 export async function reorderGuides(
-  propertyId: string,
+  propertyId: string | null,
   guideIds: string[],
 ): Promise<FormState> {
   const supabase = await createClient();
   for (const [position, id] of guideIds.entries()) {
-    const { error } = await supabase
-      .from("guides")
-      .update({ position })
-      .eq("id", id)
-      .eq("property_id", propertyId);
+    const { error } = await supabase.from("guides").update({ position }).eq("id", id);
     if (error) return { error: error.message };
   }
-  revalidatePath(`/properties/${propertyId}`);
+  revalidatePath(guideListPath(propertyId));
   return { ok: true };
 }

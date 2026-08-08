@@ -45,7 +45,7 @@ export default async function EditSectionPage({
   if (!type) notFound();
 
   const data = await getHostGuide(gid);
-  if (!data || data.property.id !== id) notFound();
+  if (!data || data.property?.id !== id) notFound();
 
   // A guide only edits sections it actually has — staff guides have none, so
   // hand-typed built-in URLs 404 rather than rendering an orphan editor.

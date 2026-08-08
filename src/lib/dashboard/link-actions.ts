@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { revalidateGuideById } from "./revalidate";
 import { generateToken } from "./token";
+import { guideBasePath, guideListPath } from "./paths";
 import type { FormState } from "@/lib/forms";
 
 async function latestLinkId(
@@ -20,17 +21,18 @@ async function latestLinkId(
   return data?.id ?? null;
 }
 
-function paths(propertyId: string, guideId: string): void {
-  revalidatePath(`/properties/${propertyId}/guides/${guideId}/link-settings`);
-  revalidatePath(`/properties/${propertyId}/guides/${guideId}`);
-  revalidatePath(`/properties/${propertyId}`);
+function paths(propertyId: string | null, guideId: string): void {
+  const base = guideBasePath(propertyId, guideId);
+  revalidatePath(`${base}/link-settings`);
+  revalidatePath(base);
+  revalidatePath(guideListPath(propertyId));
 }
 
 /** Issue a fresh token (invalidates the old URL) or create the first link. */
 export async function regenerateLinkAction(_prev: FormState, formData: FormData): Promise<FormState> {
-  const propertyId = String(formData.get("propertyId") ?? "");
+  const propertyId = String(formData.get("propertyId") ?? "") || null;
   const guideId = String(formData.get("guideId") ?? "");
-  if (!propertyId || !guideId) return { error: "Missing guide." };
+  if (!guideId) return { error: "Missing guide." };
 
   const supabase = await createClient();
   const id = await latestLinkId(supabase, guideId);
@@ -53,11 +55,11 @@ export async function regenerateLinkAction(_prev: FormState, formData: FormData)
 
 /** Update expiry + optional PIN on the current link. */
 export async function updateLinkSettingsAction(_prev: FormState, formData: FormData): Promise<FormState> {
-  const propertyId = String(formData.get("propertyId") ?? "");
+  const propertyId = String(formData.get("propertyId") ?? "") || null;
   const guideId = String(formData.get("guideId") ?? "");
   const expiry = String(formData.get("expires_at") ?? "").trim();
   const pin = String(formData.get("pin") ?? "").trim();
-  if (!propertyId || !guideId) return { error: "Missing guide." };
+  if (!guideId) return { error: "Missing guide." };
 
   const supabase = await createClient();
   const id = await latestLinkId(supabase, guideId);

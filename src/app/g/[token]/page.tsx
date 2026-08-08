@@ -52,14 +52,16 @@ export default async function GuestHome({
   const { guide } = res;
   await registerGuestView(token);
 
-  // Cleaner/staff guides get a plain index instead of the welcome experience.
-  if (!isGuestFlavour(guide.guide.kind)) {
+  // Cleaner/staff guides — and any guide not tied to a property, like a company
+  // process — get a plain index instead of the welcome experience.
+  const property = guide.property;
+  if (!isGuestFlavour(guide.guide.kind) || !property) {
     return <StaffHome token={token} guide={guide} />;
   }
 
   const checkIn = sectionContent(guide, "check_in");
   const wifi = sectionContent(guide, "wifi");
-  const subtitle = [guide.property.name, guide.property.address]
+  const subtitle = [property.name, property.address]
     .filter(Boolean)
     .join(" · ");
   const checkInChip = timeChip(checkIn?.checkInTime, "Check-in from");
@@ -104,19 +106,19 @@ export default async function GuestHome({
     <GuestScreen token={token} guide={guide} active="home">
       <WelcomeGate
         token={token}
-        propertyName={guide.property.name}
-        address={checkIn?.address || guide.property.address || undefined}
+        propertyName={property.name}
+        address={checkIn?.address || property.address || undefined}
         checkInTime={checkIn?.checkInTime}
         checkoutTime={checkIn?.checkoutTime}
-        heroImageUrl={guide.property.hero_image_url}
+        heroImageUrl={property.hero_image_url}
         prefetchHrefs={prefetchHrefs}
       />
       {/* Hero: property photo as the background, darkened for legibility */}
       <header className="relative overflow-hidden rounded-b-[var(--radius-header)] text-white">
-        {guide.property.hero_image_url ? (
+        {property.hero_image_url ? (
           <Image
-            src={guide.property.hero_image_url}
-            alt={guide.property.name}
+            src={property.hero_image_url}
+            alt={property.name}
             fill
             priority
             className="object-cover"

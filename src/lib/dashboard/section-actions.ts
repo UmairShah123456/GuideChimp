@@ -3,19 +3,20 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { revalidateGuideById } from "./revalidate";
+import { guideBasePath, guideListPath } from "./paths";
 import type { FormState } from "@/lib/forms";
 import type { GuideSectionType } from "@/lib/guide/types";
 
 /** Revalidate the guide's own page and its property's guide list. */
-async function afterSave(propertyId: string, guideId: string): Promise<void> {
+async function afterSave(propertyId: string | null, guideId: string): Promise<void> {
   await revalidateGuideById(guideId);
-  revalidatePath(`/properties/${propertyId}/guides/${guideId}`);
-  revalidatePath(`/properties/${propertyId}`);
+  revalidatePath(guideBasePath(propertyId, guideId));
+  revalidatePath(guideListPath(propertyId));
 }
 
 /** Update a single section's JSONB content. */
 export async function saveSectionContent(
-  propertyId: string,
+  propertyId: string | null,
   guideId: string,
   type: GuideSectionType,
   content: unknown,
@@ -43,7 +44,7 @@ export interface LocalEntryInput {
 
 /** Save the local-guide header + replace its list of places. */
 export async function saveLocalGuide(
-  propertyId: string,
+  propertyId: string | null,
   guideId: string,
   content: unknown,
   entries: LocalEntryInput[],
@@ -91,7 +92,7 @@ export interface VideoInput {
 
 /** Save the amenities header + replace its list of video guides. */
 export async function saveAmenities(
-  propertyId: string,
+  propertyId: string | null,
   guideId: string,
   content: unknown,
   videos: VideoInput[],

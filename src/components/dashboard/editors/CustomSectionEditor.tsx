@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { guideBasePath, storagePrefix } from "@/lib/dashboard/paths";
 import { EditorShell, EditorGroup } from "./EditorShell";
 import { EditorField, TextInput, TextArea, RepeatItem, AddButton } from "./ui";
 import { VideoSourceField } from "./VideoSourceField";
@@ -56,7 +57,7 @@ export function CustomSectionEditor({
   hue,
   initial,
 }: {
-  propertyId: string;
+  propertyId: string | null;
   guideId: string;
   sectionId: string;
   name: string;
@@ -110,7 +111,7 @@ export function CustomSectionEditor({
               onRemove={() => remove(block.id)}
             >
               <BlockEditor
-                propertyId={propertyId}
+                prefix={storagePrefix(propertyId, guideId)}
                 block={block}
                 onChange={(patch) => update(block.id, patch)}
               />
@@ -166,7 +167,7 @@ export function CustomSectionEditor({
                     alert(res.error);
                     return;
                   }
-                  router.push(`/properties/${propertyId}/guides/${guideId}`);
+                  router.push(guideBasePath(propertyId, guideId));
                 });
               }}
               className="rounded-[var(--radius-pill)] bg-danger px-4 py-2.5 text-[13px] font-bold text-white disabled:opacity-60"
@@ -251,11 +252,11 @@ function IconBtn({
 
 /** Renders the right editor for a block based on its type. */
 function BlockEditor({
-  propertyId,
+  prefix,
   block,
   onChange,
 }: {
-  propertyId: string;
+  prefix: string;
   block: CustomBlock;
   onChange: (patch: Partial<CustomBlock>) => void;
 }) {
@@ -275,10 +276,9 @@ function BlockEditor({
     case "video":
       return (
         <VideoSourceField
-          propertyId={propertyId}
           value={block.url}
           onChange={(url) => onChange({ url })}
-          pathPrefix={`${propertyId}/custom`}
+          pathPrefix={`${prefix}/custom`}
         />
       );
 
@@ -287,7 +287,7 @@ function BlockEditor({
         <>
           <EditorField label="Photo">
             <MediaUploader
-              pathPrefix={`${propertyId}/custom`}
+              pathPrefix={`${prefix}/custom`}
               accept="image/*"
               kind="image"
               value={block.url}
@@ -315,16 +315,16 @@ function BlockEditor({
       );
 
     case "steps":
-      return <StepsEditor propertyId={propertyId} steps={block.steps} onChange={(steps) => onChange({ steps })} />;
+      return <StepsEditor prefix={prefix} steps={block.steps} onChange={(steps) => onChange({ steps })} />;
   }
 }
 
 function StepsEditor({
-  propertyId,
+  prefix,
   steps,
   onChange,
 }: {
-  propertyId: string;
+  prefix: string;
   steps: CustomStep[];
   onChange: (steps: CustomStep[]) => void;
 }) {
@@ -343,7 +343,7 @@ function StepsEditor({
           />
           <EditorField label="Photo" hint="Optional — shown under the step.">
             <MediaUploader
-              pathPrefix={`${propertyId}/custom`}
+              pathPrefix={`${prefix}/custom`}
               accept="image/*"
               kind="image"
               value={s.photoUrl ?? ""}

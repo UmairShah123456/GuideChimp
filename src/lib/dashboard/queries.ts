@@ -45,7 +45,7 @@ export async function listGuides(propertyId: string): Promise<GuideListItem[]> {
   const { data, error } = await supabase
     .from("guides")
     .select(
-      "id, property_id, name, kind, section_titles, position, guide_sections(id), custom_sections(id), magic_links(token, view_count)",
+      "id, account_id, property_id, name, kind, section_titles, position, guide_sections(id), custom_sections(id), magic_links(token, view_count)",
     )
     .eq("property_id", propertyId)
     .order("position", { ascending: true })
@@ -66,7 +66,8 @@ export async function getProperty(id: string): Promise<PropertyRow | null> {
 }
 
 export interface HostGuide {
-  property: PropertyRow;
+  /** Null for an account-level guide. */
+  property: PropertyRow | null;
   guide: GuideRow;
   sections: GuideSectionRow[];
   media: MediaItemRow[];
@@ -85,17 +86,21 @@ export async function getHostGuide(guideId: string): Promise<HostGuide | null> {
 
   const { data: guide } = await supabase
     .from("guides")
-    .select("id, property_id, name, kind, section_titles, position")
+    .select("id, account_id, property_id, name, kind, section_titles, position")
     .eq("id", guideId)
     .maybeSingle<GuideRow>();
   if (!guide) return null;
 
-  const { data: property } = await supabase
-    .from("properties")
-    .select("id, account_id, name, address, hero_image_url, section_titles")
-    .eq("id", guide.property_id)
-    .maybeSingle<PropertyRow>();
-  if (!property) return null;
+  let property: PropertyRow | null = null;
+  if (guide.property_id) {
+    const { data } = await supabase
+      .from("properties")
+      .select("id, account_id, name, address, hero_image_url, section_titles")
+      .eq("id", guide.property_id)
+      .maybeSingle<PropertyRow>();
+    if (!data) return null;
+    property = data;
+  }
 
   const [{ data: sections }, { data: media }, { data: link }, { data: customSections }] =
     await Promise.all([
@@ -149,4 +154,20 @@ export async function getHostGuide(guideId: string): Promise<HostGuide | null> {
     customSections: customSections ?? [],
     link: link ?? null,
   };
+}
+
+/** Guides that belong to the account rather than any property. */
+export async function listAccountGuides(accountId: string): Promise<GuideListItem[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("guides")
+    .select(
+      "id, account_id, property_id, name, kind, section_titles, position, guide_sections(id), custom_sections(id), magic_links(token, view_count)",
+    )
+    .eq("account_id", accountId)
+    .is("property_id", null)
+    .order("position", { ascending: true })
+    .returns<GuideListItem[]>();
+  if (error) throw new Error(`Could not load company guides: ${error.message}`);
+  return data ?? [];
 }

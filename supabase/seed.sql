@@ -18,14 +18,39 @@ values (
 );
 
 -- guide (the property's guest guide; everything below hangs off it)
-insert into public.guides (id, property_id, name, kind, position)
+insert into public.guides (id, account_id, property_id, name, kind, position)
 values (
   'd0000000-0000-0000-0000-000000000001',
+  'a0000000-0000-0000-0000-000000000001',
   'b0000000-0000-0000-0000-000000000001',
   'Guest guide',
   'guest',
   0
 );
+
+-- an account-level guide: a company process, not tied to any property
+insert into public.guides (id, account_id, property_id, name, kind, position)
+values (
+  'd0000000-0000-0000-0000-000000000002',
+  'a0000000-0000-0000-0000-000000000001',
+  null,
+  'Guest background checks',
+  'staff',
+  0
+);
+
+insert into public.custom_sections (id, guide_id, title, subtitle, position, blocks)
+values (
+  'e0000000-0000-0000-0000-000000000001',
+  'd0000000-0000-0000-0000-000000000002',
+  'Running a check',
+  'Before you approve a booking',
+  0,
+  '[{"id":"s1","type":"text","body":"Verify ID against the booking name, then check the platform profile age."}]'::jsonb
+);
+
+insert into public.magic_links (guide_id, token, expires_at)
+values ('d0000000-0000-0000-0000-000000000002', 'demo-background-checks', null);
 
 -- guide sections
 insert into public.guide_sections (id, property_id, guide_id, type, position, content) values

@@ -3,14 +3,15 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { revalidateGuideById } from "./revalidate";
+import { guideBasePath, guideListPath } from "./paths";
 import type { FormState } from "@/lib/forms";
 import type { CustomBlock, GuideSectionType, SectionTitles } from "@/lib/guide/types";
 
 /** Revalidate the guide's own page and its property's guide list. */
-async function afterSave(propertyId: string, guideId: string): Promise<void> {
+async function afterSave(propertyId: string | null, guideId: string): Promise<void> {
   await revalidateGuideById(guideId);
-  revalidatePath(`/properties/${propertyId}/guides/${guideId}`);
-  revalidatePath(`/properties/${propertyId}`);
+  revalidatePath(guideBasePath(propertyId, guideId));
+  revalidatePath(guideListPath(propertyId));
 }
 
 /**
@@ -19,7 +20,7 @@ async function afterSave(propertyId: string, guideId: string): Promise<void> {
  * from the guest guide on the same property.
  */
 async function updateSectionTitles(
-  propertyId: string,
+  propertyId: string | null,
   guideId: string,
   type: GuideSectionType,
   mutate: (current: SectionTitles[GuideSectionType]) => SectionTitles[GuideSectionType],
@@ -54,7 +55,7 @@ async function updateSectionTitles(
  * clear the override (falling back to defaults).
  */
 export async function renameSection(
-  propertyId: string,
+  propertyId: string | null,
   guideId: string,
   type: GuideSectionType,
   title: string,
@@ -75,7 +76,7 @@ export async function renameSection(
 
 /** Turn a built-in section's home tile on or off. Stored on the guide. */
 export async function setSectionEnabled(
-  propertyId: string,
+  propertyId: string | null,
   guideId: string,
   type: GuideSectionType,
   enabled: boolean,
@@ -88,7 +89,7 @@ export async function setSectionEnabled(
  * can open it. The name is what readers see on the home tile and page heading.
  */
 export async function createCustomSection(
-  propertyId: string,
+  propertyId: string | null,
   guideId: string,
   name: string,
 ): Promise<{ id?: string; error?: string }> {
@@ -123,7 +124,7 @@ export async function createCustomSection(
 
 /** Rename a custom section. The name drives the dashboard, tile, and heading. */
 export async function renameCustomSection(
-  propertyId: string,
+  propertyId: string | null,
   guideId: string,
   id: string,
   name: string,
@@ -145,7 +146,7 @@ export async function renameCustomSection(
 
 /** Turn a custom section's home tile on or off. */
 export async function setCustomSectionEnabled(
-  propertyId: string,
+  propertyId: string | null,
   guideId: string,
   id: string,
   enabled: boolean,
@@ -164,7 +165,7 @@ export async function setCustomSectionEnabled(
 
 /** Save a custom section's ordered content blocks. */
 export async function saveCustomSection(
-  propertyId: string,
+  propertyId: string | null,
   guideId: string,
   id: string,
   blocks: CustomBlock[],
@@ -187,7 +188,7 @@ export async function saveCustomSection(
 
 /** Delete a custom section. */
 export async function deleteCustomSection(
-  propertyId: string,
+  propertyId: string | null,
   guideId: string,
   id: string,
 ): Promise<FormState> {

@@ -5,6 +5,7 @@ import { useState, useTransition, type ReactNode } from "react";
 import type { FormState } from "@/lib/forms";
 import { ChevronLeft } from "@/components/guest/icons";
 import { PhonePreview } from "@/components/dashboard/PhonePreview";
+import { guideBasePath } from "@/lib/dashboard/paths";
 
 /**
  * Two-pane guide editor: a scrollable form on the left, a sticky live phone
@@ -19,7 +20,7 @@ export function EditorShell({
   form,
   preview,
 }: {
-  propertyId: string;
+  propertyId: string | null;
   guideId: string;
   title: string;
   hue: number;
@@ -40,7 +41,7 @@ export function EditorShell({
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-8 py-4">
           <div className="min-w-0">
             <Link
-              href={`/properties/${propertyId}/guides/${guideId}`}
+              href={guideBasePath(propertyId, guideId)}
               className="inline-flex items-center gap-1 text-[13px] font-semibold text-muted hover:text-ink"
             >
               <ChevronLeft className="h-4 w-4" />

@@ -17,7 +17,7 @@ export default async function PropertyGuides({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  await requireAccount();
+  const account = await requireAccount();
   const { id } = await params;
 
   const [property, guides] = await Promise.all([getProperty(id), listGuides(id)]);
@@ -38,7 +38,7 @@ export default async function PropertyGuides({
             >
               Property settings
             </Link>
-            {guides.length > 0 && <NewGuideButton propertyId={id} />}
+            {guides.length > 0 && <NewGuideButton accountId={account.id} propertyId={id} />}
           </div>
         }
       />
@@ -62,7 +62,7 @@ export default async function PropertyGuides({
               Create a guest guide, or one for your cleaners or team.
             </p>
             <div className="mt-5">
-              <NewGuideButton propertyId={id} />
+              <NewGuideButton accountId={account.id} propertyId={id} />
             </div>
           </div>
         ) : (

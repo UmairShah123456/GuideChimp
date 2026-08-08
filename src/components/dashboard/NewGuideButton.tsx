@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { createGuide } from "@/lib/dashboard/guide-actions";
 import { GUIDE_PRESETS } from "@/lib/guide/presets";
+import { guideBasePath } from "@/lib/dashboard/paths";
 
 /**
  * Creates a guide from a preset. The preset decides the starting sections —
@@ -11,10 +12,13 @@ import { GUIDE_PRESETS } from "@/lib/guide/presets";
  * built from custom sections — but the name is always the host's to change.
  */
 export function NewGuideButton({
-  propertyId,
+  accountId,
+  propertyId = null,
   subtle = false,
 }: {
-  propertyId: string;
+  accountId: string;
+  /** Null creates an account-level guide — a company process, not tied to a place. */
+  propertyId?: string | null;
   subtle?: boolean;
 }) {
   const [open, setOpen] = useState(false);
@@ -112,12 +116,12 @@ export function NewGuideButton({
                 onClick={() =>
                   startTransition(async () => {
                     setError("");
-                    const res = await createGuide(propertyId, name, kind);
+                    const res = await createGuide(accountId, propertyId, name, kind);
                     if (res.error || !res.id) {
                       setError(res.error ?? "Could not create the guide.");
                       return;
                     }
-                    router.push(`/properties/${propertyId}/guides/${res.id}`);
+                    router.push(guideBasePath(propertyId, res.id));
                   })
                 }
                 className="rounded-[var(--radius-pill)] bg-accent px-4 py-2.5 text-sm font-bold text-white disabled:opacity-60"

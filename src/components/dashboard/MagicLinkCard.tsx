@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import QRCode from "qrcode";
 import { CopyButton } from "@/components/guest/CopyButton";
+import { guideBasePath } from "@/lib/dashboard/paths";
 
 /**
  * Shows a guide's magic link with a copyable URL, a client-generated QR code
@@ -20,7 +21,7 @@ export function MagicLinkCard({
   expiresAt,
   hasPin,
 }: {
-  propertyId: string;
+  propertyId: string | null;
   guideId: string;
   guideName: string;
   token: string | null;
@@ -45,7 +46,7 @@ export function MagicLinkCard({
     return (
       <div className="rounded-[var(--radius-lg)] border-[1.5px] border-border bg-surface p-5 text-sm text-body">
         No magic link yet.{" "}
-        <Link href={`/properties/${propertyId}/guides/${guideId}/link-settings`} className="font-semibold text-accent">
+        <Link href={`${guideBasePath(propertyId, guideId)}/link-settings`} className="font-semibold text-accent">
           Create one
         </Link>
         .
@@ -98,7 +99,7 @@ export function MagicLinkCard({
               Preview guide
             </Link>
             <Link
-              href={`/properties/${propertyId}/guides/${guideId}/link-settings`}
+              href={`${guideBasePath(propertyId, guideId)}/link-settings`}
               className="rounded-[var(--radius-pill)] border-[1.5px] border-border px-4 py-2 text-[13px] font-bold text-ink"
             >
               Link settings

@@ -12,7 +12,7 @@ export function LinkSettingsForm({
   expiresAt,
   pin,
 }: {
-  propertyId: string;
+  propertyId: string | null;
   guideId: string;
   audience: string;
   expiresAt: string | null;
@@ -32,7 +32,7 @@ export function LinkSettingsForm({
         <p className="mt-1 text-[13px] text-body">
           Set when the link stops working, and optionally require a PIN.
         </p>
-        <input type="hidden" name="propertyId" value={propertyId} />
+        <input type="hidden" name="propertyId" value={propertyId ?? ""} />
         <input type="hidden" name="guideId" value={guideId} />
         <Field
           label="Expiry date"
@@ -64,7 +64,7 @@ export function LinkSettingsForm({
           Issues a brand-new URL and QR code. The current link stops working
           immediately — use this if a link was shared by mistake.
         </p>
-        <input type="hidden" name="propertyId" value={propertyId} />
+        <input type="hidden" name="propertyId" value={propertyId ?? ""} />
         <input type="hidden" name="guideId" value={guideId} />
         <div className="mt-4 flex items-center gap-3">
           <button

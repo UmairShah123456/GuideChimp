@@ -163,16 +163,23 @@ export interface PropertyRow {
 }
 
 /**
- * One audience's guide for a property — guests, cleaners, a VA, anything the
- * host names. Owns its own sections, custom sections and magic link, so two
- * guides on the same property are fully independent.
+ * One audience's guide — guests, cleaners, a VA, anything the host names. Owns
+ * its own sections, custom sections and magic link, so two guides never share
+ * content.
+ *
+ * A guide always belongs to an account. `property_id` is set when it documents
+ * a specific place, and null when it documents a company-wide process that
+ * applies across every property.
  *
  * `kind` is a free-form preset slug rather than an enum: see
  * `src/lib/guide/presets.ts`. Unknown values fall back to the blank preset.
  */
 export interface GuideRow {
   id: string;
-  property_id: string;
+  account_id: string;
+  /** Null for an account-level guide — a company process that isn't about any
+   *  one property (running a background check, how a VA handles the inbox). */
+  property_id: string | null;
   name: string;
   kind: string;
   section_titles: SectionTitles;
@@ -208,7 +215,7 @@ export type CustomBlockType = CustomBlock["type"];
  */
 export interface CustomSectionRow {
   id: string;
-  property_id: string;
+  property_id: string | null;
   guide_id: string;
   title: string;
   subtitle: string | null;
@@ -232,7 +239,7 @@ export function customBlocks(
 
 export interface GuideSectionRow {
   id: string;
-  property_id: string;
+  property_id: string | null;
   guide_id: string;
   type: GuideSectionType;
   content: Record<string, unknown>;
@@ -241,7 +248,7 @@ export interface GuideSectionRow {
 
 export interface MediaItemRow {
   id: string;
-  property_id: string;
+  property_id: string | null;
   guide_id: string;
   guide_section_id: string | null;
   type: "image" | "video";
@@ -268,7 +275,7 @@ export interface LocalGuideEntryRow {
 
 export interface MagicLinkRow {
   id: string;
-  property_id: string;
+  property_id: string | null;
   guide_id: string;
   token: string;
   pin: string | null;
@@ -279,7 +286,8 @@ export interface MagicLinkRow {
 /** Fully-resolved guide the guest portal renders from. */
 export interface GuestGuide {
   account: AccountRow;
-  property: PropertyRow;
+  /** Null when the guide is account-level rather than about a property. */
+  property: PropertyRow | null;
   guide: GuideRow;
   link: MagicLinkRow;
   sections: GuideSectionRow[];

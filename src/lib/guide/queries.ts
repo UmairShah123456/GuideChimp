@@ -40,19 +40,23 @@ export async function getGuestGuide(token: string): Promise<GuideResult> {
   // several audiences, each behind its own link.
   const { data: guide } = await supabase
     .from("guides")
-    .select("id, property_id, name, kind, section_titles, position")
+    .select("id, account_id, property_id, name, kind, section_titles, position")
     .eq("id", link.guide_id)
     .maybeSingle<GuideRow>();
 
   if (!guide) return { status: "not_found" };
 
-  const { data: property } = await supabase
-    .from("properties")
-    .select("id, account_id, name, address, hero_image_url, section_titles")
-    .eq("id", guide.property_id)
-    .maybeSingle<PropertyRow>();
-
-  if (!property) return { status: "not_found" };
+  // Account-level guides document a company process and have no property.
+  let property: PropertyRow | null = null;
+  if (guide.property_id) {
+    const { data } = await supabase
+      .from("properties")
+      .select("id, account_id, name, address, hero_image_url, section_titles")
+      .eq("id", guide.property_id)
+      .maybeSingle<PropertyRow>();
+    if (!data) return { status: "not_found" };
+    property = data;
+  }
 
   // Every child read is scoped to the guide, which is what keeps a cleaner
   // guide from showing the guest guide's sections and vice versa.
@@ -61,7 +65,7 @@ export async function getGuestGuide(token: string): Promise<GuideResult> {
       supabase
         .from("accounts")
         .select("id, name, logo_url, accent_hue")
-        .eq("id", property.account_id)
+        .eq("id", guide.account_id)
         .maybeSingle<AccountRow>(),
       supabase
         .from("guide_sections")

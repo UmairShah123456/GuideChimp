@@ -57,6 +57,11 @@ export function StaffHome({ token, guide }: { token: string; guide: GuestGuide }
 
   const tiles = [...builtinTiles, ...customTiles];
 
+  // Property guides name the place; a company-wide guide has none to name.
+  const subtitle = guide.property
+    ? [guide.property.name, guide.property.address].filter(Boolean).join(" · ")
+    : "Applies to all properties";
+
   return (
     <GuestScreen token={token} guide={guide} active="home">
       <header className="border-b border-border bg-surface px-[22px] pb-6 pt-9">
@@ -66,9 +71,7 @@ export function StaffHome({ token, guide }: { token: string; guide: GuestGuide }
         <h1 className="mt-1.5 text-[26px] font-extrabold leading-[1.15] text-ink">
           {guide.guide.name}
         </h1>
-        <p className="mt-1.5 text-sm text-muted">
-          {[guide.property.name, guide.property.address].filter(Boolean).join(" · ")}
-        </p>
+        {subtitle && <p className="mt-1.5 text-sm text-muted">{subtitle}</p>}
       </header>
 
       <div className="flex flex-col gap-2.5 px-4.5 pb-8 pt-5">

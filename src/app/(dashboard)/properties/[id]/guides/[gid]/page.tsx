@@ -19,7 +19,7 @@ export default async function GuideOverview({
   const data = await getHostGuide(gid);
   // Guard the pairing as well as existence, so a guide id from another property
   // can't be opened under this one's URL.
-  if (!data || data.property.id !== id) notFound();
+  if (!data || data.property?.id !== id) notFound();
 
   const { property, guide, sections, customSections, link } = data;
   const overrides = guide.section_titles ?? {};
