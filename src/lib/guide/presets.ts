@@ -63,7 +63,12 @@ export const GUIDE_PRESETS: GuidePreset[] = [
   },
 ];
 
-const BLANK = GUIDE_PRESETS[GUIDE_PRESETS.length - 1];
+/** The preset used when nothing is picked: no built-ins, staff-flavoured. */
+export const BLANK_KIND = "custom";
+
+const BLANK =
+  GUIDE_PRESETS.find((p) => p.kind === BLANK_KIND) ??
+  GUIDE_PRESETS[GUIDE_PRESETS.length - 1];
 
 /**
  * Look up a preset by slug. Falls back to the blank preset so a hand-authored

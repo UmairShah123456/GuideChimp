@@ -3,13 +3,18 @@
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { createGuide } from "@/lib/dashboard/guide-actions";
-import { GUIDE_PRESETS } from "@/lib/guide/presets";
+import { GUIDE_PRESETS, BLANK_KIND } from "@/lib/guide/presets";
 import { guideBasePath } from "@/lib/dashboard/paths";
 
 /**
- * Creates a guide from a preset. The preset decides the starting sections —
- * guest guides get the eight built-ins, everything else starts blank and is
- * built from custom sections — but the name is always the host's to change.
+ * Creates a guide.
+ *
+ * For a property, the host picks a preset — that decides the starting sections
+ * (guest guides get the eight built-ins; the rest start blank).
+ *
+ * For a company guide there is nothing to pick: the presets describe audiences
+ * for a place, and "Guest guide" is meaningless without one. Those always start
+ * blank, so the dialog asks for a name and nothing else.
  */
 export function NewGuideButton({
   accountId,
@@ -21,18 +26,37 @@ export function NewGuideButton({
   propertyId?: string | null;
   subtle?: boolean;
 }) {
+  const isCompanyGuide = !propertyId;
   const [open, setOpen] = useState(false);
-  const [kind, setKind] = useState(GUIDE_PRESETS[1].kind); // default: Cleaner
+  // Company guides always start blank; property guides default to Cleaner,
+  // since the guest guide already exists by the time you add a second.
+  const [kind, setKind] = useState(
+    isCompanyGuide ? BLANK_KIND : GUIDE_PRESETS[1].kind,
+  );
   const [name, setName] = useState("");
   const [error, setError] = useState("");
   const [pending, startTransition] = useTransition();
   const router = useRouter();
 
   const preset = GUIDE_PRESETS.find((p) => p.kind === kind) ?? GUIDE_PRESETS[0];
+  // A company guide has no preset label to fall back on, so it needs a name.
+  const canSubmit = !pending && (!isCompanyGuide || name.trim().length > 0);
 
   function close() {
     setOpen(false);
     setError("");
+  }
+
+  function submit() {
+    startTransition(async () => {
+      setError("");
+      const res = await createGuide(accountId, propertyId, name, kind);
+      if (res.error || !res.id) {
+        setError(res.error ?? "Could not create the guide.");
+        return;
+      }
+      router.push(guideBasePath(propertyId, res.id));
+    });
   }
 
   return (
@@ -58,11 +82,16 @@ export function NewGuideButton({
             className="w-full max-w-md rounded-[var(--radius-lg)] border-[1.5px] border-border bg-surface p-6"
             onClick={(e) => e.stopPropagation()}
           >
-            <h2 className="text-lg font-extrabold text-ink">New guide</h2>
+            <h2 className="text-lg font-extrabold text-ink">
+              {isCompanyGuide ? "New company guide" : "New guide"}
+            </h2>
             <p className="mt-1 text-[13px] text-body">
-              Each guide gets its own sections and its own shareable link.
+              {isCompanyGuide
+                ? "Name the process. You'll build it from your own sections and videos, and it gets its own shareable link."
+                : "Each guide gets its own sections and its own shareable link."}
             </p>
 
+            {!isCompanyGuide && (
             <div className="mt-4 flex flex-col gap-2">
               {GUIDE_PRESETS.map((p) => (
                 <button
@@ -83,6 +112,7 @@ export function NewGuideButton({
                 </button>
               ))}
             </div>
+            )}
 
             <label className="mt-4 block">
               <span className="text-[12px] font-bold uppercase tracking-[0.08em] text-muted">
@@ -91,7 +121,15 @@ export function NewGuideButton({
               <input
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder={preset.label}
+                autoFocus={isCompanyGuide}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && canSubmit) submit();
+                }}
+                placeholder={
+                  isCompanyGuide
+                    ? "Example: How to check the cleaning schedule"
+                    : preset.label
+                }
                 className="mt-1.5 w-full rounded-[var(--radius-sm)] border-[1.5px] border-border bg-surface px-3 py-2 text-sm text-ink outline-none focus:border-accent placeholder:text-muted"
               />
             </label>
@@ -112,18 +150,8 @@ export function NewGuideButton({
               </button>
               <button
                 type="button"
-                disabled={pending}
-                onClick={() =>
-                  startTransition(async () => {
-                    setError("");
-                    const res = await createGuide(accountId, propertyId, name, kind);
-                    if (res.error || !res.id) {
-                      setError(res.error ?? "Could not create the guide.");
-                      return;
-                    }
-                    router.push(guideBasePath(propertyId, res.id));
-                  })
-                }
+                disabled={!canSubmit}
+                onClick={submit}
                 className="rounded-[var(--radius-pill)] bg-accent px-4 py-2.5 text-sm font-bold text-white disabled:opacity-60"
               >
                 {pending ? "Creating…" : "Create guide"}
