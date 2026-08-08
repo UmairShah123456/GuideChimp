@@ -54,12 +54,17 @@ export function Sidebar({
       </nav>
 
       <div className="mt-auto border-t border-border pt-4">
-        <div className="px-2">
+        {/* The account identity doubles as the way into account settings —
+            it's where people look for it. */}
+        <Link
+          href="/account"
+          className="block rounded-[var(--radius-sm)] px-2 py-1.5 transition-colors hover:bg-page"
+        >
           <div className="truncate text-[13px] font-bold text-ink">{accountName}</div>
           {userEmail && (
             <div className="truncate text-xs text-muted">{userEmail}</div>
           )}
-        </div>
+        </Link>
         <form action={signOutAction} className="mt-3">
           <button
             type="submit"
