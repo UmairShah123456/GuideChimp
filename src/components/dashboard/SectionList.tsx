@@ -1,12 +1,13 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { ChevronRight } from "@/components/guest/icons";
 import {
   createCustomSection,
   renameSection,
   renameCustomSection,
+  reorderCustomSections,
   setSectionEnabled,
   setCustomSectionEnabled,
 } from "@/lib/dashboard/custom-section-actions";
@@ -56,6 +57,24 @@ export function SectionList({
   const [adding, setAdding] = useState(false);
   const [renamingCustom, setRenamingCustom] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
+
+  // Reordering is optimistic: the list moves on click, then the new order is
+  // saved. `custom` is re-read from the server on refresh, so a failed save
+  // corrects itself rather than leaving the UI lying about the order.
+  const [order, setOrder] = useState<CustomRow[]>(custom);
+  useEffect(() => setOrder(custom), [custom]);
+
+  const moveCustom = (index: number, dir: -1 | 1) => {
+    const next = [...order];
+    const j = index + dir;
+    if (j < 0 || j >= next.length) return;
+    [next[index], next[j]] = [next[j], next[index]];
+    setOrder(next);
+    startTransition(async () => {
+      await reorderCustomSections(propertyId, guideId, next.map((c) => c.id));
+      router.refresh();
+    });
+  };
 
   return (
     <section>
@@ -160,9 +179,9 @@ export function SectionList({
         </div>
       )}
 
-      {custom.length > 0 && (
+      {order.length > 0 && (
         <div className="mt-3 divide-y divide-border overflow-hidden rounded-[var(--radius-lg)] border-[1.5px] border-border bg-surface">
-          {custom.map((c) =>
+          {order.map((c, i) =>
             renamingCustom === c.id ? (
               <NamePanel
                 key={c.id}
@@ -202,6 +221,22 @@ export function SectionList({
                   <div className="text-[15px] font-bold text-ink">
                     {c.title || "Untitled section"}
                   </div>
+                </div>
+                <div className="flex items-center gap-1">
+                  <MoveBtn
+                    label={`Move ${c.title || "this section"} up`}
+                    disabled={pending || i === 0}
+                    onClick={() => moveCustom(i, -1)}
+                  >
+                    ↑
+                  </MoveBtn>
+                  <MoveBtn
+                    label={`Move ${c.title || "this section"} down`}
+                    disabled={pending || i === order.length - 1}
+                    onClick={() => moveCustom(i, 1)}
+                  >
+                    ↓
+                  </MoveBtn>
                 </div>
                 <button
                   type="button"
@@ -282,6 +317,34 @@ function NamePanel({
         <span className="ml-auto text-[11.5px] text-muted">{`${cap(audience)} see this name.`}</span>
       </div>
     </div>
+  );
+}
+
+/** Reorder arrow. Stops propagation so it doesn't open the editor. */
+function MoveBtn({
+  label,
+  disabled,
+  onClick,
+  children,
+}: {
+  label: string;
+  disabled: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      aria-label={label}
+      disabled={disabled}
+      onClick={(e) => {
+        e.stopPropagation();
+        onClick();
+      }}
+      className="flex h-7 w-7 items-center justify-center rounded-[var(--radius-sm)] border-[1.5px] border-border text-sm font-bold text-body hover:bg-page disabled:opacity-30"
+    >
+      {children}
+    </button>
   );
 }
 

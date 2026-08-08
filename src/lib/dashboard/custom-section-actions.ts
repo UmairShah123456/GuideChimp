@@ -186,6 +186,33 @@ export async function saveCustomSection(
   return { ok: true };
 }
 
+/**
+ * Persist a new order for a guide's custom sections. `ids` is the full list in
+ * the order they should appear; positions are rewritten to match its indices,
+ * so gaps and duplicates from earlier edits get normalised on every save.
+ *
+ * Scoped by guide_id as well as id, so a section id from another guide can't be
+ * dragged into this one's ordering.
+ */
+export async function reorderCustomSections(
+  propertyId: string | null,
+  guideId: string,
+  ids: string[],
+): Promise<FormState> {
+  const supabase = await createClient();
+  for (const [position, id] of ids.entries()) {
+    const { error } = await supabase
+      .from("custom_sections")
+      .update({ position })
+      .eq("id", id)
+      .eq("guide_id", guideId);
+    if (error) return { error: error.message };
+  }
+
+  await afterSave(propertyId, guideId);
+  return { ok: true };
+}
+
 /** Delete a custom section. */
 export async function deleteCustomSection(
   propertyId: string | null,
