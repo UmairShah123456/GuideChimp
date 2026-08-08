@@ -5,13 +5,14 @@ import { usePathname } from "next/navigation";
 import { signOutAction } from "@/lib/auth/actions";
 import { Logo } from "@/components/Logo";
 
+/**
+ * The two kinds of guide, and nothing else. Account settings are reached by
+ * the identity block at the foot of the sidebar, billing lives on that page,
+ * and Team is hidden until it does something.
+ */
 const NAV = [
-  // Guides filed under a property, paired with the company-wide ones below.
   { label: "Property guides", href: "/dashboard", match: ["/dashboard", "/properties"] },
   { label: "Company guides", href: "/guides", match: ["/guides"] },
-  { label: "Account", href: "/account", match: ["/account"], exact: true },
-  { label: "Team", href: "/account/team", match: ["/account/team"] },
-  { label: "Billing", href: "/account/billing", match: ["/account/billing"] },
 ];
 
 export function Sidebar({
@@ -23,10 +24,8 @@ export function Sidebar({
 }) {
   const pathname = usePathname();
 
-  const isActive = (item: (typeof NAV)[number]) => {
-    if (item.exact) return pathname === item.href;
-    return item.match.some((m) => pathname === m || pathname.startsWith(m + "/"));
-  };
+  const isActive = (item: (typeof NAV)[number]) =>
+    item.match.some((m) => pathname === m || pathname.startsWith(m + "/"));
 
   return (
     <aside className="sticky top-0 flex h-dvh w-60 flex-none flex-col border-r border-border bg-surface px-4 py-6">
