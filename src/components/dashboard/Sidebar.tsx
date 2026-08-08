@@ -6,8 +6,8 @@ import { signOutAction } from "@/lib/auth/actions";
 import { Logo } from "@/components/Logo";
 
 const NAV = [
-  { label: "Properties", href: "/dashboard", match: ["/dashboard", "/properties"] },
-  // Guides that belong to the business rather than any one property.
+  // Guides filed under a property, paired with the company-wide ones below.
+  { label: "Property guides", href: "/dashboard", match: ["/dashboard", "/properties"] },
   { label: "Company guides", href: "/guides", match: ["/guides"] },
   { label: "Account", href: "/account", match: ["/account"], exact: true },
   { label: "Team", href: "/account/team", match: ["/account/team"] },
