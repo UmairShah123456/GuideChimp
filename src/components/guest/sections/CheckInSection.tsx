@@ -2,7 +2,7 @@ import { GuestHeader } from "@/components/guest/GuestHeader";
 import { Card, CodeTicket, InfoNote, Placeholder, SectionLabel } from "@/components/guest/primitives";
 import { MapCard } from "@/components/guest/MapCard";
 import { Linkify } from "@/components/guest/Linkify";
-import { youTubeEmbedUrl } from "@/lib/youtube";
+import { videoEmbedUrl } from "@/lib/video";
 import type { CheckInContent } from "@/lib/guide/types";
 
 /**
@@ -18,7 +18,7 @@ export function CheckInSection({
   heading?: string;
   checkIn: CheckInContent | null;
 }) {
-  const embedUrl = youTubeEmbedUrl(checkIn?.videoUrl);
+  const embedUrl = videoEmbedUrl(checkIn?.videoUrl);
 
   return (
     <>

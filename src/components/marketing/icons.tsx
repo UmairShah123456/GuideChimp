@@ -20,6 +20,33 @@ function Base({ children, ...props }: IconProps & { children: React.ReactNode })
   );
 }
 
+/** A team — cleaners, VAs, co-hosts. */
+export const UsersIcon = (p: IconProps) => (
+  <Base {...p}>
+    <path d="M15.5 20v-1.5a3.5 3.5 0 0 0-3.5-3.5H6.5A3.5 3.5 0 0 0 3 18.5V20" />
+    <circle cx="9.25" cy="8" r="3.25" />
+    <path d="M17 15.2a3.5 3.5 0 0 1 4 3.3V20M16.2 5.2a3.25 3.25 0 0 1 0 5.6" />
+  </Base>
+);
+
+/** A library of guides — the one place everything lives. */
+export const LibraryIcon = (p: IconProps) => (
+  <Base {...p}>
+    <path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H8v16H5.5A1.5 1.5 0 0 1 4 18.5z" />
+    <path d="M10.5 4H13v16h-2.5z" />
+    <path d="m16.2 4.9 2.4-.6a1.5 1.5 0 0 1 1.83 1.08l2.5 11.3" />
+  </Base>
+);
+
+/** Scattered, unfindable information — the problem this replaces. */
+export const ScatterIcon = (p: IconProps) => (
+  <Base {...p}>
+    <rect x="3" y="4" width="7" height="5.5" rx="1.5" />
+    <rect x="14" y="7.5" width="7" height="5.5" rx="1.5" />
+    <rect x="6.5" y="14.5" width="7" height="5.5" rx="1.5" />
+  </Base>
+);
+
 /** One link per property. */
 export const LinkIcon = (p: IconProps) => (
   <Base {...p}>

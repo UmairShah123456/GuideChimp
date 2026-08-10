@@ -26,18 +26,20 @@ export function SectionsBand() {
         <div className="max-w-2xl">
           <Reveal>
             <p className="text-[12.5px] font-bold uppercase tracking-[0.14em] text-white/60">
-              Included from day one
+              Guest guides, included from day one
             </p>
           </Reveal>
           <Reveal delay={60}>
             <h2 className="mt-4 text-[32px] font-medium leading-[1.08] tracking-[-0.025em] [text-wrap:balance] md:text-[42px]">
-              Eight sections, already written into the structure.
+              The guest side starts eight sections ahead.
             </h2>
           </Reveal>
           <Reveal delay={110}>
             <p className="mt-5 text-[16.5px] leading-relaxed text-white/70 [text-wrap:pretty]">
-              You&rsquo;re filling in blanks, not staring at an empty page. Rename any
-              of them, hide the ones you don&rsquo;t need, and add your own on top.
+              Every new guest guide arrives with the questions already laid out, so
+              you&rsquo;re filling in blanks rather than staring at an empty page.
+              Rename any of them, hide what you don&rsquo;t need, add your own on top.
+              Team guides start blank on purpose — your process isn&rsquo;t a template.
             </p>
           </Reveal>
         </div>

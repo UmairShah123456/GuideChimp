@@ -29,10 +29,18 @@ const TABS = [
  * product shot. Deliberately mirrors the real guest render (accent header,
  * nav rows, bottom tab bar) so the marketing page shows the actual product.
  */
-export function GuidePhone({ className = "" }: { className?: string }) {
+export function GuidePhone({
+  width = "w-[300px]",
+  className = "",
+}: {
+  /** Width class. A separate prop because two competing `w-*` utilities in one
+   *  class list resolve by stylesheet order, not by which was passed last. */
+  width?: string;
+  className?: string;
+}) {
   return (
     <div
-      className={`w-[300px] overflow-hidden rounded-[40px] border-[10px] border-ink bg-page shadow-[0_40px_80px_-24px_rgba(28,40,48,0.45)] ${className}`}
+      className={`${width} overflow-hidden rounded-[40px] border-[10px] border-ink bg-page shadow-[0_40px_80px_-24px_rgba(28,40,48,0.45)] ${className}`}
     >
       {/* Accent header */}
       <div className="relative bg-brand px-5 pb-7 pt-5 text-brand-contrast">

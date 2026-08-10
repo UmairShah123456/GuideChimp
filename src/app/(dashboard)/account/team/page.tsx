@@ -13,7 +13,7 @@ export default async function TeamPage() {
   return (
     <>
       <PageHeader title="Team" description="Invite collaborators to help manage your guides." />
-      <div className="mx-auto max-w-3xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+      <div className="mx-auto max-w-5xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
         <div className="rounded-[var(--radius-lg)] border-[1.5px] border-border bg-surface p-5 sm:p-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>

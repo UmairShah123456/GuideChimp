@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import { DIAL_CODES } from "@/lib/phone";
 
 /* 16px on small screens keeps iOS Safari from zooming in on focus. */
-const base =
+export const inputBase =
   "w-full rounded-[var(--radius-sm)] border-[1.5px] border-border bg-surface px-3 py-2 text-base text-ink outline-none transition-colors focus:border-accent placeholder:text-muted sm:text-sm";
 
 export function EditorField({
@@ -42,7 +42,7 @@ export function TextInput({
       value={value}
       placeholder={placeholder}
       onChange={(e) => onChange(e.target.value)}
-      className={base}
+      className={inputBase}
     />
   );
 }
@@ -64,7 +64,7 @@ export function TextArea({
       placeholder={placeholder}
       rows={rows}
       onChange={(e) => onChange(e.target.value)}
-      className={base}
+      className={inputBase}
     />
   );
 }
@@ -81,7 +81,7 @@ export function Select({
   placeholder?: string;
 }) {
   return (
-    <select value={value} onChange={(e) => onChange(e.target.value)} className={base}>
+    <select value={value} onChange={(e) => onChange(e.target.value)} className={inputBase}>
       <option value="">{placeholder}</option>
       {options.map((o) => (
         <option key={o} value={o}>
@@ -101,7 +101,7 @@ export function CountrySelect({
   onChange: (v: string) => void;
 }) {
   return (
-    <select value={value} onChange={(e) => onChange(e.target.value)} className={base}>
+    <select value={value} onChange={(e) => onChange(e.target.value)} className={inputBase}>
       {DIAL_CODES.map((d) => (
         <option key={d.code} value={d.code}>
           {d.country} ({d.code})

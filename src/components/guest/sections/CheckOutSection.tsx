@@ -2,7 +2,7 @@ import { GuestHeader } from "@/components/guest/GuestHeader";
 import { CheckoutChecklist } from "@/components/guest/CheckoutChecklist";
 import { Card, InfoNote, SectionLabel } from "@/components/guest/primitives";
 import { Linkify } from "@/components/guest/Linkify";
-import { youTubeEmbedUrl } from "@/lib/youtube";
+import { videoEmbedUrl } from "@/lib/video";
 import { EmptyHint } from "./CheckInSection";
 import type { CheckOutContent } from "@/lib/guide/types";
 
@@ -17,7 +17,7 @@ export function CheckOutSection({
   checkout: CheckOutContent | null;
 }) {
   const items = checkout?.items ?? [];
-  const embedUrl = youTubeEmbedUrl(checkout?.videoUrl);
+  const embedUrl = videoEmbedUrl(checkout?.videoUrl);
 
   return (
     <>

@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { requireAccount } from "@/lib/auth/session";
-import { getHostGuide } from "@/lib/dashboard/queries";
+import { getHostGuide, listHouseRuleTemplates } from "@/lib/dashboard/queries";
 import { DEFAULT_CONTENT, sectionDisplayName } from "@/lib/guide/defaults";
 import type {
   AmenitiesContent,
@@ -54,6 +54,11 @@ export default async function EditSectionPage({
   const heading = sectionDisplayName(type, data.guide.section_titles);
   const contentOf = <T,>(t: GuideSectionType): T =>
     (data.sections.find((s) => s.type === t)?.content as T) ?? (DEFAULT_CONTENT[t] as T);
+
+  const ruleLibrary =
+    type === "house_rules"
+      ? await listHouseRuleTemplates(account.id)
+      : { templates: [], error: undefined };
 
   const amenitiesSection = data.sections.find((s) => s.type === "amenities");
   const videoRows = data.media
@@ -134,6 +139,8 @@ export default async function EditSectionPage({
           branding={account}
           heading={heading}
           initial={contentOf<HouseRulesContent>("house_rules")}
+          templates={ruleLibrary.templates}
+          templatesError={ruleLibrary.error}
         />
       );
     case "check_out":

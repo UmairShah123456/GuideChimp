@@ -7,22 +7,22 @@ import { UNSPLASH } from "./images";
 const STEPS = [
   {
     n: "01",
-    title: "Add the property",
-    body: "Name, address and your accent colour. That's the whole setup — about a minute.",
+    title: "Add your properties and your brand",
+    body: "Name, address, logo and one colour. That's the whole setup — about a minute per property.",
     image: UNSPLASH.exterior,
     alt: "Exterior of a townhouse listed as a short-let",
   },
   {
     n: "02",
-    title: "Fill in what guests ask about",
-    body: "Work down the sections: getting in, parking, Wi-Fi, house rules, checkout, contact. Add your own for anything unusual.",
+    title: "Build a guide per audience",
+    body: "Fill in the guest sections, then add cleaner and staff guides from your own blocks and videos. Anything that isn't about one building becomes a company guide.",
     image: UNSPLASH.loungeBlue,
     alt: "Living room of a rental with a blue sofa and television",
   },
   {
     n: "03",
-    title: "Send one link",
-    body: "Copy the link into your Airbnb welcome message, or print the QR code for the kitchen counter. Update it whenever — the link never changes.",
+    title: "Send the right link to the right person",
+    body: "The guest link goes in your welcome message or a QR on the counter. The cleaner and staff links go to your team. Edit any of them later — the links never change.",
     image: UNSPLASH.apartment,
     alt: "Bright apartment living and dining area ready for guests",
   },
@@ -41,7 +41,7 @@ export function HowItWorks() {
             </Reveal>
             <Reveal delay={60}>
               <h2 className="mt-4 text-[34px] font-medium leading-[1.08] tracking-[-0.025em] text-ink [text-wrap:balance] md:text-[44px]">
-                Live before your next check-in.
+                Set up before your next changeover.
               </h2>
             </Reveal>
           </div>

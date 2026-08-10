@@ -3,7 +3,7 @@ import { Card, Placeholder, SectionLabel } from "@/components/guest/primitives";
 import { MapCard } from "@/components/guest/MapCard";
 import { Linkify } from "@/components/guest/Linkify";
 import { EmptyHint } from "./CheckInSection";
-import { youTubeEmbedUrl } from "@/lib/youtube";
+import { videoEmbedUrl } from "@/lib/video";
 import { customBlocks, type CustomBlock, type CustomSectionRow } from "@/lib/guide/types";
 
 /**
@@ -57,7 +57,7 @@ function BlockView({ block }: { block: CustomBlock }) {
 
     case "video": {
       if (!block.url?.trim()) return null;
-      const embedUrl = youTubeEmbedUrl(block.url);
+      const embedUrl = videoEmbedUrl(block.url);
       return (
         <Card className="overflow-hidden">
           {embedUrl ? (

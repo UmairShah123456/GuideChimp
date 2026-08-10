@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { PlayIcon } from "./icons";
-import { youTubeId } from "@/lib/youtube";
+import { videoThumbnailUrl } from "@/lib/video";
 
 /**
  * Amenity video guide thumbnail. On the guest side it links to the video's own
  * page (video + notes) via `href`; in the editor preview (no href) it's static.
- * The thumbnail is derived — YouTube's own image, else a tile from the title.
+ * The thumbnail is derived — the provider's own image (YouTube, Loom) painted
+ * over a tile from the title, so a missing poster still reads as a video.
  */
 export function VideoCard({
   title,
@@ -18,22 +19,21 @@ export function VideoCard({
   url?: string;
   href?: string;
 }) {
-  const ytId = youTubeId(url);
+  const poster = videoThumbnailUrl(url);
 
   const inner = (
     <>
       <div className="relative h-[88px]">
-        {ytId ? (
+        <span className="absolute inset-0 flex items-center justify-center bg-accent-subtle px-3 text-center text-[12px] font-bold leading-tight text-accent">
+          {title || "Video"}
+        </span>
+        {poster && (
           // eslint-disable-next-line @next/next/no-img-element
           <img
-            src={`https://img.youtube.com/vi/${ytId}/hqdefault.jpg`}
+            src={poster}
             alt=""
             className="absolute inset-0 h-full w-full object-cover"
           />
-        ) : (
-          <span className="absolute inset-0 flex items-center justify-center bg-accent-subtle px-3 text-center text-[12px] font-bold leading-tight text-accent">
-            {title || "Video"}
-          </span>
         )}
         <span className="absolute inset-0 flex items-center justify-center">
           <span className="flex h-[34px] w-[34px] items-center justify-center rounded-full bg-ink/85 text-white">

@@ -1,11 +1,17 @@
 import { notFound } from "next/navigation";
 import { requireAccount } from "@/lib/auth/session";
 import { getHostGuide } from "@/lib/dashboard/queries";
-import { SECTION_META, sectionEnabled } from "@/lib/guide/defaults";
+import {
+  SECTION_META,
+  sectionDisplayBlurb,
+  sectionDisplayName,
+  sectionEnabled,
+} from "@/lib/guide/defaults";
 import { guidePreset } from "@/lib/guide/presets";
 import { env } from "@/lib/env";
 import { PageHeader } from "@/components/dashboard/PageHeader";
 import { MagicLinkCard } from "@/components/dashboard/MagicLinkCard";
+import { PropertyPhotoCard } from "@/components/dashboard/PropertyPhotoCard";
 import { DeleteGuideButton } from "@/components/dashboard/DeleteGuideButton";
 import { SectionList, type SectionRow } from "@/components/dashboard/SectionList";
 
@@ -28,15 +34,20 @@ export default async function GuideOverview({
 
   // Only the built-ins this guide actually has — staff guides have none.
   const present = new Set(sections.map((s) => s.type));
+  // Names come from the shared resolvers, not from SECTION_META directly, so
+  // this list reads exactly as the guest's home screen does. The `default*`
+  // fields are the rename fields' placeholders, and are the guest-facing
+  // defaults for the same reason: a placeholder showing "Check-in" while guests
+  // see "Getting in" tells the host the wrong thing about what clearing it does.
   const sectionRows: SectionRow[] = SECTION_META.filter((s) => present.has(s.type)).map((s) => {
     const ov = overrides[s.type] ?? {};
     return {
       type: s.type,
       slug: s.type.replace("_", "-"),
-      title: ov.title?.trim() || s.label,
-      blurb: ov.subtitle?.trim() || s.blurb,
-      defaultTitle: s.label,
-      defaultBlurb: s.blurb,
+      title: sectionDisplayName(s.type, overrides),
+      blurb: sectionDisplayBlurb(s.type, overrides),
+      defaultTitle: sectionDisplayName(s.type),
+      defaultBlurb: sectionDisplayBlurb(s.type),
       overrideTitle: ov.title ?? "",
       overrideSubtitle: ov.subtitle ?? "",
       enabled: sectionEnabled(s.type, overrides),
@@ -79,6 +90,12 @@ export default async function GuideOverview({
             viewCount={link?.view_count ?? 0}
             expiresAt={link?.expires_at ?? null}
             hasPin={Boolean(link?.pin)}
+          />
+
+          <PropertyPhotoCard
+            propertyId={property.id}
+            propertyName={property.name}
+            initialUrl={property.hero_image_url}
           />
         </aside>
       </div>

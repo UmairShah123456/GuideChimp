@@ -1,23 +1,23 @@
 import Image from "next/image";
 import { Reveal } from "./Reveal";
-import { ChatIcon, ClockIcon, StarIcon } from "./icons";
+import { LibraryIcon, StarIcon, UsersIcon } from "./icons";
 import { UNSPLASH } from "./images";
 
 const OUTCOMES = [
   {
-    icon: ClockIcon,
-    title: "Write it once, not every booking",
-    body: "You already type the same check-in instructions every week. Put them in the guide and reuse them across every stay and every property.",
+    icon: UsersIcon,
+    title: "Onboard someone in an afternoon, not a fortnight",
+    body: "A new cleaner or VA gets a link instead of a fortnight of you explaining things twice. Everything they need is written down, in order, with the videos that show it — so training happens without you in the room.",
   },
   {
-    icon: ChatIcon,
-    title: "Guests find it themselves",
-    body: "The door code at 11pm, the bin day, which button starts the dishwasher. It's all one tap away, so the message never gets sent.",
+    icon: LibraryIcon,
+    title: "One version of the truth",
+    body: "No more wondering whether the doc, the group chat or the printed folder is current. You change it in one place and everyone who opens the link sees the change — including whoever is standing in the flat right now.",
   },
   {
     icon: StarIcon,
-    title: "Fewer friction points to review",
-    body: "Most bad reviews come from small confusions, not big failures. Clear arrival instructions quietly remove the things guests complain about.",
+    title: "A check-in experience that looks like you",
+    body: "Guests get your logo, your colour and your words rather than a platform's template. It answers the arrival questions before they're asked, which is where most small complaints come from.",
   },
 ];
 
@@ -29,19 +29,19 @@ export function Outcomes() {
         <div className="lg:sticky lg:top-28 lg:self-start">
           <Reveal>
             <p className="text-[12.5px] font-bold uppercase tracking-[0.14em] text-accent">
-              Why hosts switch
+              What it changes
             </p>
           </Reveal>
           <Reveal delay={60}>
             <h2 className="mt-4 text-[34px] font-medium leading-[1.08] tracking-[-0.025em] text-ink [text-wrap:balance] md:text-[42px]">
-              The guidebook does the talking.
+              Stop being the search function for your own business.
             </h2>
           </Reveal>
           <Reveal delay={110}>
             <p className="mt-5 text-[16px] leading-relaxed text-body [text-wrap:pretty]">
-              Every property has a handful of things guests always need and always
-              ask about. Answer them properly once and the rest of the stay runs
-              itself.
+              Almost every question you answer twice is a question that should have
+              been written down once. Guests, cleaners and staff all get somewhere
+              to look that isn&rsquo;t you.
             </p>
           </Reveal>
 

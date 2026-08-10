@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import type { LocalGuideEntryRow } from "@/lib/guide/types";
+import { CategoryIcon } from "./categories";
 
 /**
  * Local guide with category filter chips and host-commentary cards.
@@ -29,6 +30,7 @@ export function LocalGuideView({
         </Chip>
         {categories.map((c) => (
           <Chip key={c} active={active === c} onClick={() => setActive(c)}>
+            <CategoryIcon category={c} className="h-3.5 w-3.5 flex-none" />
             {c}
           </Chip>
         ))}
@@ -41,7 +43,8 @@ export function LocalGuideView({
           className="rounded-[var(--radius-card)] border-[1.5px] border-border bg-surface px-4 py-3.5"
         >
           <div className="text-[15px] font-bold text-ink">{e.name}</div>
-          <div className="mt-0.5 text-[11px] font-bold uppercase tracking-wide text-accent">
+          <div className="mt-0.5 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wide text-accent">
+            <CategoryIcon category={e.category} className="h-3.5 w-3.5 flex-none" />
             {e.category}
           </div>
           {e.description && (
@@ -68,7 +71,7 @@ function Chip({
     <button
       type="button"
       onClick={onClick}
-      className={`flex-none rounded-[var(--radius-pill)] px-3.5 py-2 text-[12.5px] font-bold transition-colors ${
+      className={`flex flex-none items-center gap-1.5 rounded-[var(--radius-pill)] px-3.5 py-2 text-[12.5px] font-bold transition-colors ${
         active ? "bg-brand text-brand-contrast" : "bg-accent-subtle text-accent"
       }`}
     >

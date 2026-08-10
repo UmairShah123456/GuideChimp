@@ -5,9 +5,9 @@ import { useEffect, useState } from "react";
 import { Logo } from "@/components/Logo";
 
 const NAV = [
+  { href: "#guides", label: "Guide types" },
   { href: "#features", label: "Features" },
   { href: "#how-it-works", label: "How it works" },
-  { href: "#stories", label: "Stories" },
   { href: "#faq", label: "FAQ" },
 ];
 

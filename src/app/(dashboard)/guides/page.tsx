@@ -25,7 +25,7 @@ export default async function CompanyGuides() {
         }
       />
 
-      <div className="mx-auto max-w-3xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+      <div className="mx-auto max-w-5xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
         {guides.length === 0 ? (
           <div className="flex flex-col items-center justify-center rounded-[var(--radius-lg)] border-[1.5px] border-dashed border-border bg-surface px-5 py-12 text-center sm:px-8 sm:py-16">
             <div className="flex h-16 w-16 items-center justify-center rounded-[var(--radius-lg)] bg-accent-subtle text-2xl">

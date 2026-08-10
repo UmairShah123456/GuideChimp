@@ -9,38 +9,38 @@ import { PORTRAIT } from "./images";
 const QUOTES = [
   {
     quote:
-      "The arrival messages were the worst part of my week. I built the guide over a Sunday afternoon and the check-in questions basically stopped.",
+      "Onboarding used to be me on the phone for two weeks. Now a new cleaner gets three links on day one and I hear from them when something is actually wrong.",
     name: "Priya Raman",
-    role: "2 flats · Bristol",
+    role: "9 properties · Bristol",
     photo: PORTRAIT.priya,
     featured: true,
   },
   {
     quote:
-      "I filmed the oven and the washer on my phone in about ten minutes. Nobody has asked me how to work either since.",
+      "Our process lived in a WhatsApp group nobody could scroll back through. Having one place to point at ended most of the arguing.",
     name: "Marcus Ellery",
-    role: "Cotswolds cottage",
+    role: "Co-host · Cotswolds",
     photo: PORTRAIT.marcus,
   },
   {
     quote:
-      "Our cleaners use it too. The bin day section alone saved a very awkward conversation with the neighbours.",
+      "I filmed the boiler and the washer on my phone in ten minutes. That clip has now trained four different cleaners.",
     name: "Hannah Whitcombe",
     role: "6 properties · Leeds",
     photo: PORTRAIT.hannah,
   },
   {
     quote:
-      "Guests keep mentioning the local recommendations in reviews. It reads like it came from a person, because it did.",
+      "My VA has the company guides, my cleaners have the turnaround, guests get the pretty one. Same tool, three different doors.",
     name: "Tomás Vieira",
-    role: "Lisbon apartment",
+    role: "Serviced apartments · Lisbon",
     photo: PORTRAIT.tomas,
   },
   {
     quote:
-      "Being able to hide a section without deleting it sounds small. It isn't — I turn parking off in winter and back on in summer.",
+      "Guests keep mentioning the local recommendations in reviews. It reads like it came from a person, because it did.",
     name: "Aisha Bello",
-    role: "Coastal let · Norfolk",
+    role: "Coastal lets · Norfolk",
     photo: PORTRAIT.aisha,
   },
 ];
@@ -59,7 +59,7 @@ export function Testimonials() {
           </Reveal>
           <Reveal delay={60}>
             <h2 className="mt-4 text-[34px] font-medium leading-[1.08] tracking-[-0.025em] text-ink [text-wrap:balance] md:text-[44px]">
-              Quieter phones, better stays.
+              One place to point at.
             </h2>
           </Reveal>
         </div>

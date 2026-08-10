@@ -7,6 +7,29 @@
 insert into public.accounts (id, name, brand_color, theme_preset, font_heading, font_body)
 values ('a0000000-0000-0000-0000-000000000001', 'Airhosts', '#2a6e7e', 'editorial', 'outfit', 'outfit');
 
+-- saved house rules (the account's reusable library)
+--
+-- Migrations run before this file, so 0016's harvest pass finds an empty
+-- database and seeds nothing — the starter set is repeated here so local dev
+-- sees the same library a real account gets. No `icon` on the last two on
+-- purpose: it exercises the guess-from-wording fallback.
+insert into public.house_rule_templates (account_id, title, reason, icon, position)
+values
+  ('a0000000-0000-0000-0000-000000000001', 'No smoking inside',
+   'If we are made aware that smoking is taking place inside your security deposit will be charged',
+   'no-smoking', 0),
+  ('a0000000-0000-0000-0000-000000000001', 'No noise between 11pm and 7am',
+   'Please be respectful to the neighbours by not causing noise and disturbance during quiet hours',
+   'no-noise', 1),
+  ('a0000000-0000-0000-0000-000000000001', 'No illegal activities',
+   'If we are made aware of any illegal activities taking place, inside your security deposit will be charged and police will be notified',
+   'legal', 2),
+  ('a0000000-0000-0000-0000-000000000001', 'No gatherings or parties',
+   'Strictly no parties or any type of gatherings allowed', null, 3),
+  ('a0000000-0000-0000-0000-000000000001', 'No pets',
+   'This isn''t a pet friendly property unfortunately, so please do not bring any with you',
+   null, 4);
+
 -- property
 insert into public.properties (id, account_id, name, address, hero_image_url)
 values (

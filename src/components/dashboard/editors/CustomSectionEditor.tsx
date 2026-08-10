@@ -16,7 +16,7 @@ const BLOCK_MENU: { type: CustomBlockType; label: string; hint: string }[] = [
   { type: "text", label: "Text", hint: "A paragraph of details" },
   { type: "steps", label: "Steps", hint: "A numbered walkthrough" },
   { type: "photo", label: "Photo", hint: "A single image with a caption" },
-  { type: "video", label: "Video", hint: "A YouTube link or uploaded clip" },
+  { type: "video", label: "Video", hint: "A YouTube, Loom or Drive link, or an uploaded clip" },
   { type: "map", label: "Map location", hint: "An address with directions" },
 ];
 

@@ -3,12 +3,12 @@ import { appFont } from "@/lib/branding/fonts";
 import "./globals.css";
 
 const description =
-  "GuideChimp turns check-in steps, Wi-Fi, parking, appliance how-tos and your local picks into one branded guide. Share a single link — no app for guests.";
+  "One home for every guide your short-let business runs on — company processes, cleaner turnarounds, staff training and the guest check-in experience. Share a link per audience; no app, no accounts.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"),
   title: {
-    default: "GuideChimp — digital guidebooks that answer guests' questions",
+    default: "GuideChimp — every guide your rental business runs on, in one place",
     template: "%s · GuideChimp",
   },
   description,

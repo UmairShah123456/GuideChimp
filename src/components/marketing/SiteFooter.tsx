@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Logo } from "@/components/Logo";
 
 const PRODUCT = [
+  { href: "#guides", label: "Guide types" },
   { href: "#features", label: "Features" },
   { href: "#how-it-works", label: "How it works" },
   { href: "/g/demo-wharf-loft", label: "Live demo guide" },
@@ -22,8 +23,8 @@ export function SiteFooter() {
           <div className="max-w-xs">
             <Logo className="h-7 w-auto" />
             <p className="mt-4 text-[14px] leading-relaxed text-body">
-              Branded digital guidebooks for short-let and serviced accommodation
-              hosts.
+              One home for every guide a short-let business runs on — for guests,
+              cleaners and the team.
             </p>
           </div>
 

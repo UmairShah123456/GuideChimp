@@ -45,6 +45,28 @@ export function sectionDisplayName(
 }
 
 /**
+ * The canonical sub-label for a section, paired with `sectionDisplayName` and
+ * resolved the same way: a host override wins, then the guest home tile's
+ * subtitle, then the dashboard blurb.
+ *
+ * The two must be resolved together. Taking the name from one source and the
+ * description from another is what let the dashboard read "Check-in / Arrival
+ * steps, codes & keys" while the guest saw "Getting in / Door codes and keys".
+ */
+export function sectionDisplayBlurb(
+  type: GuideSectionType,
+  overrides?: SectionTitles,
+): string {
+  const override = overrides?.[type]?.subtitle?.trim();
+  if (override) return override;
+  return (
+    homeTileDefault(type)?.subtitle ??
+    SECTION_META.find((s) => s.type === type)?.blurb ??
+    ""
+  );
+}
+
+/**
  * Whether a built-in section is turned on. Controlled by an explicit host toggle
  * stored on the guide (`section_titles[type].enabled`); defaults to on so a
  * host opts sections out rather than in.

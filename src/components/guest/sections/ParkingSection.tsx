@@ -2,7 +2,7 @@ import { GuestHeader } from "@/components/guest/GuestHeader";
 import { Card, Placeholder, SectionLabel } from "@/components/guest/primitives";
 import { DirectionsIcon } from "@/components/guest/icons";
 import { Linkify } from "@/components/guest/Linkify";
-import { youTubeEmbedUrl } from "@/lib/youtube";
+import { videoEmbedUrl } from "@/lib/video";
 import { EmptyHint } from "./CheckInSection";
 import type { ParkingContent } from "@/lib/guide/types";
 
@@ -17,7 +17,7 @@ export function ParkingSection({
   parking: ParkingContent | null;
 }) {
   const steps = parking?.steps ?? [];
-  const embedUrl = youTubeEmbedUrl(parking?.videoUrl);
+  const embedUrl = videoEmbedUrl(parking?.videoUrl);
   const hasLot = parking && (parking.lotName || parking.lotDetail || parking.directionsUrl);
   const tags = [
     parking?.cost === "free" ? "Free parking" : parking?.cost === "paid" ? "Paid parking" : null,

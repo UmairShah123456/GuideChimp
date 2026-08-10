@@ -43,7 +43,7 @@ export default async function PropertyGuides({
         }
       />
 
-      <div className="mx-auto max-w-3xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+      <div className="mx-auto max-w-5xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
         <h2 className="text-sm font-extrabold uppercase tracking-[0.08em] text-muted">
           Guides
         </h2>

@@ -51,7 +51,7 @@ export interface CheckInContent extends HomeTileFields {
   address?: string; // shown on a map with a directions button
   checkInTime?: string;
   checkoutTime?: string;
-  videoUrl?: string; // optional YouTube link or uploaded file for a "how to get in" clip
+  videoUrl?: string; // optional YouTube/Loom/Drive link or uploaded file for a "how to get in" clip
   steps?: CheckInStep[];
   note?: string;
 }
@@ -72,7 +72,7 @@ export interface ParkingContent {
   photoUrl?: string; // optional main photo of the parking area
   photoCaption?: string;
   steps?: ParkingStep[];
-  videoUrl?: string; // optional YouTube link or uploaded file walking through parking
+  videoUrl?: string; // optional YouTube/Loom/Drive link or uploaded file walking through parking
 }
 
 export interface WifiContent {
@@ -90,6 +90,12 @@ export type LocalGuideContent = HomeTileFields;
 export interface HouseRule {
   title: string;
   reason?: string;
+  /**
+   * Slug from `RULE_ICONS` in src/components/guest/rule-icons.tsx. Optional:
+   * rules written before icons existed, and any the host doesn't choose one
+   * for, fall back to a guess from the wording.
+   */
+  icon?: string;
 }
 
 export interface HouseRulesContent extends HomeTileFields {
@@ -98,7 +104,7 @@ export interface HouseRulesContent extends HomeTileFields {
 
 export interface CheckOutContent extends HomeTileFields {
   items?: string[];
-  videoUrl?: string; // optional YouTube link or uploaded checkout walkthrough
+  videoUrl?: string; // optional YouTube/Loom/Drive link or uploaded checkout walkthrough
   note?: string;
 }
 
@@ -155,6 +161,18 @@ export interface AccountRow {
   font_body: string;
   /** How the logo sits on coloured headers: 'soft' plate or 'none'. */
   logo_backdrop: string;
+}
+
+/**
+ * A house rule saved to the account's library so it can be dropped into any
+ * guide instead of retyped. Adding one to a guide copies it into that section's
+ * content — the template and the guide's copy are independent from then on.
+ */
+export interface HouseRuleTemplateRow {
+  id: string;
+  title: string;
+  reason: string | null;
+  icon: string | null;
 }
 
 export interface PropertyRow {

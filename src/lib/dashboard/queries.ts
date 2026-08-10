@@ -4,6 +4,7 @@ import type {
   CustomSectionRow,
   GuideRow,
   GuideSectionRow,
+  HouseRuleTemplateRow,
   LocalGuideEntryRow,
   MagicLinkRow,
   MediaItemRow,
@@ -170,4 +171,27 @@ export async function listAccountGuides(accountId: string): Promise<GuideListIte
     .returns<GuideListItem[]>();
   if (error) throw new Error(`Could not load company guides: ${error.message}`);
   return data ?? [];
+}
+
+/**
+ * The account's saved house rules, for the picker in the house-rules editor.
+ *
+ * Returns the error alongside the rows rather than throwing or swallowing.
+ * Throwing would take down the page a host came here to edit; swallowing is
+ * worse — it renders a failed lookup as "nothing saved yet", which is how a
+ * missing column once read as an empty library. The caller shows the reason.
+ */
+export async function listHouseRuleTemplates(
+  accountId: string,
+): Promise<{ templates: HouseRuleTemplateRow[]; error?: string }> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("house_rule_templates")
+    .select("id, title, reason, icon")
+    .eq("account_id", accountId)
+    .order("position", { ascending: true })
+    .order("created_at", { ascending: true })
+    .returns<HouseRuleTemplateRow[]>();
+  if (error) return { templates: [], error: error.message };
+  return { templates: data ?? [] };
 }

@@ -2,28 +2,36 @@ import { Reveal } from "./Reveal";
 
 const FAQS = [
   {
-    q: "Do guests need to download anything?",
-    a: "No. The guide opens as a normal web page on any phone, tablet or laptop. There is no app and no account — they tap your link and it's there.",
+    q: "What's the difference between a company guide and a property guide?",
+    a: "A company guide is a process that applies across the whole business — running a background check, how the VA handles the inbox, what to do about a chargeback. A property guide belongs to one building, and you make one per audience: guests, cleaners, staff.",
+  },
+  {
+    q: "Can a cleaner see the guest guide?",
+    a: "No. Every guide has its own link, so people only ever see the one you sent them. Guest guides open as a branded welcome; team guides open as a plain index, because hospitality framing reads as odd to someone at work.",
+  },
+  {
+    q: "Do my team or guests need accounts?",
+    a: "Nobody does. Both open as a normal web page on any phone — no app, no login, and no per-seat cost for a cleaner you use twice a month.",
+  },
+  {
+    q: "Is this any good for onboarding a new team member?",
+    a: "It's the reason most people start. Instead of explaining everything twice, you send the company guides plus the property guides they'll work on. They read the same thing your last hire did, videos included, and you're not on the phone all week.",
   },
   {
     q: "Does it work with Airbnb, Vrbo and Booking.com?",
-    a: "Yes, because it isn't tied to any of them. Paste the link into your welcome message on any platform, or send it to direct-booking guests yourself.",
+    a: "Yes, because it isn't tied to any of them. Paste the guest link into your welcome message on any platform, print the QR for the kitchen counter, or send it to direct-booking guests yourself.",
   },
   {
-    q: "How long does a guide take to build?",
-    a: "Most hosts get a solid first version done in under an hour. The sections are already laid out, so you're answering prompts rather than designing a document.",
+    q: "Can I change a guide after I've shared the link?",
+    a: "Any time. The link stays the same and edits appear immediately, so you can fix a door code mid-stay or correct a turnaround step without resending anything.",
   },
   {
-    q: "Can I change it after I've shared the link?",
-    a: "Any time. The link stays the same and edits appear immediately, so you can fix a door code mid-stay without resending anything.",
+    q: "How long does this take to set up?",
+    a: "A first guest guide takes most hosts under an hour, since the sections are already laid out. Team and company guides take as long as the process is — but you write each one once, for good.",
   },
   {
-    q: "Can I use it for more than one property?",
-    a: "Yes. Each property gets its own guide, its own link and its own QR code, all managed from one dashboard.",
-  },
-  {
-    q: "Is the guide private?",
-    a: "Each link is unguessable, and you can add a PIN or an expiry date. You can also see how many times a link has been opened.",
+    q: "Are the guides private?",
+    a: "Each link is unguessable, and you can add a PIN or an expiry date per guide. You can also see how many times each link has been opened, which is a useful way to tell whether the guide was actually read.",
   },
 ];
 

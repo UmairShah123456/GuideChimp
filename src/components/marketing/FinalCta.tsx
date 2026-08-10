@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Reveal } from "./Reveal";
 import { ArrowIcon, TickIcon } from "./icons";
 
-const POINTS = ["Free to start", "No card required", "Your first guide in an afternoon"];
+const POINTS = ["Free to start", "No card required", "Unlimited guides per property"];
 
 export function FinalCta() {
   return (
@@ -17,10 +17,11 @@ export function FinalCta() {
 
             <div className="relative mx-auto max-w-2xl">
               <h2 className="text-[34px] font-medium leading-[1.06] tracking-[-0.03em] [text-wrap:balance] md:text-[48px]">
-                Your next guest arrives already knowing everything.
+                Get it all out of your head and into one place.
               </h2>
               <p className="mx-auto mt-5 max-w-lg text-[16.5px] leading-relaxed text-white/75 [text-wrap:pretty]">
-                Build one guide, share one link, and get the evening back.
+                Start with the guide you&rsquo;re most tired of explaining. Add the rest
+                as you go.
               </p>
 
               <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
@@ -28,7 +29,7 @@ export function FinalCta() {
                   href="/signup"
                   className="group inline-flex items-center justify-center gap-2 rounded-[var(--radius-pill)] bg-white px-7 py-4 text-[15px] font-bold text-accent shadow-[0_16px_40px_-14px_rgba(0,0,0,0.5)] transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0"
                 >
-                  Create your guide
+                  Start your guide library
                   <ArrowIcon className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
                 </Link>
                 <Link

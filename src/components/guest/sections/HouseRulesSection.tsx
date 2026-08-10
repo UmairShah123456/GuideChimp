@@ -1,8 +1,9 @@
 import { GuestHeader } from "@/components/guest/GuestHeader";
+import { RuleIcon } from "@/components/guest/rule-icons";
 import { EmptyHint } from "./CheckInSection";
 import type { HouseRulesContent } from "@/lib/guide/types";
 
-/** Guest "House rules" screen — numbered rule cards + checkout checklist. */
+/** Guest "House rules" screen — one card per rule, each with its own mark. */
 export function HouseRulesSection({
   token,
   heading = "House rules",
@@ -26,8 +27,8 @@ export function HouseRulesSection({
               key={i}
               className="flex items-center gap-3.5 rounded-[var(--radius-card)] border-[1.5px] border-border bg-surface px-4.5 py-4"
             >
-              <div className="flex h-[42px] w-[42px] flex-none items-center justify-center rounded-[var(--radius-code)] bg-accent-subtle text-base font-extrabold text-accent">
-                {i + 1}
+              <div className="flex h-[42px] w-[42px] flex-none items-center justify-center rounded-[var(--radius-code)] bg-accent-subtle text-accent">
+                <RuleIcon icon={rule.icon} title={rule.title} className="h-[22px] w-[22px]" />
               </div>
               <div>
                 <div className="text-[15px] font-bold text-ink">{rule.title}</div>

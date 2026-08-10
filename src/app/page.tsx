@@ -1,6 +1,7 @@
 import { SiteHeader } from "@/components/marketing/SiteHeader";
 import { Hero } from "@/components/marketing/Hero";
-import { ShareRail } from "@/components/marketing/ShareRail";
+import { ScatterBand } from "@/components/marketing/ScatterBand";
+import { TwoKinds } from "@/components/marketing/TwoKinds";
 import { Outcomes } from "@/components/marketing/Outcomes";
 import { FeatureGrid } from "@/components/marketing/FeatureGrid";
 import { SectionsBand } from "@/components/marketing/SectionsBand";
@@ -24,7 +25,9 @@ export default function LandingPage() {
 
       <main id="main">
         <Hero />
-        <ShareRail />
+        {/* Problem, then the structural answer, then what it changes for you. */}
+        <ScatterBand />
+        <TwoKinds />
         <Outcomes />
         <FeatureGrid />
         <SectionsBand />

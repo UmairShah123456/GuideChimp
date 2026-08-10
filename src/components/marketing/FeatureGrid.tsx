@@ -14,11 +14,11 @@ import { UNSPLASH } from "./images";
 
 /** Mirrors a real custom section, in the order a host would stack the blocks. */
 const BLOCK_STACK = [
-  { type: "Text", detail: "The terrace is yours until 10pm…" },
-  { type: "Steps", detail: "3 steps · lighting the BBQ" },
-  { type: "Photo", detail: "The terrace at golden hour" },
-  { type: "Video", detail: "How the gas valve works" },
-  { type: "Map", detail: "Wapping Wharf, Bristol" },
+  { type: "Text", detail: "Strip the bed before you touch anything else" },
+  { type: "Steps", detail: "6 steps · the turnaround, in order" },
+  { type: "Photo", detail: "How the linen cupboard should look" },
+  { type: "Video", detail: "Resetting the boiler" },
+  { type: "Map", detail: "Where the bins go" },
 ];
 
 /** Shared shell so every tile lines up while backgrounds still vary. */
@@ -62,18 +62,22 @@ export function FeatureGrid() {
           </Reveal>
           <Reveal delay={60}>
             <h2 className="mt-4 text-[34px] font-medium leading-[1.08] tracking-[-0.025em] text-ink [text-wrap:balance] md:text-[44px]">
-              Everything a guest asks for, and nothing they don&rsquo;t.
+              One builder for every kind of guide.
             </h2>
           </Reveal>
           <Reveal delay={110}>
             <p className="mt-5 text-[16.5px] leading-relaxed text-body [text-wrap:pretty]">
-              Start from the sections every property needs, then build your own for
-              the things that make yours different.
+              A guest welcome and a cleaner&rsquo;s turnaround are the same job:
+              explain something clearly, with pictures, in the right order. The same
+              blocks build both.
             </p>
           </Reveal>
         </div>
 
-        <div className="mt-12 grid gap-4 lg:grid-cols-12">
+        {/* The single column is floored at 0 rather than min-content: an
+            unbreakable string in any tile (a guide URL) would otherwise widen
+            every tile in the grid and push the page sideways. */}
+        <div className="mt-12 grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-12">
           {/* Modular builder — the headline feature */}
           <Reveal delay={0} className="lg:col-span-7">
             <Tile className="h-full border-[1.5px] border-accent-ring bg-accent-tint">
@@ -81,12 +85,12 @@ export function FeatureGrid() {
                 <BlocksIcon className="h-5 w-5" />
               </TileIcon>
               <h3 className="text-[21px] font-medium tracking-[-0.01em] text-ink">
-                Build your own sections from blocks
+                Build any process from blocks
               </h3>
               <p className="mt-2.5 max-w-md text-[15px] leading-relaxed text-body [text-wrap:pretty]">
-                Roof terrace, bin day, the temperamental shower — add a section for
-                anything. Stack text, steps, photos, video and a map in whatever
-                order tells the story, and reorder them any time.
+                A turnaround, a roof terrace, how to handle a chargeback — add a
+                section for anything. Stack text, numbered steps, photos, video and
+                a map in whatever order it needs, and reorder them any time.
               </p>
               {/* Ordered stack — shows the feature rather than describing it */}
               <ul className="mt-6 flex flex-1 flex-col justify-end gap-2">
@@ -118,11 +122,11 @@ export function FeatureGrid() {
                 <FilmIcon className="h-5 w-5" />
               </TileIcon>
               <h3 className="text-[21px] font-medium tracking-[-0.01em] text-ink">
-                Short videos beat long manuals
+                Show it once, on video
               </h3>
               <p className="mt-2.5 text-[15px] leading-relaxed text-body [text-wrap:pretty]">
-                Film the oven, the hob, the washer once on your phone. Paste a
-                YouTube link or upload the clip.
+                The boiler, the bin store, the way you want beds made. Film it on
+                your phone and it trains every hire after this one.
               </p>
               <div className="relative mt-6 aspect-[16/10] overflow-hidden rounded-[var(--radius-card)] border-[1.5px] border-border">
                 <Image
@@ -149,11 +153,11 @@ export function FeatureGrid() {
                 <DropletIcon className="h-5 w-5" />
               </TileIcon>
               <h3 className="text-[19px] font-medium tracking-[-0.01em] text-ink">
-                Your colour, everywhere
+                Your brand on every guide
               </h3>
               <p className="mt-2.5 text-[14.5px] leading-relaxed text-body [text-wrap:pretty]">
-                Pick one accent and the whole guide retunes to it — headers, tiles,
-                buttons and links.
+                Add your logo and pick one colour. Every guide you share retunes to
+                it — headers, tiles, buttons and links.
               </p>
               <div className="mt-5 flex gap-2" aria-hidden>
                 {[200, 45, 155, 320].map((h) => (
@@ -206,16 +210,32 @@ export function FeatureGrid() {
                 <LinkIcon className="h-5 w-5" />
               </TileIcon>
               <h3 className="text-[21px] font-medium tracking-[-0.01em]">
-                One link and a QR code per property
+                A separate link for every audience
               </h3>
               <p className="mt-2.5 text-[15px] leading-relaxed text-white/75 [text-wrap:pretty]">
-                Set an optional PIN and an expiry date, watch the view count, and
-                print the QR for the welcome folder. Guests never make an account.
+                Each guide gets its own URL and QR code, its own optional PIN and
+                expiry, and its own view count — so you can see the cleaner actually
+                opened it. Nobody makes an account.
               </p>
-              <div className="mt-6 flex items-center gap-3 rounded-[var(--radius-card)] bg-white/10 px-4 py-3 ring-1 ring-inset ring-white/15">
-                <span className="text-[13px] font-semibold text-white/60">guidechimp.app/g/</span>
-                <span className="text-[13px] font-extrabold">wharf-loft</span>
-              </div>
+              <ul className="mt-6 flex flex-col gap-2">
+                {[
+                  { who: "Guests", slug: "wharf-loft" },
+                  { who: "Cleaners", slug: "wharf-turnaround" },
+                ].map((l) => (
+                  <li
+                    key={l.slug}
+                    className="flex items-center gap-2.5 rounded-[var(--radius-card)] bg-white/10 px-4 py-2.5 ring-1 ring-inset ring-white/15"
+                  >
+                    <span className="w-16 flex-none text-[11.5px] font-bold uppercase tracking-[0.08em] text-white/55">
+                      {l.who}
+                    </span>
+                    <span className="min-w-0 truncate text-[13px] font-semibold text-white/60">
+                      guidechimp.app/g/
+                      <span className="font-extrabold text-white">{l.slug}</span>
+                    </span>
+                  </li>
+                ))}
+              </ul>
             </Tile>
           </Reveal>
 
@@ -231,8 +251,9 @@ export function FeatureGrid() {
                     Nothing to install, nothing to log into
                   </h3>
                   <p className="mt-2.5 text-[15px] leading-relaxed text-body [text-wrap:pretty]">
-                    It opens in the browser your guest already has. Rename or hide any
-                    section, and the change lands on their phone straight away.
+                    It opens in the browser your guest or cleaner already has — no app,
+                    no seat to buy for a contractor. Rename or hide any section and the
+                    change lands on their phone straight away.
                   </p>
                   <div className="mt-5 flex flex-wrap gap-4">
                     <span className="flex items-center gap-2 text-[13.5px] font-semibold text-body-strong">

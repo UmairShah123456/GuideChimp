@@ -4,7 +4,7 @@ import { GuestFallback } from "@/components/guest/GuestFallback";
 import { GuestHeader } from "@/components/guest/GuestHeader";
 import { Card } from "@/components/guest/primitives";
 import { EmptyHint } from "@/components/guest/sections/CheckInSection";
-import { youTubeEmbedUrl } from "@/lib/youtube";
+import { videoEmbedUrl } from "@/lib/video";
 
 export const dynamic = "force-dynamic";
 
@@ -19,7 +19,7 @@ export default async function VideoDetailScreen({
 
   const { guide } = res;
   const video = guide.media.find((m) => m.id === id && m.type === "video");
-  const embedUrl = youTubeEmbedUrl(video?.url);
+  const embedUrl = videoEmbedUrl(video?.url, { autoplay: true });
   const subtitle = (video?.metadata.subtitle as string) ?? "";
   const notes = (video?.metadata.notes as string) ?? "";
 
@@ -43,7 +43,7 @@ export default async function VideoDetailScreen({
                 {embedUrl ? (
                   <div className="relative aspect-video">
                     <iframe
-                      src={`${embedUrl}?autoplay=1`}
+                      src={embedUrl}
                       title={video.caption ?? "Video"}
                       className="absolute inset-0 h-full w-full"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
