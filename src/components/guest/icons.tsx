@@ -77,6 +77,13 @@ export const ContactIcon = (p: IconProps) => (
   </Base>
 );
 
+export const PersonIcon = (p: IconProps) => (
+  <Base {...p}>
+    <circle cx="12" cy="8" r="3.5" />
+    <path d="M5 20a7 7 0 0 1 14 0" />
+  </Base>
+);
+
 export const ChevronLeft = (p: IconProps) => (
   <Base {...p}>
     <path d="m14 6-6 6 6 6" />

@@ -67,7 +67,7 @@ export function NewGuideButton({
         className={
           subtle
             ? "rounded-[var(--radius-pill)] border-[1.5px] border-border bg-surface px-4 py-2.5 text-sm font-bold text-ink"
-            : "rounded-[var(--radius-pill)] bg-accent px-4 py-2.5 text-sm font-bold text-white"
+            : "rounded-[var(--radius-pill)] bg-brand px-4 py-2.5 text-sm font-bold text-brand-contrast"
         }
       >
         New guide
@@ -152,7 +152,7 @@ export function NewGuideButton({
                 type="button"
                 disabled={!canSubmit}
                 onClick={submit}
-                className="rounded-[var(--radius-pill)] bg-accent px-4 py-2.5 text-sm font-bold text-white disabled:opacity-60"
+                className="rounded-[var(--radius-pill)] bg-brand px-4 py-2.5 text-sm font-bold text-brand-contrast disabled:opacity-60"
               >
                 {pending ? "Creating…" : "Create guide"}
               </button>

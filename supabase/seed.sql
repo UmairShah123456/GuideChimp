@@ -4,8 +4,8 @@
 
 -- Fixed UUIDs so inserts can reference each other deterministically.
 -- account
-insert into public.accounts (id, name, accent_hue)
-values ('a0000000-0000-0000-0000-000000000001', 'Airhosts', 200);
+insert into public.accounts (id, name, brand_color, theme_preset, font_heading, font_body)
+values ('a0000000-0000-0000-0000-000000000001', 'Airhosts', '#2a6e7e', 'editorial', 'outfit', 'outfit');
 
 -- property
 insert into public.properties (id, account_id, name, address, hero_image_url)

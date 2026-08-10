@@ -6,17 +6,18 @@ import { TextInput, RepeatItem, AddButton } from "./ui";
 import { HouseRulesSection } from "@/components/guest/sections/HouseRulesSection";
 import { saveSectionContent } from "@/lib/dashboard/section-actions";
 import type { HouseRule, HouseRulesContent } from "@/lib/guide/types";
+import type { Branding } from "@/lib/branding/vars";
 
 export function HouseRulesEditor({
   propertyId,
   guideId,
-  hue,
+  branding,
   heading,
   initial,
 }: {
   propertyId: string;
   guideId: string;
-  hue: number;
+  branding: Branding;
   heading: string;
   initial: HouseRulesContent;
 }) {
@@ -32,7 +33,7 @@ export function HouseRulesEditor({
       propertyId={propertyId}
       guideId={guideId}
       title={heading}
-      hue={hue}
+      branding={branding}
       onSave={() => saveSectionContent(propertyId, guideId, "house_rules", c)}
       preview={<HouseRulesSection heading={heading} rules={c} />}
       form={

@@ -23,7 +23,7 @@ export function GuestScreen({
   children: ReactNode;
 }) {
   return (
-    <ThemeScope hue={guide.account.accent_hue}>
+    <ThemeScope branding={guide.account}>
       <div className="mx-auto flex min-h-dvh w-full max-w-[480px] flex-col bg-page">
         <main className="flex flex-1 flex-col">{children}</main>
         <GuestNav token={token} active={active} guide={guide} />

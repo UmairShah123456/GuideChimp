@@ -145,7 +145,16 @@ export interface AccountRow {
   id: string;
   name: string;
   logo_url: string | null;
-  accent_hue: number;
+  /** Brand colour as `#rrggbb` — every accent in the guest portal derives from it. */
+  brand_color: string;
+  /** Curated look slug; unknown values fall back to the default theme. */
+  theme_preset: string;
+  /** Heading typeface slug; unknown values fall back to the default font. */
+  font_heading: string;
+  /** Body typeface slug; unknown values fall back to the default font. */
+  font_body: string;
+  /** How the logo sits on coloured headers: 'soft' plate or 'none'. */
+  logo_backdrop: string;
 }
 
 export interface PropertyRow {

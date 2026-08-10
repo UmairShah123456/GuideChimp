@@ -6,17 +6,18 @@ import { EditorField, TextInput } from "./ui";
 import { WifiCard } from "@/components/guest/WifiCard";
 import { saveSectionContent } from "@/lib/dashboard/section-actions";
 import type { WifiContent } from "@/lib/guide/types";
+import type { Branding } from "@/lib/branding/vars";
 
 export function WifiEditor({
   propertyId,
   guideId,
-  hue,
+  branding,
   heading,
   initial,
 }: {
   propertyId: string;
   guideId: string;
-  hue: number;
+  branding: Branding;
   heading: string;
   initial: WifiContent;
 }) {
@@ -28,7 +29,7 @@ export function WifiEditor({
       propertyId={propertyId}
       guideId={guideId}
       title={heading}
-      hue={hue}
+      branding={branding}
       onSave={() => saveSectionContent(propertyId, guideId, "wifi", c)}
       preview={
         <>

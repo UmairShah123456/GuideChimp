@@ -4,15 +4,18 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOutAction } from "@/lib/auth/actions";
 import { Logo } from "@/components/Logo";
+import { PersonIcon } from "@/components/guest/icons";
 
 /**
- * The two kinds of guide, and nothing else. Account settings are reached by
- * the identity block at the foot of the sidebar, billing lives on that page,
- * and Team is hidden until it does something.
+ * The two kinds of guide, plus branding — it applies to every guide at once, so
+ * it belongs beside them rather than buried in account settings. Profile and
+ * billing are reached by the identity block at the foot of the sidebar, and
+ * Team is hidden until it does something.
  */
 const NAV = [
   { label: "Property guides", href: "/dashboard", match: ["/dashboard", "/properties"] },
   { label: "Company guides", href: "/guides", match: ["/guides"] },
+  { label: "Branding", href: "/branding", match: ["/branding"] },
 ];
 
 export function Sidebar({
@@ -57,12 +60,17 @@ export function Sidebar({
             it's where people look for it. */}
         <Link
           href="/account"
-          className="block rounded-[var(--radius-sm)] px-2 py-1.5 transition-colors hover:bg-page"
+          className="flex items-center gap-2.5 rounded-[var(--radius-sm)] px-2 py-1.5 transition-colors hover:bg-page"
         >
-          <div className="truncate text-[13px] font-bold text-ink">{accountName}</div>
-          {userEmail && (
-            <div className="truncate text-xs text-muted">{userEmail}</div>
-          )}
+          <span className="flex h-8 w-8 flex-none items-center justify-center rounded-full bg-accent-subtle text-accent">
+            <PersonIcon className="h-4 w-4" />
+          </span>
+          <span className="min-w-0">
+            <span className="block truncate text-[13px] font-bold text-ink">{accountName}</span>
+            {userEmail && (
+              <span className="block truncate text-xs text-muted">{userEmail}</span>
+            )}
+          </span>
         </Link>
         <form action={signOutAction} className="mt-3">
           <button

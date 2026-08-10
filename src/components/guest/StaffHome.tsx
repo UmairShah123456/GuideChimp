@@ -3,6 +3,7 @@ import { HOME_TILES, sectionVisible } from "@/lib/guide/defaults";
 import { GuestScreen } from "./GuestScreen";
 import { SectionLabel } from "./primitives";
 import { PlusIcon } from "./icons";
+import { BrandLogo, asBackdrop } from "./BrandLogo";
 import type { GuestGuide } from "@/lib/guide/types";
 
 function NavRow({
@@ -65,10 +66,19 @@ export function StaffHome({ token, guide }: { token: string; guide: GuestGuide }
   return (
     <GuestScreen token={token} guide={guide} active="home">
       <header className="border-b border-border bg-surface px-[22px] pb-6 pt-9">
-        <div className="text-[11px] font-bold uppercase tracking-[0.1em] text-accent">
-          {guide.account.name}
-        </div>
-        <h1 className="mt-1.5 text-[26px] font-extrabold leading-[1.15] text-ink">
+        {guide.account.logo_url ? (
+          <BrandLogo
+            url={guide.account.logo_url}
+            name={guide.account.name}
+            backdrop={asBackdrop(guide.account.logo_backdrop)}
+            className={"mb-3"}
+          />
+        ) : (
+          <div className="text-[11px] font-bold uppercase tracking-[0.1em] text-accent">
+            {guide.account.name}
+          </div>
+        )}
+        <h1 className="mt-1.5 font-display text-[26px] font-extrabold leading-[1.15] text-ink">
           {guide.guide.name}
         </h1>
         {subtitle && <p className="mt-1.5 text-sm text-muted">{subtitle}</p>}

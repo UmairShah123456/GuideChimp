@@ -50,7 +50,7 @@ export function CodeTicket({ label, value }: { label: string; value: string }) {
 export function InfoNote({ children }: { children: ReactNode }) {
   return (
     <div className="flex items-start gap-2.5 rounded-[var(--radius-card)] border-[1.5px] border-accent-ring bg-accent-tint px-4 py-3.5">
-      <span className="flex h-5 w-5 flex-none items-center justify-center rounded-full bg-accent text-xs font-extrabold text-white">
+      <span className="flex h-5 w-5 flex-none items-center justify-center rounded-full bg-brand text-xs font-extrabold text-brand-contrast">
         i
       </span>
       <p className="text-[12.5px] leading-relaxed text-body-strong">{children}</p>

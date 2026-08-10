@@ -149,7 +149,7 @@ export function SectionList({
           type="button"
           disabled={pending || adding}
           onClick={() => setAdding(true)}
-          className="rounded-[var(--radius-pill)] bg-accent px-3.5 py-1.5 text-[12.5px] font-bold text-white disabled:opacity-60"
+          className="rounded-[var(--radius-pill)] bg-brand px-3.5 py-1.5 text-[12.5px] font-bold text-brand-contrast disabled:opacity-60"
         >
           + Add section
         </button>
@@ -303,7 +303,7 @@ function NamePanel({
           type="button"
           disabled={pending || !trimmed}
           onClick={submit}
-          className="rounded-[var(--radius-pill)] bg-accent px-4 py-1.5 text-[12.5px] font-bold text-white disabled:opacity-60"
+          className="rounded-[var(--radius-pill)] bg-brand px-4 py-1.5 text-[12.5px] font-bold text-brand-contrast disabled:opacity-60"
         >
           {confirmLabel}
         </button>
@@ -372,7 +372,7 @@ function Toggle({
         onToggle();
       }}
       className={`relative flex h-5 w-9 flex-none items-center rounded-full transition-colors disabled:opacity-60 ${
-        on ? "bg-accent" : "bg-nav-idle"
+        on ? "bg-brand" : "bg-nav-idle"
       }`}
     >
       <span
@@ -424,7 +424,7 @@ function RenamePanel({
           type="button"
           disabled={pending}
           onClick={() => onSave(title, subtitle)}
-          className="rounded-[var(--radius-pill)] bg-accent px-4 py-1.5 text-[12.5px] font-bold text-white disabled:opacity-60"
+          className="rounded-[var(--radius-pill)] bg-brand px-4 py-1.5 text-[12.5px] font-bold text-brand-contrast disabled:opacity-60"
         >
           Save
         </button>

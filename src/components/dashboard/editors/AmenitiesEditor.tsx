@@ -10,6 +10,7 @@ import {
 } from "@/components/guest/sections/WifiAmenitiesSection";
 import { saveAmenities, type VideoInput } from "@/lib/dashboard/section-actions";
 import type { AmenitiesContent } from "@/lib/guide/types";
+import type { Branding } from "@/lib/branding/vars";
 
 interface VideoRow {
   title: string;
@@ -21,14 +22,14 @@ interface VideoRow {
 export function AmenitiesEditor({
   propertyId,
   guideId,
-  hue,
+  branding,
   heading,
   initial,
   initialVideos,
 }: {
   propertyId: string;
   guideId: string;
-  hue: number;
+  branding: Branding;
   heading: string;
   initial: AmenitiesContent;
   initialVideos: VideoRow[];
@@ -57,7 +58,7 @@ export function AmenitiesEditor({
       propertyId={propertyId}
       guideId={guideId}
       title={heading}
-      hue={hue}
+      branding={branding}
       onSave={() => saveAmenities(propertyId, guideId, c, payload)}
       preview={<WifiAmenitiesSection heading={heading} amenities={c} videos={previewVideos} />}
       form={

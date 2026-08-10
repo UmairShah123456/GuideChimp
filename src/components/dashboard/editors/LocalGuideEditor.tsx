@@ -6,20 +6,21 @@ import { TextInput, TextArea, RepeatItem, AddButton, Select } from "./ui";
 import { LocalGuideSection } from "@/components/guest/sections/LocalGuideSection";
 import { saveLocalGuide, type LocalEntryInput } from "@/lib/dashboard/section-actions";
 import type { LocalGuideContent, LocalGuideEntryRow } from "@/lib/guide/types";
+import type { Branding } from "@/lib/branding/vars";
 
 const CATEGORY_OPTIONS = ["Food and drink", "Attraction", "Point of interest", "Other"];
 
 export function LocalGuideEditor({
   propertyId,
   guideId,
-  hue,
+  branding,
   heading,
   initial,
   initialEntries,
 }: {
   propertyId: string;
   guideId: string;
-  hue: number;
+  branding: Branding;
   heading: string;
   initial: LocalGuideContent;
   initialEntries: LocalEntryInput[];
@@ -49,7 +50,7 @@ export function LocalGuideEditor({
       propertyId={propertyId}
       guideId={guideId}
       title={heading}
-      hue={hue}
+      branding={branding}
       onSave={() => saveLocalGuide(propertyId, guideId, initial, entries)}
       preview={<LocalGuideSection heading={heading} entries={previewEntries} />}
       form={

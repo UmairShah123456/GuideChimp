@@ -26,7 +26,7 @@ export default async function EditCompanySection({
       guideId={gid}
       sectionId={cid}
       name={section.title}
-      hue={account.accent_hue}
+      branding={account}
       initial={customBlocks(section)}
     />
   );

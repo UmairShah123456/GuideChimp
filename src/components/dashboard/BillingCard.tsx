@@ -15,7 +15,7 @@ export function BillingCard({ propertyCount }: { propertyCount: number }) {
         <button
           type="button"
           disabled
-          className="cursor-not-allowed rounded-[var(--radius-pill)] bg-accent px-5 py-2.5 text-sm font-bold text-white opacity-60"
+          className="cursor-not-allowed rounded-[var(--radius-pill)] bg-brand px-5 py-2.5 text-sm font-bold text-brand-contrast opacity-60"
           title="Coming soon"
         >
           Upgrade

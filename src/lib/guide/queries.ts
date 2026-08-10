@@ -64,7 +64,7 @@ export async function getGuestGuide(token: string): Promise<GuideResult> {
     await Promise.all([
       supabase
         .from("accounts")
-        .select("id, name, logo_url, accent_hue")
+        .select("id, name, logo_url, logo_backdrop, brand_color, theme_preset, font_heading, font_body")
         .eq("id", guide.account_id)
         .maybeSingle<AccountRow>(),
       supabase

@@ -51,7 +51,6 @@ export default async function EditSectionPage({
   // hand-typed built-in URLs 404 rather than rendering an orphan editor.
   if (!data.sections.some((s) => s.type === type)) notFound();
 
-  const hue = account.accent_hue;
   const heading = sectionDisplayName(type, data.guide.section_titles);
   const contentOf = <T,>(t: GuideSectionType): T =>
     (data.sections.find((s) => s.type === t)?.content as T) ?? (DEFAULT_CONTENT[t] as T);
@@ -80,7 +79,7 @@ export default async function EditSectionPage({
         <CheckInEditor
           propertyId={id}
           guideId={gid}
-          hue={hue}
+          branding={account}
           heading={heading}
           initial={contentOf<CheckInContent>("check_in")}
         />
@@ -90,7 +89,7 @@ export default async function EditSectionPage({
         <ParkingEditor
           propertyId={id}
           guideId={gid}
-          hue={hue}
+          branding={account}
           heading={heading}
           initial={contentOf<ParkingContent>("parking")}
         />
@@ -100,7 +99,7 @@ export default async function EditSectionPage({
         <WifiEditor
           propertyId={id}
           guideId={gid}
-          hue={hue}
+          branding={account}
           heading={heading}
           initial={contentOf<WifiContent>("wifi")}
         />
@@ -110,7 +109,7 @@ export default async function EditSectionPage({
         <AmenitiesEditor
           propertyId={id}
           guideId={gid}
-          hue={hue}
+          branding={account}
           heading={heading}
           initial={contentOf<AmenitiesContent>("amenities")}
           initialVideos={videoRows}
@@ -121,7 +120,7 @@ export default async function EditSectionPage({
         <LocalGuideEditor
           propertyId={id}
           guideId={gid}
-          hue={hue}
+          branding={account}
           heading={heading}
           initial={contentOf<LocalGuideContent>("local_guide")}
           initialEntries={localEntries}
@@ -132,7 +131,7 @@ export default async function EditSectionPage({
         <HouseRulesEditor
           propertyId={id}
           guideId={gid}
-          hue={hue}
+          branding={account}
           heading={heading}
           initial={contentOf<HouseRulesContent>("house_rules")}
         />
@@ -142,7 +141,7 @@ export default async function EditSectionPage({
         <CheckOutEditor
           propertyId={id}
           guideId={gid}
-          hue={hue}
+          branding={account}
           heading={heading}
           initial={contentOf<CheckOutContent>("check_out")}
         />
@@ -152,7 +151,7 @@ export default async function EditSectionPage({
         <ContactEditor
           propertyId={id}
           guideId={gid}
-          hue={hue}
+          branding={account}
           heading={heading}
           initial={contentOf<EmergencyContent>("emergency_contacts")}
         />

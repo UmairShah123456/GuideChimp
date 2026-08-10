@@ -35,7 +35,7 @@ export function GuidePhone({ className = "" }: { className?: string }) {
       className={`w-[300px] overflow-hidden rounded-[40px] border-[10px] border-ink bg-page shadow-[0_40px_80px_-24px_rgba(28,40,48,0.45)] ${className}`}
     >
       {/* Accent header */}
-      <div className="relative bg-accent px-5 pb-7 pt-5 text-white">
+      <div className="relative bg-brand px-5 pb-7 pt-5 text-brand-contrast">
         <div className="mx-auto mb-4 h-1 w-16 rounded-full bg-white/30" />
         <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-white/70">
           Riverside Stays

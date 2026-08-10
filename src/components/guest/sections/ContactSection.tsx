@@ -27,7 +27,7 @@ function HostCard({ host }: { host: HostContact }) {
             href={`https://wa.me/${phoneDigits(whatsapp)}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex-1 rounded-[var(--radius-code)] bg-accent py-3 text-center text-[13.5px] font-bold text-white"
+            className="flex-1 rounded-[var(--radius-code)] bg-brand py-3 text-center text-[13.5px] font-bold text-brand-contrast"
           >
             WhatsApp
           </a>

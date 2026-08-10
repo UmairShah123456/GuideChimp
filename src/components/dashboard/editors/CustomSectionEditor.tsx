@@ -10,6 +10,7 @@ import { MediaUploader } from "@/components/dashboard/MediaUploader";
 import { CustomSection } from "@/components/guest/sections/CustomSection";
 import { saveCustomSection, deleteCustomSection } from "@/lib/dashboard/custom-section-actions";
 import type { CustomBlock, CustomBlockType, CustomStep } from "@/lib/guide/types";
+import type { Branding } from "@/lib/branding/vars";
 
 const BLOCK_MENU: { type: CustomBlockType; label: string; hint: string }[] = [
   { type: "text", label: "Text", hint: "A paragraph of details" },
@@ -54,14 +55,14 @@ export function CustomSectionEditor({
   guideId,
   sectionId,
   name,
-  hue,
+  branding,
   initial,
 }: {
   propertyId: string | null;
   guideId: string;
   sectionId: string;
   name: string;
-  hue: number;
+  branding: Branding;
   initial: CustomBlock[];
 }) {
   const [blocks, setBlocks] = useState<CustomBlock[]>(initial);
@@ -87,7 +88,7 @@ export function CustomSectionEditor({
       propertyId={propertyId}
       guideId={guideId}
       title={name || "Custom section"}
-      hue={hue}
+      branding={branding}
       onSave={() => saveCustomSection(propertyId, guideId, sectionId, blocks)}
       preview={<CustomSection section={{ title: name, blocks, body: null }} />}
       form={

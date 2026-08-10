@@ -7,17 +7,18 @@ import { VideoSourceField } from "./VideoSourceField";
 import { CheckOutSection } from "@/components/guest/sections/CheckOutSection";
 import { saveSectionContent } from "@/lib/dashboard/section-actions";
 import type { CheckOutContent } from "@/lib/guide/types";
+import type { Branding } from "@/lib/branding/vars";
 
 export function CheckOutEditor({
   propertyId,
   guideId,
-  hue,
+  branding,
   heading,
   initial,
 }: {
   propertyId: string;
   guideId: string;
-  hue: number;
+  branding: Branding;
   heading: string;
   initial: CheckOutContent;
 }) {
@@ -32,7 +33,7 @@ export function CheckOutEditor({
       propertyId={propertyId}
       guideId={guideId}
       title={heading}
-      hue={hue}
+      branding={branding}
       onSave={() => saveSectionContent(propertyId, guideId, "check_out", c)}
       preview={<CheckOutSection heading={heading} checkout={c} />}
       form={

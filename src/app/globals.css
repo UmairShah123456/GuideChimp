@@ -2,14 +2,17 @@
 
 /*
   GuideChimp design tokens — extracted verbatim from the Guest Portal Explorations
-  design file (warm-editorial "1c" direction). The palette is hue-driven: every
-  accent value is oklch(L C var(--h)), so overriding `--h` on any subtree recolors
-  the whole thing. That is exactly how per-account `branding.accent_color` works —
-  see ThemeScope. `--rs` scales all radii (Soft = 1); `--rp` is the pill radius.
+  design file (warm-editorial "1c" direction).
+
+  What follows is the *house* look: the marketing site, the dashboard chrome and
+  anything rendered outside a theme scope. Guest guides override these tokens
+  per account — brand colour, theme preset and font pairing — by writing
+  concrete values inline; see src/lib/branding and ThemeScope. `--rs` scales all
+  radii (Soft = 1); `--rp` is the pill radius.
 */
 
 :root {
-  --h: 200; /* Teal — design default. Terracotta 45 · Forest 155 · Plum 320 */
+  --h: 200; /* Teal — the house hue. */
   --rs: 1; /* radius scale: Soft. Extra-round 1.6 · Sharp 0.25 */
   --rp: 999px; /* pill radius. Sharp uses 8px */
 }
@@ -27,7 +30,22 @@
   --radius-header: calc(28px * var(--rs));
   --radius-pill: var(--rp);
 
-  /* Accent — hue-driven, recolored by --h at runtime */
+  /*
+    Brand — the host's colour exactly as they chose it. Large fills only
+    (guide header, primary buttons, toggles), always paired with
+    `brand-contrast` for text so a pale brand colour still reads.
+  */
+  --color-brand: oklch(0.5 0.12 var(--h));
+  --color-brand-hover: oklch(0.44 0.12 var(--h));
+  --color-brand-contrast: #ffffff;
+  --color-brand-soft: oklch(0.9 0.04 var(--h));
+  --color-brand-deep: oklch(0.4 0.11 var(--h));
+  /* Always-dark scrim for white text over photos. Deliberately not derived
+     from `ink`, which inverts on dark themes and would lighten instead. */
+  --color-scrim: #0b1116;
+
+  /* Accent — the same colour pulled to a legible lightness for text, icons and
+     borders on light surfaces, plus its tint ramp. */
   --color-accent: oklch(0.5 0.12 var(--h));
   --color-accent-hover: oklch(0.42 0.12 var(--h));
   --color-accent-subtle: oklch(0.95 0.02 var(--h));

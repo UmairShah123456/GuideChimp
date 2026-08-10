@@ -69,7 +69,7 @@ export function SiteHeader() {
           </Link>
           <Link
             href="/signup"
-            className="rounded-[var(--radius-pill)] bg-ink px-4.5 py-2.5 text-[14px] font-bold text-white shadow-[0_6px_20px_-8px_rgba(28,40,48,0.8)] transition-all duration-200 hover:-translate-y-px hover:bg-accent hover:shadow-[0_10px_26px_-8px_oklch(0.5_0.12_var(--h)/0.65)] active:translate-y-0"
+            className="rounded-[var(--radius-pill)] bg-ink px-4.5 py-2.5 text-[14px] font-bold text-brand-contrast shadow-[0_6px_20px_-8px_rgba(28,40,48,0.8)] transition-all duration-200 hover:-translate-y-px hover:bg-brand hover:shadow-[0_10px_26px_-8px_oklch(0.5_0.12_var(--h)/0.65)] active:translate-y-0"
           >
             Start free
           </Link>
@@ -117,7 +117,7 @@ export function SiteHeader() {
               <Link
                 href="/signup"
                 onClick={() => setOpen(false)}
-                className="rounded-[var(--radius-pill)] bg-accent px-4 py-3 text-center text-[15px] font-bold text-white"
+                className="rounded-[var(--radius-pill)] bg-brand px-4 py-3 text-center text-[15px] font-bold text-brand-contrast"
               >
                 Start free
               </Link>

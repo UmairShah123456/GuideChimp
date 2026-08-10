@@ -9,17 +9,18 @@ import { CheckInSection } from "@/components/guest/sections/CheckInSection";
 import { saveSectionContent } from "@/lib/dashboard/section-actions";
 import { timeChip, TIME_OPTIONS } from "@/lib/time";
 import type { CheckInContent, CheckInStep } from "@/lib/guide/types";
+import type { Branding } from "@/lib/branding/vars";
 
 export function CheckInEditor({
   propertyId,
   guideId,
-  hue,
+  branding,
   heading,
   initial,
 }: {
   propertyId: string;
   guideId: string;
-  hue: number;
+  branding: Branding;
   heading: string;
   initial: CheckInContent;
 }) {
@@ -37,7 +38,7 @@ export function CheckInEditor({
       propertyId={propertyId}
       guideId={guideId}
       title={heading}
-      hue={hue}
+      branding={branding}
       onSave={() => saveSectionContent(propertyId, guideId, "check_in", c)}
       preview={<CheckInSection heading={heading} checkIn={c} />}
       form={

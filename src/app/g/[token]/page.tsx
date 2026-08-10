@@ -13,6 +13,7 @@ import { HeaderChip } from "@/components/guest/GuestHeader";
 import { SectionLabel } from "@/components/guest/primitives";
 import { WifiCard } from "@/components/guest/WifiCard";
 import { WelcomeGate } from "@/components/guest/WelcomeGate";
+import { BrandLogo, asBackdrop } from "@/components/guest/BrandLogo";
 import { PlusIcon, KeyIcon, SunIcon, ExitIcon } from "@/components/guest/icons";
 
 export const dynamic = "force-dynamic";
@@ -67,6 +68,7 @@ export default async function GuestHome({
   const checkInChip = timeChip(checkIn?.checkInTime, "Check-in from");
   const checkoutChip = timeChip(checkIn?.checkoutTime, "Checkout");
 
+  const logoBackdrop = asBackdrop(guide.account.logo_backdrop);
   const overrides = guide.guide.section_titles ?? {};
   const tile = (t: (typeof HOME_TILES)[number]) => {
     const ov = overrides[t.type] ?? {};
@@ -111,6 +113,9 @@ export default async function GuestHome({
         checkInTime={checkIn?.checkInTime}
         checkoutTime={checkIn?.checkoutTime}
         heroImageUrl={property.hero_image_url}
+        logoUrl={guide.account.logo_url}
+        logoBackdrop={logoBackdrop}
+        accountName={guide.account.name}
         prefetchHrefs={prefetchHrefs}
       />
       {/* Hero: property photo as the background, darkened for legibility */}
@@ -124,14 +129,20 @@ export default async function GuestHome({
             className="object-cover"
           />
         ) : (
-          <div className="absolute inset-0 bg-accent" />
+          <div className="absolute inset-0 bg-brand-deep" />
         )}
         {/* darkening overlay */}
-        <div className="absolute inset-0 bg-ink/55" />
-        <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/45 to-ink/40" />
+        <div className="absolute inset-0 bg-scrim/55" />
+        <div className="absolute inset-0 bg-gradient-to-t from-scrim/90 via-scrim/45 to-scrim/40" />
 
         <div className="relative px-[22px] pb-6 pt-9">
-          <h1 className="whitespace-pre-line text-[34px] font-extrabold leading-[1.08]">
+          <BrandLogo
+            url={guide.account.logo_url}
+            name={guide.account.name}
+            backdrop={logoBackdrop}
+            className={"mb-4"}
+          />
+          <h1 className="whitespace-pre-line font-display text-[34px] font-extrabold leading-[1.08]">
             {"Hiya!\nYou're in the right place."}
           </h1>
           {subtitle && <p className="mt-2.5 text-sm text-white/75">{subtitle}</p>}

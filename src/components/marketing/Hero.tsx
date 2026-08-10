@@ -48,7 +48,7 @@ export function Hero() {
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
               <Link
                 href="/signup"
-                className="group inline-flex items-center justify-center gap-2 rounded-[var(--radius-pill)] bg-accent px-6 py-3.5 text-[15px] font-bold text-white shadow-[0_14px_34px_-12px_oklch(0.5_0.12_var(--h)/0.85)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent-hover hover:shadow-[0_20px_44px_-14px_oklch(0.5_0.12_var(--h)/0.95)] active:translate-y-0"
+                className="group inline-flex items-center justify-center gap-2 rounded-[var(--radius-pill)] bg-brand px-6 py-3.5 text-[15px] font-bold text-brand-contrast shadow-[0_14px_34px_-12px_oklch(0.5_0.12_var(--h)/0.85)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent-hover hover:shadow-[0_20px_44px_-14px_oklch(0.5_0.12_var(--h)/0.95)] active:translate-y-0"
               >
                 Build your first guide
                 <ArrowIcon className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />

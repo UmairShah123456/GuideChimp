@@ -48,7 +48,7 @@ export function CopyButton({
       <button
         type="button"
         onClick={copy}
-        className={`flex w-full items-center justify-center gap-2 rounded-[var(--radius-pill)] bg-accent p-3 text-[13.5px] font-bold text-white transition-colors ${className}`}
+        className={`flex w-full items-center justify-center gap-2 rounded-[var(--radius-pill)] bg-brand p-3 text-[13.5px] font-bold text-brand-contrast transition-colors ${className}`}
       >
         {copied ? <CheckIcon className="h-4 w-4" /> : null}
         {copied ? copiedLabel : (label ?? "Tap to copy")}

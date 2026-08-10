@@ -17,7 +17,7 @@ export function NewPropertyButton({ subtle = false }: { subtle?: boolean }) {
         className={
           subtle
             ? "rounded-[var(--radius-pill)] border-[1.5px] border-border bg-surface px-4 py-2.5 text-sm font-bold text-ink"
-            : "rounded-[var(--radius-pill)] bg-accent px-4 py-2.5 text-sm font-bold text-white"
+            : "rounded-[var(--radius-pill)] bg-brand px-4 py-2.5 text-sm font-bold text-brand-contrast"
         }
       >
         New property
