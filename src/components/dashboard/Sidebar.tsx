@@ -4,12 +4,18 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOutAction } from "@/lib/auth/actions";
 import { Logo } from "@/components/Logo";
+import { PersonIcon } from "@/components/guest/icons";
 
+/**
+ * The two kinds of guide, plus branding — it applies to every guide at once, so
+ * it belongs beside them rather than buried in account settings. Profile and
+ * billing are reached by the identity block at the foot of the sidebar, and
+ * Team is hidden until it does something.
+ */
 const NAV = [
-  { label: "Properties", href: "/dashboard", match: ["/dashboard", "/properties"] },
-  { label: "Account", href: "/account", match: ["/account"], exact: true },
-  { label: "Team", href: "/account/team", match: ["/account/team"] },
-  { label: "Billing", href: "/account/billing", match: ["/account/billing"] },
+  { label: "Property guides", href: "/dashboard", match: ["/dashboard", "/properties"] },
+  { label: "Company guides", href: "/guides", match: ["/guides"] },
+  { label: "Branding", href: "/branding", match: ["/branding"] },
 ];
 
 export function Sidebar({
@@ -21,10 +27,8 @@ export function Sidebar({
 }) {
   const pathname = usePathname();
 
-  const isActive = (item: (typeof NAV)[number]) => {
-    if (item.exact) return pathname === item.href;
-    return item.match.some((m) => pathname === m || pathname.startsWith(m + "/"));
-  };
+  const isActive = (item: (typeof NAV)[number]) =>
+    item.match.some((m) => pathname === m || pathname.startsWith(m + "/"));
 
   return (
     <aside className="sticky top-0 flex h-dvh w-60 flex-none flex-col border-r border-border bg-surface px-4 py-6">
@@ -52,12 +56,22 @@ export function Sidebar({
       </nav>
 
       <div className="mt-auto border-t border-border pt-4">
-        <div className="px-2">
-          <div className="truncate text-[13px] font-bold text-ink">{accountName}</div>
-          {userEmail && (
-            <div className="truncate text-xs text-muted">{userEmail}</div>
-          )}
-        </div>
+        {/* The account identity doubles as the way into account settings —
+            it's where people look for it. */}
+        <Link
+          href="/account"
+          className="flex items-center gap-2.5 rounded-[var(--radius-sm)] px-2 py-1.5 transition-colors hover:bg-page"
+        >
+          <span className="flex h-8 w-8 flex-none items-center justify-center rounded-full bg-accent-subtle text-accent">
+            <PersonIcon className="h-4 w-4" />
+          </span>
+          <span className="min-w-0">
+            <span className="block truncate text-[13px] font-bold text-ink">{accountName}</span>
+            {userEmail && (
+              <span className="block truncate text-xs text-muted">{userEmail}</span>
+            )}
+          </span>
+        </Link>
         <form action={signOutAction} className="mt-3">
           <button
             type="submit"

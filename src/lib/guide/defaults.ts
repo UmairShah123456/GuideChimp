@@ -46,7 +46,7 @@ export function sectionDisplayName(
 
 /**
  * Whether a built-in section is turned on. Controlled by an explicit host toggle
- * stored on the property (`section_titles[type].enabled`); defaults to on so a
+ * stored on the guide (`section_titles[type].enabled`); defaults to on so a
  * host opts sections out rather than in.
  */
 export function sectionEnabled(
@@ -56,9 +56,15 @@ export function sectionEnabled(
   return overrides?.[type]?.enabled ?? true;
 }
 
-/** The same toggle, read straight off a resolved guest guide. */
+/** Whether the guide actually has this section at all. Staff guides are seeded
+ *  with none, so existence — not just the toggle — decides what renders. */
+export function sectionPresent(guide: GuestGuide, type: GuideSectionType): boolean {
+  return guide.sections.some((s) => s.type === type);
+}
+
+/** A section renders only if the guide has it and it is toggled on. */
 export function sectionVisible(guide: GuestGuide, type: GuideSectionType): boolean {
-  return sectionEnabled(type, guide.property.section_titles);
+  return sectionPresent(guide, type) && sectionEnabled(type, guide.guide.section_titles);
 }
 
 /** Human labels + ordering for the seven guide sections. */

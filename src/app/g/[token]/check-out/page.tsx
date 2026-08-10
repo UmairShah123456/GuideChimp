@@ -1,6 +1,7 @@
+import { notFound } from "next/navigation";
 import { getGuide } from "@/lib/guide/resolve";
 import { sectionContent } from "@/lib/guide/types";
-import { sectionDisplayName } from "@/lib/guide/defaults";
+import { sectionDisplayName, sectionPresent } from "@/lib/guide/defaults";
 import { GuestScreen } from "@/components/guest/GuestScreen";
 import { GuestFallback } from "@/components/guest/GuestFallback";
 import { CheckOutSection } from "@/components/guest/sections/CheckOutSection";
@@ -17,11 +18,13 @@ export default async function CheckOutScreen({
   if (res.status !== "ok") return <GuestFallback status={res.status} />;
 
   const { guide } = res;
+  if (!sectionPresent(guide, "check_out")) notFound();
+
   return (
-    <GuestScreen token={token} hue={guide.account.accent_hue} active="rules" sectionTitles={guide.property.section_titles}>
+    <GuestScreen token={token} guide={guide} active="rules">
       <CheckOutSection
         token={token}
-        heading={sectionDisplayName("check_out", guide.property.section_titles)}
+        heading={sectionDisplayName("check_out", guide.guide.section_titles)}
         checkout={sectionContent(guide, "check_out")}
       />
     </GuestScreen>

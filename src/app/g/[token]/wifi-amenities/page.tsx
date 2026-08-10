@@ -1,6 +1,7 @@
+import { notFound } from "next/navigation";
 import { getGuide } from "@/lib/guide/resolve";
 import { findSection, sectionContent } from "@/lib/guide/types";
-import { sectionDisplayName } from "@/lib/guide/defaults";
+import { sectionDisplayName, sectionPresent } from "@/lib/guide/defaults";
 import { GuestScreen } from "@/components/guest/GuestScreen";
 import { GuestFallback } from "@/components/guest/GuestFallback";
 import {
@@ -20,6 +21,8 @@ export default async function WifiAmenitiesScreen({
   if (res.status !== "ok") return <GuestFallback status={res.status} />;
 
   const { guide } = res;
+  if (!sectionPresent(guide, "amenities")) notFound();
+
   const amenitiesSection = findSection(guide, "amenities");
   const videos: PreviewVideo[] = guide.media
     .filter((m) => m.type === "video" && m.guide_section_id === amenitiesSection?.id)
@@ -31,10 +34,10 @@ export default async function WifiAmenitiesScreen({
     }));
 
   return (
-    <GuestScreen token={token} hue={guide.account.accent_hue} active="guides" sectionTitles={guide.property.section_titles}>
+    <GuestScreen token={token} guide={guide} active="guides">
       <WifiAmenitiesSection
         token={token}
-        heading={sectionDisplayName("amenities", guide.property.section_titles)}
+        heading={sectionDisplayName("amenities", guide.guide.section_titles)}
         amenities={sectionContent(guide, "amenities")}
         videos={videos}
       />

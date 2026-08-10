@@ -1,6 +1,7 @@
+import { notFound } from "next/navigation";
 import { getGuide } from "@/lib/guide/resolve";
 import { sectionContent } from "@/lib/guide/types";
-import { sectionDisplayName } from "@/lib/guide/defaults";
+import { sectionDisplayName, sectionPresent } from "@/lib/guide/defaults";
 import { GuestScreen } from "@/components/guest/GuestScreen";
 import { GuestFallback } from "@/components/guest/GuestFallback";
 import { ParkingSection } from "@/components/guest/sections/ParkingSection";
@@ -17,11 +18,13 @@ export default async function ParkingScreen({
   if (res.status !== "ok") return <GuestFallback status={res.status} />;
 
   const { guide } = res;
+  if (!sectionPresent(guide, "parking")) notFound();
+
   return (
-    <GuestScreen token={token} hue={guide.account.accent_hue} active="home" sectionTitles={guide.property.section_titles}>
+    <GuestScreen token={token} guide={guide} active="home">
       <ParkingSection
         token={token}
-        heading={sectionDisplayName("parking", guide.property.section_titles)}
+        heading={sectionDisplayName("parking", guide.guide.section_titles)}
         parking={sectionContent(guide, "parking")}
       />
     </GuestScreen>

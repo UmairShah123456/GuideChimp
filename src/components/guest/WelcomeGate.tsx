@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Logo } from "@/components/Logo";
+import { BrandLogo, type LogoBackdrop } from "@/components/guest/BrandLogo";
 import { KeyIcon, ExitIcon, LocalIcon, CopyIcon, CheckIcon } from "@/components/guest/icons";
 
 const formatTime = (t?: string) =>
@@ -22,6 +23,9 @@ export function WelcomeGate({
   checkInTime,
   checkoutTime,
   heroImageUrl,
+  logoUrl,
+  logoBackdrop,
+  accountName,
   prefetchHrefs,
 }: {
   token: string;
@@ -30,6 +34,9 @@ export function WelcomeGate({
   checkInTime?: string;
   checkoutTime?: string;
   heroImageUrl?: string | null;
+  logoUrl?: string | null;
+  logoBackdrop?: LogoBackdrop;
+  accountName: string;
   prefetchHrefs: string[];
 }) {
   const router = useRouter();
@@ -77,19 +84,23 @@ export function WelcomeGate({
   const hasCard = Boolean(address || hasTimes);
 
   return (
-    <div className="fixed inset-0 z-50 mx-auto flex w-full max-w-[480px] flex-col overflow-hidden bg-accent text-white">
+    <div className="fixed inset-0 z-50 mx-auto flex w-full max-w-[480px] flex-col overflow-hidden bg-brand-deep text-white">
       {/* Property photo backdrop */}
       {heroImageUrl && (
         // eslint-disable-next-line @next/next/no-img-element
         <img src={heroImageUrl} alt="" className="absolute inset-0 h-full w-full object-cover" />
       )}
       {/* Teal tint + legibility darkening toward the bottom */}
-      <div className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/35 to-transparent" />
-      <div className="absolute inset-0 bg-gradient-to-t from-accent/70 via-accent/10 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-scrim/85 via-scrim/35 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-brand-deep/75 via-brand-deep/15 to-transparent" />
 
       <div className="relative flex w-full flex-1 flex-col px-6 pb-8 pt-11">
         <div className="flex justify-center">
-          <Logo className="h-6 w-auto brightness-0 invert" />
+          {logoUrl ? (
+            <BrandLogo url={logoUrl} name={accountName} backdrop={logoBackdrop} />
+          ) : (
+            <Logo className="h-6 w-auto brightness-0 invert" />
+          )}
         </div>
 
         <div className="mt-auto flex flex-col gap-5">
@@ -97,7 +108,7 @@ export function WelcomeGate({
             <div className="text-[13px] font-extrabold uppercase tracking-[0.14em] text-white/75">
               Welcome
             </div>
-            <h1 className="mt-2 text-[34px] font-extrabold leading-[1.06]">
+            <h1 className="mt-2 font-display text-[34px] font-extrabold leading-[1.06]">
               {propertyName || "You're in the right place"}
             </h1>
             <p className="mt-3 max-w-[22rem] text-[14.5px] leading-relaxed text-white/85">
@@ -163,7 +174,7 @@ export function WelcomeGate({
           <button
             type="button"
             onClick={enter}
-            className="w-full rounded-[var(--radius-pill)] bg-white py-4 text-center text-[15px] font-extrabold text-accent transition-transform active:scale-[0.99]"
+            className="w-full rounded-[var(--radius-pill)] bg-white py-4 text-center text-[15px] font-extrabold text-brand-deep transition-transform active:scale-[0.99]"
           >
             Enter your guide
           </button>

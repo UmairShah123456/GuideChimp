@@ -1,5 +1,6 @@
+import { notFound } from "next/navigation";
 import { getGuide } from "@/lib/guide/resolve";
-import { sectionDisplayName } from "@/lib/guide/defaults";
+import { sectionDisplayName, sectionPresent } from "@/lib/guide/defaults";
 import { GuestScreen } from "@/components/guest/GuestScreen";
 import { GuestFallback } from "@/components/guest/GuestFallback";
 import { LocalGuideSection } from "@/components/guest/sections/LocalGuideSection";
@@ -16,11 +17,13 @@ export default async function LocalGuideScreen({
   if (res.status !== "ok") return <GuestFallback status={res.status} />;
 
   const { guide } = res;
+  if (!sectionPresent(guide, "local_guide")) notFound();
+
   return (
-    <GuestScreen token={token} hue={guide.account.accent_hue} active="local" sectionTitles={guide.property.section_titles}>
+    <GuestScreen token={token} guide={guide} active="local">
       <LocalGuideSection
         token={token}
-        heading={sectionDisplayName("local_guide", guide.property.section_titles)}
+        heading={sectionDisplayName("local_guide", guide.guide.section_titles)}
         entries={guide.localEntries}
       />
     </GuestScreen>

@@ -4,8 +4,8 @@
 
 -- Fixed UUIDs so inserts can reference each other deterministically.
 -- account
-insert into public.accounts (id, name, accent_hue)
-values ('a0000000-0000-0000-0000-000000000001', 'Airhosts', 200);
+insert into public.accounts (id, name, brand_color, theme_preset, font_heading, font_body)
+values ('a0000000-0000-0000-0000-000000000001', 'Airhosts', '#2a6e7e', 'editorial', 'outfit', 'outfit');
 
 -- property
 insert into public.properties (id, account_id, name, address, hero_image_url)
@@ -17,11 +17,47 @@ values (
   null
 );
 
+-- guide (the property's guest guide; everything below hangs off it)
+insert into public.guides (id, account_id, property_id, name, kind, position)
+values (
+  'd0000000-0000-0000-0000-000000000001',
+  'a0000000-0000-0000-0000-000000000001',
+  'b0000000-0000-0000-0000-000000000001',
+  'Guest guide',
+  'guest',
+  0
+);
+
+-- an account-level guide: a company process, not tied to any property
+insert into public.guides (id, account_id, property_id, name, kind, position)
+values (
+  'd0000000-0000-0000-0000-000000000002',
+  'a0000000-0000-0000-0000-000000000001',
+  null,
+  'Guest background checks',
+  'staff',
+  0
+);
+
+insert into public.custom_sections (id, guide_id, title, subtitle, position, blocks)
+values (
+  'e0000000-0000-0000-0000-000000000001',
+  'd0000000-0000-0000-0000-000000000002',
+  'Running a check',
+  'Before you approve a booking',
+  0,
+  '[{"id":"s1","type":"text","body":"Verify ID against the booking name, then check the platform profile age."}]'::jsonb
+);
+
+insert into public.magic_links (guide_id, token, expires_at)
+values ('d0000000-0000-0000-0000-000000000002', 'demo-background-checks', null);
+
 -- guide sections
-insert into public.guide_sections (id, property_id, type, position, content) values
+insert into public.guide_sections (id, property_id, guide_id, type, position, content) values
 (
   'c0000000-0000-0000-0000-000000000001',
   'b0000000-0000-0000-0000-000000000001',
+  'd0000000-0000-0000-0000-000000000001',
   'check_in', 0,
   jsonb_build_object(
     'eyebrow', 'Getting in',
@@ -39,6 +75,7 @@ insert into public.guide_sections (id, property_id, type, position, content) val
 (
   'c0000000-0000-0000-0000-000000000002',
   'b0000000-0000-0000-0000-000000000001',
+  'd0000000-0000-0000-0000-000000000001',
   'parking', 1,
   jsonb_build_object(
     'lotName', 'Underground car park',
@@ -50,6 +87,7 @@ insert into public.guide_sections (id, property_id, type, position, content) val
 (
   'c0000000-0000-0000-0000-000000000003',
   'b0000000-0000-0000-0000-000000000001',
+  'd0000000-0000-0000-0000-000000000001',
   'wifi', 2,
   jsonb_build_object(
     'network', 'AspectsCourt_5G',
@@ -60,6 +98,7 @@ insert into public.guide_sections (id, property_id, type, position, content) val
 (
   'c0000000-0000-0000-0000-000000000004',
   'b0000000-0000-0000-0000-000000000001',
+  'd0000000-0000-0000-0000-000000000001',
   'amenities', 3,
   jsonb_build_object(
     'eyebrow', 'How stuff works',
@@ -71,6 +110,7 @@ insert into public.guide_sections (id, property_id, type, position, content) val
 (
   'c0000000-0000-0000-0000-000000000005',
   'b0000000-0000-0000-0000-000000000001',
+  'd0000000-0000-0000-0000-000000000001',
   'local_guide', 4,
   jsonb_build_object(
     'eyebrow', 'Local guide',
@@ -81,6 +121,7 @@ insert into public.guide_sections (id, property_id, type, position, content) val
 (
   'c0000000-0000-0000-0000-000000000006',
   'b0000000-0000-0000-0000-000000000001',
+  'd0000000-0000-0000-0000-000000000001',
   'house_rules', 5,
   jsonb_build_object(
     'eyebrow', 'House rules',
@@ -97,6 +138,7 @@ insert into public.guide_sections (id, property_id, type, position, content) val
 (
   'c0000000-0000-0000-0000-000000000008',
   'b0000000-0000-0000-0000-000000000001',
+  'd0000000-0000-0000-0000-000000000001',
   'check_out', 6,
   jsonb_build_object(
     'eyebrow', 'Before you go',
@@ -112,6 +154,7 @@ insert into public.guide_sections (id, property_id, type, position, content) val
 (
   'c0000000-0000-0000-0000-000000000007',
   'b0000000-0000-0000-0000-000000000001',
+  'd0000000-0000-0000-0000-000000000001',
   'emergency_contacts', 7,
   jsonb_build_object(
     'eyebrow', 'Contact',
@@ -137,11 +180,11 @@ insert into public.guide_sections (id, property_id, type, position, content) val
 );
 
 -- amenity video guides (placeholder media — real uploads replace these)
-insert into public.media_items (property_id, guide_section_id, type, url, caption, position, metadata) values
-('b0000000-0000-0000-0000-000000000001','c0000000-0000-0000-0000-000000000004','video','','Heating & hot water',0, jsonb_build_object('duration','0:48','subtitle','Thermostat by the door')),
-('b0000000-0000-0000-0000-000000000001','c0000000-0000-0000-0000-000000000004','video','','TV & streaming',1, jsonb_build_object('duration','1:12','subtitle','Sign into your own Netflix')),
-('b0000000-0000-0000-0000-000000000001','c0000000-0000-0000-0000-000000000004','video','','Washer-dryer',2, jsonb_build_object('duration','0:35','subtitle','The dial that makes sense')),
-('b0000000-0000-0000-0000-000000000001','c0000000-0000-0000-0000-000000000004','video','','Balcony door',3, jsonb_build_object('duration','0:22','subtitle','Lift handle up to lock'));
+insert into public.media_items (property_id, guide_id, guide_section_id, type, url, caption, position, metadata) values
+('b0000000-0000-0000-0000-000000000001','d0000000-0000-0000-0000-000000000001','c0000000-0000-0000-0000-000000000004','video','','Heating & hot water',0, jsonb_build_object('duration','0:48','subtitle','Thermostat by the door')),
+('b0000000-0000-0000-0000-000000000001','d0000000-0000-0000-0000-000000000001','c0000000-0000-0000-0000-000000000004','video','','TV & streaming',1, jsonb_build_object('duration','1:12','subtitle','Sign into your own Netflix')),
+('b0000000-0000-0000-0000-000000000001','d0000000-0000-0000-0000-000000000001','c0000000-0000-0000-0000-000000000004','video','','Washer-dryer',2, jsonb_build_object('duration','0:35','subtitle','The dial that makes sense')),
+('b0000000-0000-0000-0000-000000000001','d0000000-0000-0000-0000-000000000001','c0000000-0000-0000-0000-000000000004','video','','Balcony door',3, jsonb_build_object('duration','0:22','subtitle','Lift handle up to lock'));
 
 -- local guide entries
 insert into public.local_guide_entries (guide_section_id, category, name, description, price, hours, position, url) values
@@ -151,9 +194,9 @@ insert into public.local_guide_entries (guide_section_id, category, name, descri
 ('c0000000-0000-0000-0000-000000000005','Point of interest','Slough Station','"Elizabeth line to central London in ~35 min. Paddington in 17."',null,null,3,null);
 
 -- magic link — /g/demo-aspects-court, no expiry
-insert into public.magic_links (property_id, token, expires_at)
-values ('b0000000-0000-0000-0000-000000000001', 'demo-aspects-court', null);
+insert into public.magic_links (property_id, guide_id, token, expires_at)
+values ('b0000000-0000-0000-0000-000000000001','d0000000-0000-0000-0000-000000000001', 'demo-aspects-court', null);
 
 -- a pre-expired link to exercise the expired-state fallback: /g/expired-demo
-insert into public.magic_links (property_id, token, expires_at)
-values ('b0000000-0000-0000-0000-000000000001', 'expired-demo', now() - interval '1 day');
+insert into public.magic_links (property_id, guide_id, token, expires_at)
+values ('b0000000-0000-0000-0000-000000000001','d0000000-0000-0000-0000-000000000001', 'expired-demo', now() - interval '1 day');

@@ -69,7 +69,7 @@ function Chip({
       type="button"
       onClick={onClick}
       className={`flex-none rounded-[var(--radius-pill)] px-3.5 py-2 text-[12.5px] font-bold transition-colors ${
-        active ? "bg-accent text-white" : "bg-accent-subtle text-accent"
+        active ? "bg-brand text-brand-contrast" : "bg-accent-subtle text-accent"
       }`}
     >
       {children}

@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
-import { revalidateGuide } from "./revalidate";
+import { revalidateProperty } from "./revalidate";
 import { getActiveAccount } from "@/lib/auth/session";
 import { SECTION_META, DEFAULT_CONTENT } from "@/lib/guide/defaults";
 import { generateToken } from "./token";
@@ -11,15 +11,17 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { FormState } from "@/lib/forms";
 
 /**
- * Creates a property, its seven (empty) guide sections, and an initial magic
- * link — the atomic unit a host works with. Returns the new property id.
+ * Creates a property and its guest guide — the eight (empty) guide sections and
+ * an initial magic link — as the atomic unit a host starts from. Further guides
+ * (cleaner, staff) are added later from the property's guide list.
+ * Returns the new property id and the guest guide's id.
  */
 async function createPropertyWithDefaults(
   supabase: SupabaseClient,
   accountId: string,
   name: string,
   address: string,
-): Promise<string> {
+): Promise<{ propertyId: string; guideId: string }> {
   const { data: property, error } = await supabase
     .from("properties")
     .insert({ account_id: accountId, name, address: address || null })
@@ -27,9 +29,17 @@ async function createPropertyWithDefaults(
     .single();
   if (error || !property) throw new Error(error?.message ?? "Could not create property.");
 
+  const { data: guide, error: guideErr } = await supabase
+    .from("guides")
+    .insert({ property_id: property.id, name: "Guest guide", kind: "guest", position: 0 })
+    .select("id")
+    .single();
+  if (guideErr || !guide) throw new Error(guideErr?.message ?? "Could not create the guest guide.");
+
   await supabase.from("guide_sections").insert(
     SECTION_META.map((s) => ({
       property_id: property.id,
+      guide_id: guide.id,
       type: s.type,
       position: s.position,
       content: DEFAULT_CONTENT[s.type],
@@ -38,9 +48,9 @@ async function createPropertyWithDefaults(
 
   await supabase
     .from("magic_links")
-    .insert({ property_id: property.id, token: generateToken() });
+    .insert({ property_id: property.id, guide_id: guide.id, token: generateToken() });
 
-  return property.id as string;
+  return { propertyId: property.id as string, guideId: guide.id as string };
 }
 
 /** First-run: create the account (as owner) and the first property together. */
@@ -58,15 +68,16 @@ export async function onboardingAction(_prev: FormState, formData: FormData): Pr
   });
   if (error || !account) return { error: error?.message ?? "Could not create your account." };
 
-  let propertyId: string;
+  let created: { propertyId: string; guideId: string };
   try {
-    propertyId = await createPropertyWithDefaults(supabase, account.id, propertyName, address);
+    created = await createPropertyWithDefaults(supabase, account.id, propertyName, address);
   } catch (e) {
     return { error: e instanceof Error ? e.message : "Could not create your property." };
   }
 
   revalidatePath("/dashboard");
-  redirect(`/properties/${propertyId}`);
+  // Straight into the guest guide — onboarding shouldn't stop at a list of one.
+  redirect(`/properties/${created.propertyId}/guides/${created.guideId}`);
 }
 
 /** Add another property to the existing account. */
@@ -79,15 +90,15 @@ export async function createPropertyAction(_prev: FormState, formData: FormData)
   if (!name) return { error: "Give the property a name." };
 
   const supabase = await createClient();
-  let propertyId: string;
+  let created: { propertyId: string; guideId: string };
   try {
-    propertyId = await createPropertyWithDefaults(supabase, account.id, name, address);
+    created = await createPropertyWithDefaults(supabase, account.id, name, address);
   } catch (e) {
     return { error: e instanceof Error ? e.message : "Could not create your property." };
   }
 
   revalidatePath("/dashboard");
-  redirect(`/properties/${propertyId}`);
+  redirect(`/properties/${created.propertyId}`);
 }
 
 /** Update a property's core details (name, address, hero image). */
@@ -106,8 +117,9 @@ export async function updatePropertyAction(_prev: FormState, formData: FormData)
     .eq("id", id);
   if (error) return { error: error.message };
 
-  await revalidateGuide(id);
-  revalidatePath(`/properties/${id}`);
+  // Name/address/hero are property-level, so every guide on it is affected.
+  await revalidateProperty(id);
+  revalidatePath(`/properties/${id}`, "layout");
   revalidatePath("/dashboard");
   return { ok: true };
 }

@@ -8,6 +8,7 @@ import { MediaUploader } from "@/components/dashboard/MediaUploader";
 import { ParkingSection } from "@/components/guest/sections/ParkingSection";
 import { saveSectionContent } from "@/lib/dashboard/section-actions";
 import type { ParkingContent, ParkingStep } from "@/lib/guide/types";
+import type { Branding } from "@/lib/branding/vars";
 
 /** Two-option pill selector. Clicking the active option again clears it. */
 function Segmented<T extends string>({
@@ -42,12 +43,14 @@ function Segmented<T extends string>({
 
 export function ParkingEditor({
   propertyId,
-  hue,
+  guideId,
+  branding,
   heading,
   initial,
 }: {
   propertyId: string;
-  hue: number;
+  guideId: string;
+  branding: Branding;
   heading: string;
   initial: ParkingContent;
 }) {
@@ -61,9 +64,10 @@ export function ParkingEditor({
   return (
     <EditorShell
       propertyId={propertyId}
+      guideId={guideId}
       title={heading}
-      hue={hue}
-      onSave={() => saveSectionContent(propertyId, "parking", c)}
+      branding={branding}
+      onSave={() => saveSectionContent(propertyId, guideId, "parking", c)}
       preview={<ParkingSection heading={heading} parking={c} />}
       form={
         <>

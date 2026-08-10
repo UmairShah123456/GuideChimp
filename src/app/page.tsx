@@ -15,7 +15,7 @@ export default function LandingPage() {
     <div className="grain min-h-dvh bg-page">
       <a
         href="#main"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[70] focus:rounded-[var(--radius-pill)] focus:bg-accent focus:px-4 focus:py-2.5 focus:text-sm focus:font-bold focus:text-white"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[70] focus:rounded-[var(--radius-pill)] focus:bg-brand focus:px-4 focus:py-2.5 focus:text-sm focus:font-bold focus:text-brand-contrast"
       >
         Skip to content
       </a>

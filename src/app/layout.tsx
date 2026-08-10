@@ -1,13 +1,6 @@
 import type { Metadata } from "next";
-import { Outfit } from "next/font/google";
+import { appFont } from "@/lib/branding/fonts";
 import "./globals.css";
-
-const outfit = Outfit({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
-  variable: "--font-outfit",
-  display: "swap",
-});
 
 const description =
   "GuideChimp turns check-in steps, Wi-Fi, parking, appliance how-tos and your local picks into one branded guide. Share a single link — no app for guests.";
@@ -48,7 +41,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={outfit.variable}>
+    <html lang="en" className={appFont.variable}>
       <head>
         {/*
           Marks JS as available before first paint. The scroll-reveal styles are

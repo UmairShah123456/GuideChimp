@@ -11,12 +11,28 @@ build a guide per property; guests view it on mobile via a magic link.
 Tokens are extracted verbatim from the *Guest Portal Explorations* design file
 (warm-editorial direction) and live in [`src/app/globals.css`](src/app/globals.css).
 
-The palette is **hue-driven**: every accent is `oklch(L C var(--h))`, so
-overriding `--h` on any subtree recolours the whole tree. That is exactly how
-per-account branding works — see `ThemeScope`, fed by `accounts.accent_hue`.
-Shape is scaled by `--rs` (Soft = 1) and the pill radius by `--rp`.
+`globals.css` holds the *house* look — marketing site and dashboard chrome.
+Guest guides are rebranded per account by [`src/lib/branding`](src/lib/branding),
+which turns the account's stored branding into concrete CSS custom properties:
 
-Defaults: **Teal (hue 200) · Soft · Outfit**.
+| Stored on `accounts` | Drives |
+| --- | --- |
+| `brand_color` (any hex) | `--color-brand*` (exact colour, large fills) and `--color-accent*` (the same colour pulled to a legible lightness, plus its OKLCH tint ramp) |
+| `theme_preset` | surfaces, text neutrals and corner radii — see `themes.ts` |
+| `font_heading`, `font_body` | `--font-display` / `--font-sans`, chosen independently from a 14-family list loaded via `next/font` — see `fonts.ts`. The pairings in that file are UI presets that set both at once |
+| `logo_backdrop` | how the logo meets a coloured header: `soft` feathers the artwork's own edges, `card` places it on a white card, `none` assumes transparency — see `BrandLogo` |
+
+`ThemeScope` writes those values inline on the guest subtree. It has to write
+*concrete* values: Tailwind's `@theme` resolves its `var()` inputs at `:root`,
+so overriding an input variable further down the tree would not recompute the
+tokens built from it.
+
+Contrast is decided per account, not hardcoded: `--color-brand-contrast` picks
+white or near-black over the brand fill, so a pale yellow header reads as well
+as a navy one. `--color-scrim` stays dark on every theme, for white text over
+photos.
+
+Defaults: **Teal `#2a6e7e` · Warm editorial · Outfit**.
 
 ## Local setup
 
@@ -69,7 +85,10 @@ Behind Supabase Auth (email/password), gated by `src/middleware.ts`:
   Edits save to Supabase and appear immediately on the guest link.
 - **Media uploads** to Supabase Storage (hero photos, amenity videos, host avatar, logo).
 - **Link settings** — regenerate token, expiry date, PIN.
-- **Account** — name, logo, accent-hue branding (recolours the whole guest portal).
+- **Branding** (own sidebar item, since it applies to every guide at once) — logo
+  with backdrop handling, brand colour, theme preset and typefaces, with a live
+  preview alongside the fields.
+- **Account** — account name and plan.
 - **Team / Billing** — stubs.
 
 > **Cloud auth note:** email confirmation is on by default. Either click the

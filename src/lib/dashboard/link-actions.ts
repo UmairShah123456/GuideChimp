@@ -2,53 +2,67 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
-import { revalidateGuide } from "./revalidate";
+import { revalidateGuideById } from "./revalidate";
 import { generateToken } from "./token";
+import { guideBasePath, guideListPath } from "./paths";
 import type { FormState } from "@/lib/forms";
 
 async function latestLinkId(
   supabase: Awaited<ReturnType<typeof createClient>>,
-  propertyId: string,
+  guideId: string,
 ): Promise<string | null> {
   const { data } = await supabase
     .from("magic_links")
     .select("id")
-    .eq("property_id", propertyId)
+    .eq("guide_id", guideId)
     .order("created_at", { ascending: false })
     .limit(1)
     .maybeSingle<{ id: string }>();
   return data?.id ?? null;
 }
 
+function paths(propertyId: string | null, guideId: string): void {
+  const base = guideBasePath(propertyId, guideId);
+  revalidatePath(`${base}/link-settings`);
+  revalidatePath(base);
+  revalidatePath(guideListPath(propertyId));
+}
+
 /** Issue a fresh token (invalidates the old URL) or create the first link. */
 export async function regenerateLinkAction(_prev: FormState, formData: FormData): Promise<FormState> {
-  const propertyId = String(formData.get("propertyId") ?? "");
-  if (!propertyId) return { error: "Missing property." };
+  const propertyId = String(formData.get("propertyId") ?? "") || null;
+  const guideId = String(formData.get("guideId") ?? "");
+  if (!guideId) return { error: "Missing guide." };
 
   const supabase = await createClient();
-  const id = await latestLinkId(supabase, propertyId);
+  const id = await latestLinkId(supabase, guideId);
   const token = generateToken();
+
+  // Bust the old token's cache before it stops resolving.
+  await revalidateGuideById(guideId);
 
   const { error } = id
     ? await supabase.from("magic_links").update({ token, view_count: 0 }).eq("id", id)
-    : await supabase.from("magic_links").insert({ property_id: propertyId, token });
+    : await supabase
+        .from("magic_links")
+        .insert({ property_id: propertyId, guide_id: guideId, token });
   if (error) return { error: error.message };
 
-  await revalidateGuide(propertyId);
-  revalidatePath(`/properties/${propertyId}/link-settings`);
-  revalidatePath(`/properties/${propertyId}`);
+  await revalidateGuideById(guideId);
+  paths(propertyId, guideId);
   return { ok: true, message: "New link generated. The old URL no longer works." };
 }
 
 /** Update expiry + optional PIN on the current link. */
 export async function updateLinkSettingsAction(_prev: FormState, formData: FormData): Promise<FormState> {
-  const propertyId = String(formData.get("propertyId") ?? "");
+  const propertyId = String(formData.get("propertyId") ?? "") || null;
+  const guideId = String(formData.get("guideId") ?? "");
   const expiry = String(formData.get("expires_at") ?? "").trim();
   const pin = String(formData.get("pin") ?? "").trim();
-  if (!propertyId) return { error: "Missing property." };
+  if (!guideId) return { error: "Missing guide." };
 
   const supabase = await createClient();
-  const id = await latestLinkId(supabase, propertyId);
+  const id = await latestLinkId(supabase, guideId);
   if (!id) return { error: "No link to update. Generate one first." };
 
   const { error } = await supabase
@@ -60,8 +74,7 @@ export async function updateLinkSettingsAction(_prev: FormState, formData: FormD
     .eq("id", id);
   if (error) return { error: error.message };
 
-  await revalidateGuide(propertyId);
-  revalidatePath(`/properties/${propertyId}/link-settings`);
-  revalidatePath(`/properties/${propertyId}`);
+  await revalidateGuideById(guideId);
+  paths(propertyId, guideId);
   return { ok: true, message: "Link settings saved." };
 }

@@ -3,25 +3,43 @@ import { revalidateTag } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { guideTag } from "@/lib/guide/resolve";
 
+async function bustTokens(tokens: { token: string }[]): Promise<void> {
+  for (const row of tokens) revalidateTag(guideTag(row.token));
+}
+
 /**
- * Invalidate the cached guest guide for every magic-link token of a property,
- * so host edits show up for guests immediately instead of waiting out the
- * Data Cache window. Call after any mutation that changes guest-visible content.
+ * Invalidate the cached guest guide for one guide's magic-link tokens, so host
+ * edits show up immediately instead of waiting out the Data Cache window. Call
+ * after any mutation that changes what that guide shows.
+ *
+ * Scoped to the single guide on purpose: saving a cleaner guide must not bust
+ * the guest guide's cache, which is the common case and the expensive one.
  */
-export async function revalidateGuide(propertyId: string): Promise<void> {
+export async function revalidateGuideById(guideId: string): Promise<void> {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("magic_links")
+    .select("token")
+    .eq("guide_id", guideId);
+  await bustTokens((data ?? []) as { token: string }[]);
+}
+
+/**
+ * Invalidate every guide on a property. Used when property-level content the
+ * guides share changes (name, address, hero image).
+ */
+export async function revalidateProperty(propertyId: string): Promise<void> {
   const supabase = await createClient();
   const { data } = await supabase
     .from("magic_links")
     .select("token")
     .eq("property_id", propertyId);
-  for (const row of (data ?? []) as { token: string }[]) {
-    revalidateTag(guideTag(row.token));
-  }
+  await bustTokens((data ?? []) as { token: string }[]);
 }
 
 /**
  * Invalidate cached guides for every property in an account. Used after
- * account-wide changes (e.g. accent colour) that affect every guest guide.
+ * account-wide changes (e.g. accent colour) that affect every guide.
  */
 export async function revalidateAccountGuides(accountId: string): Promise<void> {
   const supabase = await createClient();
@@ -36,7 +54,5 @@ export async function revalidateAccountGuides(accountId: string): Promise<void> 
     .from("magic_links")
     .select("token")
     .in("property_id", ids);
-  for (const row of (links ?? []) as { token: string }[]) {
-    revalidateTag(guideTag(row.token));
-  }
+  await bustTokens((links ?? []) as { token: string }[]);
 }

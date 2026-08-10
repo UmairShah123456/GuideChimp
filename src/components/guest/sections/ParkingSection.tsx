@@ -90,7 +90,7 @@ export function ParkingSection({
             <SectionLabel>Step by step</SectionLabel>
             {steps.map((step, i) => (
               <Card key={i} className="flex gap-3.5 p-4">
-                <div className="flex h-7 w-7 flex-none items-center justify-center rounded-full bg-accent text-[13px] font-extrabold text-white">
+                <div className="flex h-7 w-7 flex-none items-center justify-center rounded-full bg-brand text-[13px] font-extrabold text-brand-contrast">
                   {i + 1}
                 </div>
                 <div className="min-w-0 flex-1">

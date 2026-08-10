@@ -5,12 +5,15 @@ import { registerGuestView } from "@/lib/guide/queries";
 import { sectionContent } from "@/lib/guide/types";
 import { HOME_TILES, sectionVisible } from "@/lib/guide/defaults";
 import { timeChip } from "@/lib/time";
+import { isGuestFlavour } from "@/lib/guide/presets";
 import { GuestScreen } from "@/components/guest/GuestScreen";
 import { GuestFallback } from "@/components/guest/GuestFallback";
+import { StaffHome } from "@/components/guest/StaffHome";
 import { HeaderChip } from "@/components/guest/GuestHeader";
 import { SectionLabel } from "@/components/guest/primitives";
 import { WifiCard } from "@/components/guest/WifiCard";
 import { WelcomeGate } from "@/components/guest/WelcomeGate";
+import { BrandLogo, asBackdrop } from "@/components/guest/BrandLogo";
 import { PlusIcon, KeyIcon, SunIcon, ExitIcon } from "@/components/guest/icons";
 
 export const dynamic = "force-dynamic";
@@ -50,15 +53,23 @@ export default async function GuestHome({
   const { guide } = res;
   await registerGuestView(token);
 
+  // Cleaner/staff guides — and any guide not tied to a property, like a company
+  // process — get a plain index instead of the welcome experience.
+  const property = guide.property;
+  if (!isGuestFlavour(guide.guide.kind) || !property) {
+    return <StaffHome token={token} guide={guide} />;
+  }
+
   const checkIn = sectionContent(guide, "check_in");
   const wifi = sectionContent(guide, "wifi");
-  const subtitle = [guide.property.name, guide.property.address]
+  const subtitle = [property.name, property.address]
     .filter(Boolean)
     .join(" · ");
   const checkInChip = timeChip(checkIn?.checkInTime, "Check-in from");
   const checkoutChip = timeChip(checkIn?.checkoutTime, "Checkout");
 
-  const overrides = guide.property.section_titles ?? {};
+  const logoBackdrop = asBackdrop(guide.account.logo_backdrop);
+  const overrides = guide.guide.section_titles ?? {};
   const tile = (t: (typeof HOME_TILES)[number]) => {
     const ov = overrides[t.type] ?? {};
     return {
@@ -94,35 +105,44 @@ export default async function GuestHome({
   ].map((t) => t.href);
 
   return (
-    <GuestScreen token={token} hue={guide.account.accent_hue} active="home" sectionTitles={guide.property.section_titles}>
+    <GuestScreen token={token} guide={guide} active="home">
       <WelcomeGate
         token={token}
-        propertyName={guide.property.name}
-        address={checkIn?.address || guide.property.address || undefined}
+        propertyName={property.name}
+        address={checkIn?.address || property.address || undefined}
         checkInTime={checkIn?.checkInTime}
         checkoutTime={checkIn?.checkoutTime}
-        heroImageUrl={guide.property.hero_image_url}
+        heroImageUrl={property.hero_image_url}
+        logoUrl={guide.account.logo_url}
+        logoBackdrop={logoBackdrop}
+        accountName={guide.account.name}
         prefetchHrefs={prefetchHrefs}
       />
       {/* Hero: property photo as the background, darkened for legibility */}
       <header className="relative overflow-hidden rounded-b-[var(--radius-header)] text-white">
-        {guide.property.hero_image_url ? (
+        {property.hero_image_url ? (
           <Image
-            src={guide.property.hero_image_url}
-            alt={guide.property.name}
+            src={property.hero_image_url}
+            alt={property.name}
             fill
             priority
             className="object-cover"
           />
         ) : (
-          <div className="absolute inset-0 bg-accent" />
+          <div className="absolute inset-0 bg-brand-deep" />
         )}
         {/* darkening overlay */}
-        <div className="absolute inset-0 bg-ink/55" />
-        <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/45 to-ink/40" />
+        <div className="absolute inset-0 bg-scrim/55" />
+        <div className="absolute inset-0 bg-gradient-to-t from-scrim/90 via-scrim/45 to-scrim/40" />
 
         <div className="relative px-[22px] pb-6 pt-9">
-          <h1 className="whitespace-pre-line text-[34px] font-extrabold leading-[1.08]">
+          <BrandLogo
+            url={guide.account.logo_url}
+            name={guide.account.name}
+            backdrop={logoBackdrop}
+            className={"mb-4"}
+          />
+          <h1 className="whitespace-pre-line font-display text-[34px] font-extrabold leading-[1.08]">
             {"Hiya!\nYou're in the right place."}
           </h1>
           {subtitle && <p className="mt-2.5 text-sm text-white/75">{subtitle}</p>}

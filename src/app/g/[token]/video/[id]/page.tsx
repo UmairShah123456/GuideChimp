@@ -24,7 +24,7 @@ export default async function VideoDetailScreen({
   const notes = (video?.metadata.notes as string) ?? "";
 
   return (
-    <GuestScreen token={token} hue={guide.account.accent_hue} active="guides" sectionTitles={guide.property.section_titles}>
+    <GuestScreen token={token} guide={guide} active="guides">
       <GuestHeader
         backHref={`/g/${token}/wifi-amenities`}
         eyebrow="Video guide"

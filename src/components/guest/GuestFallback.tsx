@@ -12,7 +12,7 @@ export function GuestFallback({
     <div className="mx-auto flex min-h-dvh w-full max-w-[480px] flex-col bg-page">
       <div className="flex flex-1 flex-col items-center justify-center px-8 text-center">
         <div className="flex h-[88px] w-[88px] items-center justify-center rounded-full bg-accent-subtle">
-          <div className="h-10 w-10 rotate-12 rounded-[var(--radius-code)] bg-accent" />
+          <div className="h-10 w-10 rotate-12 rounded-[var(--radius-code)] bg-brand" />
         </div>
         <h1 className="mt-6 whitespace-pre-line text-[26px] font-extrabold leading-[1.15] text-ink">
           {expired ? "This link has\nchecked out" : "We couldn't find\nthat guide"}
@@ -24,7 +24,7 @@ export function GuestFallback({
         </p>
         <a
           href="mailto:"
-          className="mt-6 rounded-[var(--radius-pill)] bg-accent px-7 py-3.5 text-[14.5px] font-bold text-white"
+          className="mt-6 rounded-[var(--radius-pill)] bg-brand px-7 py-3.5 text-[14.5px] font-bold text-brand-contrast"
         >
           Message the host
         </a>

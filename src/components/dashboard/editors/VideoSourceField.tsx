@@ -15,7 +15,7 @@ export function VideoSourceField({
   onChange,
   pathPrefix,
 }: {
-  propertyId: string;
+  propertyId?: string | null;
   value: string;
   onChange: (url: string) => void;
   pathPrefix?: string;
@@ -33,7 +33,7 @@ export function VideoSourceField({
         or upload a file
       </div>
       <MediaUploader
-        pathPrefix={pathPrefix ?? `${propertyId}/videos`}
+        pathPrefix={pathPrefix ?? `${propertyId ?? "misc"}/videos`}
         accept="video/*"
         kind="video"
         value={isYouTube ? "" : value}

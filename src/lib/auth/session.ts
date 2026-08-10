@@ -29,7 +29,7 @@ export const getActiveAccount = cache(async (): Promise<AccountRow | null> => {
   const supabase = await createClient();
   const { data } = await supabase
     .from("accounts")
-    .select("id, name, logo_url, accent_hue")
+    .select("id, name, logo_url, logo_backdrop, brand_color, theme_preset, font_heading, font_body")
     .order("created_at", { ascending: true })
     .limit(1)
     .maybeSingle<AccountRow>();

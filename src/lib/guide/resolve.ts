@@ -28,6 +28,17 @@ class GuideMiss extends Error {
  *    next request rather than served stale.
  *  - React `cache()`: per-request memoisation across nested server components.
  */
+
+/**
+ * Bumped whenever the cached {@link GuestGuide} shape changes. Entries written
+ * by an older deploy outlive it — the Data Cache is on disk and `revalidate`
+ * keeps them for minutes — so without a new key the next deploy reads the old
+ * shape back into new code and throws on every live link until they expire.
+ *
+ * v2: guides became a layer of their own (`guide` added, sections re-scoped).
+ */
+const CACHE_VERSION = "v2";
+
 export const getGuide = cache(async (token: string): Promise<GuideResult> => {
   const load = unstable_cache(
     async () => {
@@ -35,7 +46,7 @@ export const getGuide = cache(async (token: string): Promise<GuideResult> => {
       if (res.status !== "ok") throw new GuideMiss(res.status);
       return res;
     },
-    ["guest-guide", token],
+    [`guest-guide-${CACHE_VERSION}`, token],
     { tags: [guideTag(token)], revalidate: 300 },
   );
   try {

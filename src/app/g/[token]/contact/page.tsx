@@ -1,6 +1,7 @@
+import { notFound } from "next/navigation";
 import { getGuide } from "@/lib/guide/resolve";
 import { sectionContent } from "@/lib/guide/types";
-import { sectionDisplayName } from "@/lib/guide/defaults";
+import { sectionDisplayName, sectionPresent } from "@/lib/guide/defaults";
 import { GuestScreen } from "@/components/guest/GuestScreen";
 import { GuestFallback } from "@/components/guest/GuestFallback";
 import { ContactSection } from "@/components/guest/sections/ContactSection";
@@ -17,11 +18,13 @@ export default async function ContactScreen({
   if (res.status !== "ok") return <GuestFallback status={res.status} />;
 
   const { guide } = res;
+  if (!sectionPresent(guide, "emergency_contacts")) notFound();
+
   return (
-    <GuestScreen token={token} hue={guide.account.accent_hue} active="contact" sectionTitles={guide.property.section_titles}>
+    <GuestScreen token={token} guide={guide} active="contact">
       <ContactSection
         token={token}
-        heading={sectionDisplayName("emergency_contacts", guide.property.section_titles)}
+        heading={sectionDisplayName("emergency_contacts", guide.guide.section_titles)}
         contact={sectionContent(guide, "emergency_contacts")}
       />
     </GuestScreen>

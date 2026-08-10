@@ -8,6 +8,7 @@ import { ContactSection } from "@/components/guest/sections/ContactSection";
 import { saveSectionContent } from "@/lib/dashboard/section-actions";
 import { DEFAULT_DIAL_CODE } from "@/lib/phone";
 import type { EmergencyContent, EmergencyService, HostContact } from "@/lib/guide/types";
+import type { Branding } from "@/lib/branding/vars";
 
 /** Number input with the dial code shown as a prefix; strips a leading trunk 0. */
 function PhoneNumberInput({
@@ -80,12 +81,14 @@ function HostFields({
 
 export function ContactEditor({
   propertyId,
-  hue,
+  guideId,
+  branding,
   heading,
   initial,
 }: {
   propertyId: string;
-  hue: number;
+  guideId: string;
+  branding: Branding;
   heading: string;
   initial: EmergencyContent;
 }) {
@@ -112,9 +115,10 @@ export function ContactEditor({
   return (
     <EditorShell
       propertyId={propertyId}
+      guideId={guideId}
       title={heading}
-      hue={hue}
-      onSave={() => saveSectionContent(propertyId, "emergency_contacts", c)}
+      branding={branding}
+      onSave={() => saveSectionContent(propertyId, guideId, "emergency_contacts", c)}
       preview={<ContactSection heading={heading} contact={c} />}
       form={
         <>

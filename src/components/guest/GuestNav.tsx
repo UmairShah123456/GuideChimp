@@ -6,8 +6,8 @@ import {
   LocalIcon,
   RulesIcon,
 } from "./icons";
-import { sectionEnabled } from "@/lib/guide/defaults";
-import type { GuideSectionType, SectionTitles } from "@/lib/guide/types";
+import { sectionVisible } from "@/lib/guide/defaults";
+import type { GuestGuide, GuideSectionType } from "@/lib/guide/types";
 
 export type GuestTab = "home" | "guides" | "local" | "rules" | "contact";
 
@@ -16,7 +16,7 @@ const TABS: {
   label: string;
   path: string;
   Icon: typeof HomeIcon;
-  section?: GuideSectionType; // tab is hidden when this section is toggled off
+  section?: GuideSectionType; // tab is hidden when this section is missing or off
 }[] = [
   { key: "home", label: "Home", path: "", Icon: HomeIcon },
   { key: "guides", label: "Guides", path: "/wifi-amenities", Icon: GuidesIcon, section: "amenities" },
@@ -26,19 +26,25 @@ const TABS: {
 ];
 
 /**
- * Persistent bottom tab bar. Home is always shown; every other tab follows its
- * section's on/off toggle so a host can hide it everywhere at once.
+ * Persistent bottom tab bar. Home is always shown; every other tab requires its
+ * section to exist on this guide *and* be toggled on. A staff guide built purely
+ * from custom sections therefore shows Home alone, rather than tabs that would
+ * open empty screens.
  */
 export function GuestNav({
   token,
   active,
-  sectionTitles,
+  guide,
 }: {
   token: string;
   active: GuestTab;
-  sectionTitles?: SectionTitles;
+  guide: GuestGuide;
 }) {
-  const tabs = TABS.filter((t) => !t.section || sectionEnabled(t.section, sectionTitles));
+  const tabs = TABS.filter((t) => !t.section || sectionVisible(guide, t.section));
+
+  // A lone Home tab is just a dead bar — drop it entirely.
+  if (tabs.length <= 1) return null;
+
   return (
     <nav className="sticky bottom-0 z-20 mt-auto flex justify-around border-t border-border bg-surface/95 px-2 pb-6 pt-3 backdrop-blur">
       {tabs.map(({ key, label, path, Icon }) => {
