@@ -24,11 +24,11 @@ export function DeletePropertyButton({
 
       {open && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-ink/40 px-6"
+          className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-ink/40 p-4 sm:px-6"
           onClick={() => setOpen(false)}
         >
           <div
-            className="w-full max-w-sm rounded-[var(--radius-lg)] border-[1.5px] border-border bg-surface p-6"
+            className="max-h-full w-full max-w-sm overflow-y-auto rounded-[var(--radius-lg)] border-[1.5px] border-border bg-surface p-5 sm:p-6"
             onClick={(e) => e.stopPropagation()}
           >
             <h2 className="text-lg font-extrabold text-ink">Delete this property?</h2>

@@ -18,7 +18,7 @@ export default async function AccountPage() {
   return (
     <>
       <PageHeader title="Account" description="Your profile and plan." />
-      <div className="mx-auto flex max-w-3xl flex-col gap-8 px-8 py-8">
+      <div className="mx-auto flex max-w-3xl flex-col gap-8 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
         <section>
           <SectionHeading>Profile</SectionHeading>
           <ProfileForm account={account} />

@@ -64,7 +64,7 @@ function HostFields({
           onChange={(v) => onChange({ dialCode: v })}
         />
       </EditorField>
-      <div className="grid grid-cols-3 gap-2.5">
+      <div className="grid gap-2.5 sm:grid-cols-3">
         <EditorField label="WhatsApp">
           <PhoneNumberInput dialCode={dialCode} value={host.whatsapp ?? ""} onChange={(v) => onChange({ whatsapp: v })} />
         </EditorField>
@@ -153,7 +153,7 @@ export function ContactEditor({
           <EditorGroup title="Emergency services">
             {services.map((s, i) => (
               <RepeatItem key={i} index={i} onRemove={() => set({ services: services.filter((_, j) => j !== i) })}>
-                <div className="grid grid-cols-2 gap-2.5">
+                <div className="grid gap-2.5 sm:grid-cols-2">
                   <TextInput value={s.code} onChange={(v) => setService(i, { code: v })} placeholder="999" />
                   <TextInput value={s.phone} onChange={(v) => setService(i, { phone: v })} placeholder="Phone to dial" />
                 </div>

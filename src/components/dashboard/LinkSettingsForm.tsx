@@ -26,7 +26,7 @@ export function LinkSettingsForm({
     <div className="flex flex-col gap-6">
       <form
         action={action}
-        className="rounded-[var(--radius-lg)] border-[1.5px] border-border bg-surface p-5"
+        className="rounded-[var(--radius-lg)] border-[1.5px] border-border bg-surface p-4 sm:p-5"
       >
         <h2 className="text-sm font-extrabold text-ink">Expiry & PIN</h2>
         <p className="mt-1 text-[13px] text-body">
@@ -57,7 +57,7 @@ export function LinkSettingsForm({
 
       <form
         action={regen}
-        className="rounded-[var(--radius-lg)] border-[1.5px] border-border bg-surface p-5"
+        className="rounded-[var(--radius-lg)] border-[1.5px] border-border bg-surface p-4 sm:p-5"
       >
         <h2 className="text-sm font-extrabold text-ink">Regenerate link</h2>
         <p className="mt-1 text-[13px] text-body">

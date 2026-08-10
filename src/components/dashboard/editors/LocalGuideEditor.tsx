@@ -58,7 +58,7 @@ export function LocalGuideEditor({
           <EditorGroup title="Places">
             {entries.map((e, i) => (
               <RepeatItem key={i} index={i} onRemove={() => setEntries(entries.filter((_, j) => j !== i))}>
-                <div className="grid grid-cols-2 gap-2.5">
+                <div className="grid gap-2.5 sm:grid-cols-2">
                   <TextInput value={e.name} onChange={(v) => setEntry(i, { name: v })} placeholder="Name" />
                   <Select
                     value={e.category}

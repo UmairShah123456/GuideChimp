@@ -64,7 +64,7 @@ export function AmenitiesEditor({
       form={
         <>
           <EditorGroup title="Ask the host">
-            <div className="grid grid-cols-2 gap-2.5">
+            <div className="grid gap-2.5 sm:grid-cols-2">
               <EditorField label="Ask prompt">
                 <TextInput value={c.askNote ?? ""} onChange={(v) => set({ askNote: v })} placeholder="Something not covered here?" />
               </EditorField>

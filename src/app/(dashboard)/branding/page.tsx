@@ -11,7 +11,7 @@ export default async function BrandingPage() {
         title="Branding"
         description="Your logo, colour, theme and type — applied to every guide you share."
       />
-      <div className="mx-auto max-w-5xl px-8 py-8">
+      <div className="mx-auto max-w-5xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
         <BrandingForm account={account} />
       </div>
     </>

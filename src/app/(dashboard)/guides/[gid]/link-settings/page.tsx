@@ -28,7 +28,7 @@ export default async function CompanyLinkSettings({
         backHref={`/guides/${gid}`}
         backLabel="Back to guide"
       />
-      <div className="mx-auto flex max-w-3xl flex-col gap-6 px-8 py-8">
+      <div className="mx-auto flex max-w-3xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
         <MagicLinkCard
           propertyId={null}
           guideId={gid}
