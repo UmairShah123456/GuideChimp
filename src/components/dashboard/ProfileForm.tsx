@@ -13,7 +13,7 @@ export function ProfileForm({ account }: { account: AccountRow }) {
   return (
     <form
       action={action}
-      className="rounded-[var(--radius-lg)] border-[1.5px] border-border bg-surface p-6"
+      className="rounded-[var(--radius-lg)] border-[1.5px] border-border bg-surface p-5 sm:p-6"
     >
       <Field
         label="Account name"

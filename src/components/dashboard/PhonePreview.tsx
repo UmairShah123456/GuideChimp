@@ -18,7 +18,9 @@ export function PhonePreview({ branding, children }: { branding: Branding; child
         branding={branding}
         className="mt-3 w-full max-w-[390px] overflow-hidden rounded-[32px] border-[6px] border-ink bg-page shadow-[0_12px_40px_rgba(23,36,46,0.18)]"
       >
-        <div className="max-h-[720px] overflow-y-auto">{children}</div>
+        {/* On touch screens the frame grows instead of scrolling internally —
+            nested scroll areas are miserable to flick through. */}
+        <div className="lg:max-h-[720px] lg:overflow-y-auto">{children}</div>
         <div className="flex justify-around border-t border-border bg-surface/95 px-2 py-3 backdrop-blur">
           {["Home", "Guides", "Local", "Rules", "Contact"].map((t) => (
             <span key={t} className="text-[10px] font-semibold text-muted">

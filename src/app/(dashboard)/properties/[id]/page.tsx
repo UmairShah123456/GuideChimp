@@ -31,7 +31,7 @@ export default async function PropertyGuides({
         backHref="/dashboard"
         backLabel="All properties"
         actions={
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <Link
               href={`/properties/${id}/settings`}
               className="rounded-[var(--radius-pill)] border-[1.5px] border-border px-4 py-2 text-[13px] font-bold text-body hover:text-ink"
@@ -43,7 +43,7 @@ export default async function PropertyGuides({
         }
       />
 
-      <div className="mx-auto max-w-3xl px-8 py-8">
+      <div className="mx-auto max-w-3xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
         <h2 className="text-sm font-extrabold uppercase tracking-[0.08em] text-muted">
           Guides
         </h2>
@@ -53,7 +53,7 @@ export default async function PropertyGuides({
         </p>
 
         {guides.length === 0 ? (
-          <div className="mt-4 flex flex-col items-center justify-center rounded-[var(--radius-lg)] border-[1.5px] border-dashed border-border bg-surface px-8 py-14 text-center">
+          <div className="mt-4 flex flex-col items-center justify-center rounded-[var(--radius-lg)] border-[1.5px] border-dashed border-border bg-surface px-5 py-12 text-center sm:px-8 sm:py-14">
             <div className="flex h-14 w-14 items-center justify-center rounded-[var(--radius-lg)] bg-accent-subtle text-2xl">
               📘
             </div>

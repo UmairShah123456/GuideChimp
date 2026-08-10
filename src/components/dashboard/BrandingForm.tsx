@@ -105,7 +105,7 @@ export function BrandingForm({ account }: { account: AccountRow }) {
       <input type="hidden" name="logo_url" value={logo} />
       <input type="hidden" name="logo_backdrop" value={backdrop} />
 
-      <div className="min-w-0 flex-1 rounded-[var(--radius-lg)] border-[1.5px] border-border bg-surface p-6">
+      <div className="min-w-0 flex-1 rounded-[var(--radius-lg)] border-[1.5px] border-border bg-surface p-4 sm:p-6">
         <div>
           <SectionLabel
             title="Logo"

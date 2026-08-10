@@ -5,8 +5,9 @@ import { useActionState, useState } from "react";
 import type { AuthState } from "@/lib/forms";
 import { SubmitButton } from "@/components/ui/SubmitButton";
 
+/* 16px on small screens keeps iOS Safari from zooming in on focus. */
 const inputCls =
-  "w-full rounded-[var(--radius-sm)] border-[1.5px] border-border bg-surface px-3.5 py-3 text-sm text-ink outline-none transition-colors focus:border-accent placeholder:text-muted";
+  "w-full rounded-[var(--radius-sm)] border-[1.5px] border-border bg-surface px-3.5 py-3 text-base text-ink outline-none transition-colors focus:border-accent placeholder:text-muted sm:text-sm";
 
 type Variant = "login" | "signup" | "forgot";
 

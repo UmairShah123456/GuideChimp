@@ -44,7 +44,7 @@ export function MagicLinkCard({
 
   if (!token) {
     return (
-      <div className="rounded-[var(--radius-lg)] border-[1.5px] border-border bg-surface p-5 text-sm text-body">
+      <div className="rounded-[var(--radius-lg)] border-[1.5px] border-border bg-surface p-4 text-sm text-body sm:p-5">
         No magic link yet.{" "}
         <Link href={`${guideBasePath(propertyId, guideId)}/link-settings`} className="font-semibold text-accent">
           Create one
@@ -55,8 +55,10 @@ export function MagicLinkCard({
   }
 
   return (
-    <div className="rounded-[var(--radius-lg)] border-[1.5px] border-border bg-surface p-5">
-      <div className="flex items-start justify-between gap-4">
+    <div className="rounded-[var(--radius-lg)] border-[1.5px] border-border bg-surface p-4 sm:p-5">
+      {/* The QR sits beside the link on wide cards and drops below it on a
+          phone, where a 112px square would squeeze the URL out. */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0 flex-1">
           <div className="text-[11px] font-bold uppercase tracking-[0.1em] text-muted">
             {guideName} link

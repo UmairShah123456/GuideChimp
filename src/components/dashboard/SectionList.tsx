@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useState, useTransition, type MouseEvent, type ReactNode } from "react";
 import { ChevronRight } from "@/components/guest/icons";
 import {
   createCustomSection,
@@ -105,7 +105,7 @@ export function SectionList({
             <div
               key={s.type}
               onClick={() => router.push(`${guideBasePath(propertyId, guideId)}/edit/${s.slug}`)}
-              className="flex cursor-pointer items-center gap-3 px-4 py-3.5 hover:bg-page"
+              className="flex cursor-pointer flex-wrap items-center gap-x-3 gap-y-2 px-4 py-3.5 hover:bg-page"
             >
               <Toggle
                 on={s.enabled}
@@ -122,16 +122,13 @@ export function SectionList({
                 <div className="text-[15px] font-bold text-ink">{s.title}</div>
                 <div className="text-[12.5px] text-muted">{s.blurb}</div>
               </div>
-              <button
-                type="button"
+              {/* One action, so it stays on the row even on a phone. */}
+              <RenameButton
                 onClick={(e) => {
                   e.stopPropagation();
                   setEditing(s.type);
                 }}
-                className="text-[12px] font-semibold text-muted hover:text-ink"
-              >
-                Rename
-              </button>
+              />
               <ChevronRight className="h-4 w-4 flex-none text-muted" />
             </div>
           ),
@@ -141,7 +138,9 @@ export function SectionList({
       )}
 
       {/* Custom sections */}
-      <div className={`${rows.length > 0 ? "mt-6" : ""} flex items-center justify-between`}>
+      <div
+        className={`${rows.length > 0 ? "mt-6" : ""} flex flex-wrap items-center justify-between gap-x-3 gap-y-2`}
+      >
         <h2 className="text-sm font-extrabold uppercase tracking-[0.08em] text-muted">
           Custom sections
         </h2>
@@ -204,7 +203,7 @@ export function SectionList({
               <div
                 key={c.id}
                 onClick={() => router.push(`${guideBasePath(propertyId, guideId)}/edit/custom/${c.id}`)}
-                className="flex cursor-pointer items-center gap-3 px-4 py-3.5 hover:bg-page"
+                className="flex cursor-pointer flex-wrap items-center gap-x-3 gap-y-2 px-4 py-3.5 hover:bg-page"
               >
                 <Toggle
                   on={c.enabled}
@@ -222,7 +221,8 @@ export function SectionList({
                     {c.title || "Untitled section"}
                   </div>
                 </div>
-                <div className="flex items-center gap-1">
+                <ChevronRight className="h-4 w-4 flex-none text-muted sm:order-last" />
+                <RowActions>
                   <MoveBtn
                     label={`Move ${c.title || "this section"} up`}
                     disabled={pending || i === 0}
@@ -237,18 +237,13 @@ export function SectionList({
                   >
                     ↓
                   </MoveBtn>
-                </div>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setRenamingCustom(c.id);
-                  }}
-                  className="text-[12px] font-semibold text-muted hover:text-ink"
-                >
-                  Rename
-                </button>
-                <ChevronRight className="h-4 w-4 flex-none text-muted" />
+                  <RenameButton
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setRenamingCustom(c.id);
+                    }}
+                  />
+                </RowActions>
               </div>
             ),
           )}
@@ -296,27 +291,50 @@ function NamePanel({
           if (e.key === "Escape") onCancel();
         }}
         placeholder={placeholder}
-        className="w-full rounded-[var(--radius-sm)] border-[1.5px] border-border bg-surface px-3 py-2 text-sm text-ink outline-none focus:border-accent placeholder:text-muted"
+        className="w-full rounded-[var(--radius-sm)] border-[1.5px] border-border bg-surface px-3 py-2 text-base text-ink outline-none focus:border-accent placeholder:text-muted sm:text-sm"
       />
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5">
         <button
           type="button"
           disabled={pending || !trimmed}
           onClick={submit}
-          className="rounded-[var(--radius-pill)] bg-brand px-4 py-1.5 text-[12.5px] font-bold text-brand-contrast disabled:opacity-60"
+          className="rounded-[var(--radius-pill)] bg-brand px-4 py-2 text-[12.5px] font-bold text-brand-contrast disabled:opacity-60"
         >
           {confirmLabel}
         </button>
         <button
           type="button"
           onClick={onCancel}
-          className="text-[12.5px] font-semibold text-muted hover:text-ink"
+          className="px-2 py-2 text-[12.5px] font-semibold text-muted hover:text-ink"
         >
           Cancel
         </button>
-        <span className="ml-auto text-[11.5px] text-muted">{`${cap(audience)} see this name.`}</span>
+        <span className="text-[11.5px] text-muted sm:ml-auto">{`${cap(audience)} see this name.`}</span>
       </div>
     </div>
+  );
+}
+
+/**
+ * The control cluster on a custom row. Reorder arrows plus Rename plus the
+ * chevron won't fit beside a title on a phone, so below `sm` the cluster claims
+ * a line of its own, indented to line up past the toggle.
+ */
+function RowActions({ children }: { children: ReactNode }) {
+  return (
+    <div className="flex w-full items-center gap-1 pl-12 sm:w-auto sm:pl-0">{children}</div>
+  );
+}
+
+function RenameButton({ onClick }: { onClick: (e: MouseEvent<HTMLButtonElement>) => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="rounded-[var(--radius-sm)] px-2 py-1.5 text-[12px] font-semibold text-muted hover:bg-page hover:text-ink"
+    >
+      Rename
+    </button>
   );
 }
 
@@ -341,7 +359,7 @@ function MoveBtn({
         e.stopPropagation();
         onClick();
       }}
-      className="flex h-7 w-7 items-center justify-center rounded-[var(--radius-sm)] border-[1.5px] border-border text-sm font-bold text-body hover:bg-page disabled:opacity-30"
+      className="flex h-8 w-8 items-center justify-center rounded-[var(--radius-sm)] border-[1.5px] border-border text-sm font-bold text-body hover:bg-page disabled:opacity-30"
     >
       {children}
     </button>
@@ -400,7 +418,7 @@ function RenamePanel({
   const [title, setTitle] = useState(row.overrideTitle);
   const [subtitle, setSubtitle] = useState(row.overrideSubtitle);
   const inputCls =
-    "w-full rounded-[var(--radius-sm)] border-[1.5px] border-border bg-surface px-3 py-2 text-sm text-ink outline-none focus:border-accent placeholder:text-muted";
+    "w-full rounded-[var(--radius-sm)] border-[1.5px] border-border bg-surface px-3 py-2 text-base text-ink outline-none focus:border-accent placeholder:text-muted sm:text-sm";
 
   return (
     <div className="flex flex-col gap-2.5 bg-page px-4 py-3.5">
@@ -419,7 +437,7 @@ function RenamePanel({
         placeholder={row.defaultBlurb}
         className={inputCls}
       />
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5">
         <button
           type="button"
           disabled={pending}
@@ -435,7 +453,7 @@ function RenamePanel({
         >
           Cancel
         </button>
-        <span className="ml-auto text-[11.5px] text-muted">
+        <span className="text-[11.5px] text-muted sm:ml-auto">
           {`${cap(audience)} see this name too. Leave blank for the default.`}
         </span>
       </div>

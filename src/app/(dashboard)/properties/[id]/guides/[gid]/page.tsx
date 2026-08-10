@@ -60,7 +60,7 @@ export default async function GuideOverview({
         }
       />
 
-      <div className="mx-auto grid max-w-5xl gap-6 px-8 py-8 lg:grid-cols-[1fr_360px]">
+      <div className="mx-auto flex max-w-5xl flex-col gap-6 px-4 py-6 sm:px-6 lg:grid lg:grid-cols-[minmax(0,1fr)_360px] lg:px-8 lg:py-8">
         <SectionList
           propertyId={id}
           guideId={gid}

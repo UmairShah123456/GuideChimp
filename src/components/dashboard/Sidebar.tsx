@@ -21,9 +21,16 @@ const NAV = [
 export function Sidebar({
   accountName,
   userEmail,
+  className = "",
+  onNavigate,
 }: {
   accountName: string;
   userEmail?: string;
+  /** Positioning is the caller's job — it differs between the permanent
+   *  desktop column and the mobile drawer. */
+  className?: string;
+  /** Called on every navigation, so the mobile drawer can close itself. */
+  onNavigate?: () => void;
 }) {
   const pathname = usePathname();
 
@@ -31,8 +38,8 @@ export function Sidebar({
     item.match.some((m) => pathname === m || pathname.startsWith(m + "/"));
 
   return (
-    <aside className="sticky top-0 flex h-dvh w-60 flex-none flex-col border-r border-border bg-surface px-4 py-6">
-      <Link href="/dashboard" className="px-2">
+    <aside className={`flex-col overflow-y-auto bg-surface px-4 py-6 ${className}`}>
+      <Link href="/dashboard" className="px-2" onClick={onNavigate}>
         <Logo className="h-7 w-auto" />
       </Link>
 
@@ -43,7 +50,8 @@ export function Sidebar({
             <Link
               key={item.label}
               href={item.href}
-              className={`rounded-[var(--radius-sm)] px-3 py-2.5 text-sm font-semibold transition-colors ${
+              onClick={onNavigate}
+              className={`rounded-[var(--radius-sm)] px-3 py-3 text-sm font-semibold transition-colors lg:py-2.5 ${
                 active
                   ? "bg-accent-subtle text-accent"
                   : "text-body hover:bg-page hover:text-ink"
@@ -60,7 +68,8 @@ export function Sidebar({
             it's where people look for it. */}
         <Link
           href="/account"
-          className="flex items-center gap-2.5 rounded-[var(--radius-sm)] px-2 py-1.5 transition-colors hover:bg-page"
+          onClick={onNavigate}
+          className="flex items-center gap-2.5 rounded-[var(--radius-sm)] px-2 py-2 transition-colors hover:bg-page"
         >
           <span className="flex h-8 w-8 flex-none items-center justify-center rounded-full bg-accent-subtle text-accent">
             <PersonIcon className="h-4 w-4" />

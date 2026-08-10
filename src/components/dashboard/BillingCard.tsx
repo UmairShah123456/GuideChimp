@@ -4,8 +4,8 @@
  */
 export function BillingCard({ propertyCount }: { propertyCount: number }) {
   return (
-    <div className="rounded-[var(--radius-lg)] border-[1.5px] border-border bg-surface p-6">
-      <div className="flex items-center justify-between">
+    <div className="rounded-[var(--radius-lg)] border-[1.5px] border-border bg-surface p-5 sm:p-6">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <div className="text-[11px] font-bold uppercase tracking-[0.1em] text-accent">
             Current plan
@@ -21,15 +21,15 @@ export function BillingCard({ propertyCount }: { propertyCount: number }) {
           Upgrade
         </button>
       </div>
-      <div className="mt-5 grid grid-cols-2 gap-4">
-        <div className="rounded-[var(--radius-card)] border-[1.5px] border-border bg-page p-4">
-          <div className="text-2xl font-extrabold text-ink">{propertyCount}</div>
+      <div className="mt-5 grid grid-cols-2 gap-3 sm:gap-4">
+        <div className="rounded-[var(--radius-card)] border-[1.5px] border-border bg-page p-3.5 sm:p-4">
+          <div className="text-xl font-extrabold text-ink sm:text-2xl">{propertyCount}</div>
           <div className="text-[13px] text-muted">
             {propertyCount === 1 ? "Property" : "Properties"}
           </div>
         </div>
-        <div className="rounded-[var(--radius-card)] border-[1.5px] border-border bg-page p-4">
-          <div className="text-2xl font-extrabold text-ink">Unlimited</div>
+        <div className="rounded-[var(--radius-card)] border-[1.5px] border-border bg-page p-3.5 sm:p-4">
+          <div className="text-xl font-extrabold text-ink sm:text-2xl">Unlimited</div>
           <div className="text-[13px] text-muted">Guests per link</div>
         </div>
       </div>

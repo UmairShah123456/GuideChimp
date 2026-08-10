@@ -3,8 +3,9 @@
 import type { ReactNode } from "react";
 import { DIAL_CODES } from "@/lib/phone";
 
+/* 16px on small screens keeps iOS Safari from zooming in on focus. */
 const base =
-  "w-full rounded-[var(--radius-sm)] border-[1.5px] border-border bg-surface px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-accent placeholder:text-muted";
+  "w-full rounded-[var(--radius-sm)] border-[1.5px] border-border bg-surface px-3 py-2 text-base text-ink outline-none transition-colors focus:border-accent placeholder:text-muted sm:text-sm";
 
 export function EditorField({
   label,

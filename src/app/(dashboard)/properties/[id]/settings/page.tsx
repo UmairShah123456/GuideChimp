@@ -32,8 +32,8 @@ export default async function PropertySettings({
         }
       />
 
-      <div className="mx-auto flex max-w-3xl flex-col gap-6 px-8 py-8">
-        <div className="rounded-[var(--radius-lg)] border-[1.5px] border-border bg-surface p-5">
+      <div className="mx-auto flex max-w-3xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+        <div className="rounded-[var(--radius-lg)] border-[1.5px] border-border bg-surface p-4 sm:p-5">
           <h2 className="mb-1 text-sm font-extrabold uppercase tracking-[0.08em] text-muted">
             Property details
           </h2>
