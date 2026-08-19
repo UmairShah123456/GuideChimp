@@ -2,39 +2,47 @@
 
 import { useState } from "react";
 import { EditorShell, EditorGroup } from "./EditorShell";
-import { EditorField, TextInput, RepeatItem, AddButton, CountrySelect } from "./ui";
+import { EditorField, TextInput, RepeatItem, AddButton, InlineDialCodeSelect, findDialCode } from "./ui";
 import { MediaUploader } from "@/components/dashboard/MediaUploader";
 import { ContactSection } from "@/components/guest/sections/ContactSection";
 import { saveSectionContent } from "@/lib/dashboard/section-actions";
-import { DEFAULT_DIAL_CODE } from "@/lib/phone";
+import { DEFAULT_DIAL_CODE, PHONE_KINDS, dialCodeField, dialValue, hostDialCode } from "@/lib/phone";
+import type { PhoneKind } from "@/lib/phone";
 import type { EmergencyContent, EmergencyService, HostContact } from "@/lib/guide/types";
 import type { Branding } from "@/lib/branding/vars";
 
-/** Number input with the dial code shown as a prefix; strips a leading trunk 0. */
+/** One phone field: its own country picker as a prefix, then the local number. */
 function PhoneNumberInput({
-  dialCode,
-  value,
+  host,
+  kind,
+  label,
   onChange,
 }: {
-  dialCode: string;
-  value: string;
-  onChange: (v: string) => void;
+  host: HostContact;
+  kind: PhoneKind;
+  label: string;
+  onChange: (patch: Partial<HostContact>) => void;
 }) {
+  const dialCode = hostDialCode(host, kind) || DEFAULT_DIAL_CODE;
   return (
     <div className="flex items-center rounded-[var(--radius-sm)] border-[1.5px] border-border bg-surface transition-colors focus-within:border-accent">
-      <span className="pl-3 pr-1.5 text-sm font-semibold text-muted">{dialCode}</span>
+      <InlineDialCodeSelect
+        value={dialCode}
+        label={label}
+        onChange={(v) => onChange({ [dialCodeField(kind)]: v })}
+      />
       <input
         type="tel"
-        value={value}
-        onChange={(e) => onChange(e.target.value.replace(/^0+/, ""))}
+        value={host[kind] ?? ""}
+        onChange={(e) => onChange({ [kind]: e.target.value.replace(/^0+/, "") })}
         placeholder="7949 325413"
-        className="w-full min-w-0 rounded-[var(--radius-sm)] bg-transparent py-2 pr-3 text-sm text-ink outline-none placeholder:text-muted"
+        className="w-full min-w-0 rounded-[var(--radius-sm)] bg-transparent py-2 pl-2 pr-3 text-sm text-ink outline-none placeholder:text-muted"
       />
     </div>
   );
 }
 
-/** The shared avatar/name/country/number fields for a host (primary or alternative). */
+/** The shared avatar/name/number fields for a host (primary or alternative). */
 function HostFields({
   propertyId,
   host,
@@ -44,7 +52,6 @@ function HostFields({
   host: HostContact;
   onChange: (patch: Partial<HostContact>) => void;
 }) {
-  const dialCode = host.dialCode ?? DEFAULT_DIAL_CODE;
   return (
     <>
       <EditorField label="Avatar photo">
@@ -58,25 +65,25 @@ function HostFields({
       <EditorField label="Name">
         <TextInput value={host.name ?? ""} onChange={(v) => onChange({ name: v })} placeholder="Umair" />
       </EditorField>
-      <EditorField label="Country code" hint="Applied to all three numbers below so WhatsApp dials correctly.">
-        <CountrySelect
-          value={host.dialCode ?? DEFAULT_DIAL_CODE}
-          onChange={(v) => onChange({ dialCode: v })}
-        />
-      </EditorField>
       <div className="grid gap-2.5 sm:grid-cols-3">
-        <EditorField label="WhatsApp">
-          <PhoneNumberInput dialCode={dialCode} value={host.whatsapp ?? ""} onChange={(v) => onChange({ whatsapp: v })} />
-        </EditorField>
-        <EditorField label="Call">
-          <PhoneNumberInput dialCode={dialCode} value={host.phone ?? ""} onChange={(v) => onChange({ phone: v })} />
-        </EditorField>
-        <EditorField label="Text">
-          <PhoneNumberInput dialCode={dialCode} value={host.sms ?? ""} onChange={(v) => onChange({ sms: v })} />
-        </EditorField>
+        {PHONE_KINDS.map(({ kind, label }) => (
+          <EditorField
+            key={kind}
+            label={label}
+            hint={kind === "whatsapp" ? "Pick each number's country — they don't have to match." : undefined}
+          >
+            <PhoneNumberInput host={host} kind={kind} label={label} onChange={onChange} />
+          </EditorField>
+        ))}
       </div>
     </>
   );
+}
+
+/** Ensure a host carries an explicit default dial code, upgrading legacy bare codes. */
+function withDialCode(host: HostContact): HostContact {
+  const match = findDialCode(host.dialCode);
+  return { ...host, dialCode: match ? dialValue(match) : DEFAULT_DIAL_CODE };
 }
 
 export function ContactEditor({
@@ -92,11 +99,21 @@ export function ContactEditor({
   heading: string;
   initial: EmergencyContent;
 }) {
-  const [c, setC] = useState<EmergencyContent>({
-    host: { dialCode: DEFAULT_DIAL_CODE },
-    services: [],
-    goodToKnow: [],
-    ...initial,
+  const [c, setC] = useState<EmergencyContent>(() => {
+    const merged: EmergencyContent = {
+      host: {},
+      services: [],
+      goodToKnow: [],
+      ...initial,
+    };
+    // Hosts saved before dial codes existed have no `dialCode`, so the editor
+    // showed "+44" while the guest link dialled a number with neither the code
+    // nor its trunk 0. Pin the displayed default onto the record up front.
+    return {
+      ...merged,
+      host: withDialCode(merged.host ?? {}),
+      additionalHosts: merged.additionalHosts?.map(withDialCode),
+    };
   });
   const host = c.host ?? {};
   const additionalHosts = c.additionalHosts ?? [];
@@ -144,7 +161,7 @@ export function ContactEditor({
               </RepeatItem>
             ))}
             <AddButton
-              onClick={() => set({ additionalHosts: [...additionalHosts, { dialCode: DEFAULT_DIAL_CODE }] })}
+              onClick={() => set({ additionalHosts: [...additionalHosts, withDialCode({})] })}
             >
               Add alternative host
             </AddButton>

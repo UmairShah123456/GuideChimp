@@ -111,7 +111,12 @@ export interface CheckOutContent extends HomeTileFields {
 export interface HostContact {
   name?: string;
   avatarUrl?: string;
-  dialCode?: string; // e.g. "+44" — combined with each local number for links
+  /** "GB|+44" (or legacy bare "+44") — the host's default for all three numbers. */
+  dialCode?: string;
+  /** Per-number overrides, for a host whose numbers live in different countries. */
+  whatsappDialCode?: string;
+  phoneDialCode?: string;
+  smsDialCode?: string;
   whatsapp?: string;
   phone?: string;
   sms?: string;

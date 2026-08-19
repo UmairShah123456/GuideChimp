@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { DIAL_CODES } from "@/lib/phone";
+import { DIAL_CODES, dialCodeLabel, dialCodeOf, dialValue, flagEmoji } from "@/lib/phone";
 
 /* 16px on small screens keeps iOS Safari from zooming in on focus. */
 export const inputBase =
@@ -92,22 +92,48 @@ export function Select({
   );
 }
 
-/** Country dial-code picker (e.g. "United Kingdom +44"). Stores the code ("+44"). */
-export function CountrySelect({
+/** Resolve a stored dial value ("GB|+44" or a legacy bare "+44") to its country. */
+export function findDialCode(value: string | undefined) {
+  return (
+    DIAL_CODES.find((d) => dialValue(d) === value) ??
+    DIAL_CODES.find((d) => d.code === dialCodeOf(value))
+  );
+}
+
+/**
+ * Compact dial-code picker that sits inside a phone field: the closed control
+ * shows just "🇬🇧 +44" while the dropdown lists full country names. A native
+ * <select> is stretched invisibly over the label so mobile still gets its own
+ * picker UI and keyboard focus behaves normally.
+ */
+export function InlineDialCodeSelect({
   value,
   onChange,
+  label,
 }: {
   value: string;
   onChange: (v: string) => void;
+  label: string;
 }) {
+  const selected = findDialCode(value);
+
   return (
-    <select value={value} onChange={(e) => onChange(e.target.value)} className={inputBase}>
-      {DIAL_CODES.map((d) => (
-        <option key={d.code} value={d.code}>
-          {d.country} ({d.code})
-        </option>
-      ))}
-    </select>
+    <span className="relative flex items-center whitespace-nowrap border-r-[1.5px] border-border pl-3 pr-2 text-sm font-semibold text-muted">
+      {selected ? `${flagEmoji(selected.iso)} ${selected.code}` : dialCodeOf(value) || "+"}
+      <span aria-hidden className="pl-1 text-[10px]">▾</span>
+      <select
+        aria-label={`Country code for ${label}`}
+        value={selected ? dialValue(selected) : ""}
+        onChange={(e) => onChange(e.target.value)}
+        className="absolute inset-0 cursor-pointer opacity-0"
+      >
+        {DIAL_CODES.map((d) => (
+          <option key={dialValue(d)} value={dialValue(d)}>
+            {dialCodeLabel(d)}
+          </option>
+        ))}
+      </select>
+    </span>
   );
 }
 

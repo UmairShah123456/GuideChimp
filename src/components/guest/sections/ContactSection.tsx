@@ -1,14 +1,15 @@
 import { GuestHeader } from "@/components/guest/GuestHeader";
 import { SectionLabel } from "@/components/guest/primitives";
 import { EmptyHint } from "./CheckInSection";
-import { fullPhone, phoneDigits } from "@/lib/phone";
+import { fullPhone, hostDialCode, phoneDigits } from "@/lib/phone";
 import type { EmergencyContent, HostContact } from "@/lib/guide/types";
 
 /** One host contact card — avatar, name, and WhatsApp/Call/Text buttons. */
 function HostCard({ host }: { host: HostContact }) {
-  const whatsapp = fullPhone(host.dialCode, host.whatsapp);
-  const call = fullPhone(host.dialCode, host.phone);
-  const sms = fullPhone(host.dialCode, host.sms);
+  // Each number carries its own dial code, falling back to the host's default.
+  const whatsapp = fullPhone(hostDialCode(host, "whatsapp"), host.whatsapp);
+  const call = fullPhone(hostDialCode(host, "phone"), host.phone);
+  const sms = fullPhone(hostDialCode(host, "sms"), host.sms);
 
   return (
     <div className="flex flex-col items-center rounded-[var(--radius-lg)] border-[1.5px] border-border bg-surface p-5 text-center">
