@@ -53,7 +53,7 @@ export function CheckInEditor({
             </EditorField>
           </EditorGroup>
 
-          <EditorGroup title="Check-in & checkout times">
+          <EditorGroup title="Checkout & check-in times">
             <div className="grid gap-2.5 sm:grid-cols-2">
               <EditorField label="Checkout time" hint={checkoutHint}>
                 <Select
